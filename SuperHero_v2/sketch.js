@@ -58,24 +58,15 @@ function draw() {
   clear();
   if (playSecondVid == true) {
     console.log('hello vid2')
-    currentframeAF++;
-    image(aftercape_frames[currentframeAF], 0, 0);
-    // image(aftercape_frames[currentframeAF], 0, 0, windowWidth, windowWidth / aspect);
-    if (currentframeAF == totalaftercapeframes-1) {
-      playSecondVid == false;
-      
-      currentframeAF = currentframeAF;
-      loadfirstinstruction();
+    if (currentframeAF < totalaftercapeframes) {
+      image(aftercape_frames[currentframeAF++], 0, 0,windowWidth, windowWidth / aspect);
     }
-  } else if ( currentframeAF > totalaftercapeframes){
-    image(aftercape_frames[40], 0, 0);
+    else {
+      image(aftercape_frames[currentframeAF-1], 0, 0,windowWidth, windowWidth / aspect);
+    }
+    
   }
 
-  // if (currentframe < totalearthorbitframes) {
-  //   image(earthorbit_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
-  // } else {
-  //   background(0);
-  // }
 
 }
 
@@ -98,6 +89,8 @@ function keyPressed() {
 
 function loadfirstinstruction() {
   var instFistUp = loadImage('assets/getinstructions.png');
+  var inst = createImg('assets/getinstructions.png');
+  inst.position(500,500);
   //load DOM element
 }
 
