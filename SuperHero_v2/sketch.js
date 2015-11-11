@@ -1,13 +1,34 @@
-var earthorbit;
+var earthorbit, inst;
+var instscaledown = 300;
 var earthorbit_frames = [];
 var aftercape_frames = [];
 var currentframeAF = 0;
 var currentframe = 0;
 var totalearthorbitframes = 320;
-var totalaftercapeframes = 50;
+var totalaftercapeframes = 54;
 var aspect = 1920 / 1080;
 var aftercape;
 var playSecondVid = false;
+var instructionsready = false;
+var strokevar = 1;
+
+function starfield1(x, y) {
+  this.x = x;
+  this.y = y;
+  stroke(255);
+  strokeWeight(strokevar);
+  push();
+  translate(this.x, this.y);
+  line(-10, 0, 10, 0);
+  line(0, -10, 0, 10);
+  pop();
+  if (strokevar > 10) {
+    strokevar = -strokevar;
+  } else if (strokevar < 1) {
+    strokevar++;
+  }
+}
+
 
 
 // function PNGSequence() {
@@ -23,9 +44,9 @@ var playSecondVid = false;
 //     image(this.img[this.frameNum], x, y);
 //   }
 // }
-
-
 // var earthPNGSeq = new PNGSequence();
+
+
 function preload() {
   for (var i = 0; i < totalearthorbitframes; i++) { //load all the image names
     earthorbit = "assets/EarthOrbit" + nf(i, 3) + ".png";
@@ -45,26 +66,29 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  inst = createImg('assets/getinstructions.png');
+  inst.class('instructions');
+  
+  //       for (var i=0;i<40;i++){
+  //   starfield.push = new star(random(1920),random(1280));
+  // }
+  
 
 }
 
 
-
-
-
-
 function draw() {
-  // background(200, 5, 20);
   clear();
+
   if (playSecondVid == true) {
     console.log('hello vid2')
     if (currentframeAF < totalaftercapeframes) {
-      image(aftercape_frames[currentframeAF++], 0, 0,windowWidth, windowWidth / aspect);
+      image(aftercape_frames[currentframeAF++], 0, 0, windowWidth, windowWidth / aspect);
+    } else {
+      image(aftercape_frames[currentframeAF - 1], 0, 0, windowWidth, windowWidth / aspect);
+      loadfirstinstruction();
     }
-    else {
-      image(aftercape_frames[currentframeAF-1], 0, 0,windowWidth, windowWidth / aspect);
-    }
-    
+
   }
 
 
@@ -74,29 +98,48 @@ function keyPressed() {
   if (key === ' ') {
     print('pressed space');
     currentframe++;
+    image(earthorbit_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
   }
 
-
-  // var removeFirstVid = document.getElementById('loading');
   if (keyCode === ENTER) {
-    console.log('b');
+    console.log('enter');
     EndIntro();
     playSecondVid = true;
 
   }
   // return false;
+
+  if (keyCode === 66) {
+    console.log('b was pressed');
+    animateInsttocorner();
+  }
+  if (keyCode === 80) {
+  
 }
+}
+
+
 
 function loadfirstinstruction() {
-  var instFistUp = loadImage('assets/getinstructions.png');
-  var inst = createImg('assets/getinstructions.png');
-  inst.position(500,500);
-  //load DOM element
+  $('.instructions').show();
+
 }
 
-// function resize(){
-//   resizeCanvas(windowWidth,windowHeight);
-// }
+function animateInsttocorner() {
+  inst.size(instscaledown,instscaledown);
+  inst.position(900,900);
+  
+  if (instscaledown == 40){
+    instscaledown = 40;
+  } else if (instscaledown >40){
+    instscaledown--;
+  }
+ 
+}
+
+function resize() {
+  resizeCanvas(windowWidth, windowHeight);
+}
 
 
 
