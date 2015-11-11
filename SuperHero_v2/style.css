@@ -1,0 +1,16 @@
+#loading{
+  font-size: 5em;
+  margin-left: 0px;
+  margin-right:0px;
+  color: blue;
+  background-size:cover;
+  /*min-height:100%;*/
+  width:100%;
+  display:block;
+}
+
+#everything{
+  display:block;
+   margin-left: 0px;
+  
+}

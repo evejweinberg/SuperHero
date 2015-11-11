@@ -1,0 +1,71 @@
+#page_1{
+  /*display: none;*/
+   font-family: "freight-macro-pro",sans-serif;
+   background-color: #ffe900;
+}
+
+#page_2{
+  display: none;
+   font-family: "freight-macro-pro",sans-serif;
+   background-color: #ffe900;
+}
+
+#page_3{
+  display: none;
+   font-family: "freight-macro-pro",sans-serif;
+   background-color: #000;
+}
+
+#page_4{
+  display: none;
+   font-family: "freight-macro-pro",sans-serif;
+   background-color: #000;
+}
+#topnav{
+  background:red;
+  height:110px;
+  z-index:90;
+}
+
+*{
+  font-family: "freight-macro-pro",sans-serif;
+}
+
+p{
+  line-height: 140%;
+}
+
+.poetry{
+  font-family: "freight-macro-pro",sans-serif;
+  font-size:4.2em;
+  position:absolute;
+  /*//i want to make this relative though*/
+  }
+  
+  .whitepoetry{
+    width:800px;
+  font-family: "freight-macro-pro",sans-serif;
+  color: white;
+  font-size:4.2em;
+  position:absolute;
+  /*//i want to make this relative though*/
+  }
+
+button {
+  position: relative;
+  /*border-radius: 4px;*/
+  margin-left:300px;
+  margin-right:300px;
+  color: #000;
+  font-weight: bold;
+  font-size:3em;
+  background-color: #0088e8;
+  border: 1px solid #900;
+}
+
+button:hover {
+  background-color: #38a6f4;
+  border: 1px solid #900;
+  cursor: pointer;
+  background-position: 0 -24px;
+}
