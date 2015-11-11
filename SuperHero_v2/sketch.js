@@ -11,6 +11,7 @@ var aftercape;
 var playSecondVid = false;
 var instructionsready = false;
 var strokevar = 1;
+var particleList = [];
 
 function starfield1(x, y) {
   this.x = x;
@@ -68,17 +69,42 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   inst = createImg('assets/getinstructions.png');
   inst.class('instructions');
-  
+  for (var i = 0; i < 50; i++) {
+    var particle = {
+      x: random(width),
+      y: random(height),
+      radius: 12,
+
+      display: function() {
+        this.radius++;
+        stroke(255, 100);
+        strokeWeight(this.radius);
+        line(this.x, this.y-this.radius/2, this.x + this.radius, this.y+this.radius/2);
+        line(this.x+this.radius/2, this.y, this.x+this.radius/2, this.y + this.radius);
+        if (this.radius < 2) {
+          this.radius++;
+          stroke(100);
+        } else if (this.radius > 20) {
+          this.radius--;
+          stroke(0);
+        }
+      },
+    };
+    particleList[i] = particle;
+
+  }
   //       for (var i=0;i<40;i++){
   //   starfield.push = new star(random(1920),random(1280));
   // }
-  
-
 }
 
 
 function draw() {
   clear();
+  for (var i = 0; i < particleList.length; i++) {
+    particleList[i].display();
+
+  }
 
   if (playSecondVid == true) {
     console.log('hello vid2')
@@ -114,8 +140,8 @@ function keyPressed() {
     animateInsttocorner();
   }
   if (keyCode === 80) {
-  
-}
+
+  }
 }
 
 
@@ -126,15 +152,15 @@ function loadfirstinstruction() {
 }
 
 function animateInsttocorner() {
-  inst.size(instscaledown,instscaledown);
-  inst.position(900,900);
-  
-  if (instscaledown == 40){
+  inst.size(instscaledown, instscaledown);
+  inst.position(900, 900);
+
+  if (instscaledown == 40) {
     instscaledown = 40;
-  } else if (instscaledown >40){
+  } else if (instscaledown > 40) {
     instscaledown--;
   }
- 
+
 }
 
 function resize() {
