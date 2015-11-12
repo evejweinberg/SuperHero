@@ -13,19 +13,20 @@ var instructionsready = false;
 var strokevar = 1;
 var particleList = [];
 var singlestar = [];
-var intro = false;
+
 var totalstars = 20;
+var scene2 = false;
+var scene3 = false;
+var scene1 = true;
 
 function starfield1() {
   this.x = random(1920);
   this.y = random(1080);
   stroke(255);
-   this.radius=random(30);
-  
-
+  this.radius = random(30);
   this.display = function() {
     strokeWeight(4);
-   this.radius =this.radius+.5;
+    this.radius = this.radius + .5;
     line(this.x, this.y - this.radius / 2, this.x, this.y + this.radius / 2);
     line(this.x + this.radius / 2, this.y, this.x - this.radius / 2, this.y);
   }
@@ -77,28 +78,32 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   inst = createImg('assets/getinstructions.png');
   inst.class('instructions');
-  
- for (var m = 0; m < totalstars; m++) {
+
+  for (var m = 0; m < totalstars; m++) {
     singlestar.push(new starfield1());
   }
-}///SETUP ENDS
+} ///SETUP ENDS
 
 
 function draw() {
   clear();
-  
-   if (intro == true){
-  for (var o = 0; o < totalstars; o++) {
-    singlestar[o].display();
-    singlestar[o].twinkle();
+
+  if (scene3 == true) {
+    ellipse(30, 30, 130, 130);
+
   }
-   }
- 
- 
+
+  if (scene2 == true) {
+    for (var o = 0; o < totalstars; o++) {
+      singlestar[o].display();
+      singlestar[o].twinkle();
+    }
+  }
+
+
 
   if (playSecondVid == true) {
-    intro = true;
-    console.log('hello vid2')
+    scene2 = true;
     if (currentframeAF < totalaftercapeframes) {
       image(aftercape_frames[currentframeAF++], 0, 0, windowWidth, windowWidth / aspect);
     } else {
@@ -112,18 +117,34 @@ function draw() {
 }
 
 function keyPressed() {
+
+  if (scene2 === true) {
+    if (keyCode === ENTER) {
+      console.log('scene2end');
+      scene3 == true;
+      scene2 == false;
+      playSecondVid == false;
+    }
+  }
+
+  if (scene1 === true) {
+    if (keyCode === ENTER) {
+      console.log('scene1end');
+      EndIntro();
+      playSecondVid = true;
+      scene1 == false;
+      scene2 == true;
+
+    }
+  }
+
   if (key === ' ') {
     print('pressed space');
     currentframe++;
     image(earthorbit_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
   }
 
-  if (keyCode === ENTER) {
-    console.log('enter');
-    EndIntro();
-    playSecondVid = true;
 
-  }
   // return false;
 
   if (keyCode === 66) {
