@@ -12,21 +12,29 @@ var playSecondVid = false;
 var instructionsready = false;
 var strokevar = 1;
 var particleList = [];
+var singlestar = [];
+var intro = false;
+var totalstars = 20;
 
-function starfield1(x, y) {
-  this.x = x;
-  this.y = y;
+function starfield1() {
+  this.x = random(1920);
+  this.y = random(1080);
   stroke(255);
-  strokeWeight(strokevar);
-  push();
-  translate(this.x, this.y);
-  line(-10, 0, 10, 0);
-  line(0, -10, 0, 10);
-  pop();
-  if (strokevar > 10) {
-    strokevar = -strokevar;
-  } else if (strokevar < 1) {
-    strokevar++;
+   this.radius=random(30);
+  
+
+  this.display = function() {
+    strokeWeight(4);
+   this.radius =this.radius+.5;
+    line(this.x, this.y - this.radius / 2, this.x, this.y + this.radius / 2);
+    line(this.x + this.radius / 2, this.y, this.x - this.radius / 2, this.y);
+  }
+  this.twinkle = function() {
+    if (this.radius > 30) {
+      this.radius = -this.radius;
+    } else if (this.radius < 5) {
+      this.radius = this.radius;
+    }
   }
 }
 
@@ -69,44 +77,27 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   inst = createImg('assets/getinstructions.png');
   inst.class('instructions');
-  for (var i = 0; i < 50; i++) {
-    var particle = {
-      x: random(width),
-      y: random(height),
-      radius: 12,
-
-      display: function() {
-        this.radius++;
-        stroke(255, 100);
-        strokeWeight(this.radius);
-        line(this.x, this.y-this.radius/2, this.x + this.radius, this.y+this.radius/2);
-        line(this.x+this.radius/2, this.y, this.x+this.radius/2, this.y + this.radius);
-        if (this.radius < 2) {
-          this.radius++;
-          stroke(100);
-        } else if (this.radius > 20) {
-          this.radius--;
-          stroke(0);
-        }
-      },
-    };
-    particleList[i] = particle;
-
+  
+ for (var m = 0; m < totalstars; m++) {
+    singlestar.push(new starfield1());
   }
-  //       for (var i=0;i<40;i++){
-  //   starfield.push = new star(random(1920),random(1280));
-  // }
-}
+}///SETUP ENDS
 
 
 function draw() {
   clear();
-  for (var i = 0; i < particleList.length; i++) {
-    particleList[i].display();
-
+  
+   if (intro == true){
+  for (var o = 0; o < totalstars; o++) {
+    singlestar[o].display();
+    singlestar[o].twinkle();
   }
+   }
+ 
+ 
 
   if (playSecondVid == true) {
+    intro = true;
     console.log('hello vid2')
     if (currentframeAF < totalaftercapeframes) {
       image(aftercape_frames[currentframeAF++], 0, 0, windowWidth, windowWidth / aspect);
