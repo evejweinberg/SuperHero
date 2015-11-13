@@ -1,3 +1,7 @@
+#timer{
+  position:absolute;
+  z-index:10px;
+}
 .countdown{
   display:block;
   text-align:center;
