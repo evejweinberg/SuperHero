@@ -1,4 +1,4 @@
-var earthorbit, inst, saveme, bg01, asteroid, scene3header, flapTemp, dearEarth;
+var earthorbit, inst, saveme, bg01, asteroid, scene3header, flapTemp, dearEarth, scene5countdown;
 var instscaledown = 300;
 var earthorbit_frames = [];
 var aftercape_frames = [];
@@ -18,13 +18,14 @@ var bgplaying = false;
 var dearEarthplaying = false;
 var ast_x = -100;
 var ast_y = -100;
-  var scene3counter = 0;
-
+var scene3counter = 0;
 var totalstars = 20;
 var scene1 = true;
 var scene2 = false;
 var scene3 = false;
 var scene4 = false;
+var scene5 = false;
+var sceneCounter = 0
 
 
 function starfield1() {
@@ -57,22 +58,6 @@ function playSaveMe() {
 
 
 
-// function PNGSequence() {
-//   this.frameNum = 0;
-//   this.img = [];
-//   this.reset = function() {
-//     this.frameNum = 0;
-//   }
-//   this.update = function() {
-//     this.frameNum++;
-//   }
-//   this.display = function() {
-//     image(this.img[this.frameNum], x, y);
-//   }
-// }
-// var earthPNGSeq = new PNGSequence();
-
-
 function preload() {
   for (var i = 0; i < totalearthorbitframes; i++) { //load all the image names
     earthorbit = "assets/EarthOrbit" + nf(i, 3) + ".png";
@@ -92,11 +77,16 @@ function preload() {
 
 
 function dearEarthVO() {
+
   if (!dearEarthplaying) {
     dearEarth.setVolume(0.6);
     dearEarth.play();
     dearEarthplaying = true;
     bg01.setVolume(0.05);
+  }
+  if (scene5 == true) {
+    dearEarth.stop();
+    //want to  change this to fade out not just stop
   }
 }
 
@@ -111,17 +101,30 @@ function bgmusic() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   flapTemp = createImg('assets/flapTemp.gif');
-  var   flapTemp2 = createImg('assets/flapTemp.gif');
-  var   flapTemp3 = createImg('assets/flapTemp.gif');
+  var flapTemp2 = createImg('assets/flapTemp.gif');
+  var flapTemp3 = createImg('assets/flapTemp.gif');
   flapTemp.position(100, 300).class('class3');
   flapTemp2.position(800, 300).class('class3');
   flapTemp3.position(1400, 300).class('class3');
-  $('.header').hide();
+
   inst = createImg('assets/getinstructions.png');
-  inst.class('instructions');
+  inst.class('instructions').class('class2');
   scene3header = createP('we need to test your flight skills, pronto');
   scene3header.class('header').class('class3');
+
+  scene4header = createP('Dear Earthling Superheros');
+  scene4header.class('header').class('class4');
+  scene4button = createButton('ready to play');
+  scene4button.position(300, 600).class('class4').class('header');
+  scene4button.mouseClicked(playGame);
+
+  scene5countdown = createP('3');
+  scene5countdown.class('countdown').class('class5');
+  $('.header').hide();
   $('.class3').hide();
+  $('.class2').hide();
+  $('.class4').hide();
+  $('.class5').hide();
 
 
   for (var m = 0; m < totalstars; m++) {
@@ -129,33 +132,51 @@ function setup() {
   }
 } ///SETUP ENDS
 
-function checkFlap1(){
+
+function checkFlap1() {
   // if return true, call checkFlap2();
   //ect
-
-  console.log('scene3counter:' +scene3counter)
+  //console.log('scene3counter:' +scene3counter)
   scene3counter++;
-  if (scene3counter > 600){
+  if (scene3counter > 400) {
     scene4 = true;
   }
-  
+
 }
 
 
 function draw() {
   bgmusic();
   clear();
-if(scene4 == true){
-  $('.class3').hide();
-  scene3 = false;
-  dearEarthVO();
-  background(236,115,105);
-  
-}
-  else if (scene3 == true) {
+  if (scene5 == true) {
+    $('.class4').hide();
+    $('.class5').show();
+
+    sceneCounter++;
+    if (sceneCounter > 30 && sceneCounter < 60) {
+      scene5countdown.html('2');
+    } else if (sceneCounter > 60 && sceneCounter < 90) {
+      scene5countdown.html('1');
+    } else if (sceneCounter > 90) {
+      scene5countdown.html('FLY!');
+    }
+    scene4 = false;
+    background(247, 209, 66);
+    image(earthorbit_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
+
+  } else if (scene4 == true) {
+    $('.class3').hide();
+    scene3 = false;
+    dearEarthVO();
+    background(236, 115, 105);
+    $('.class4').show();
+
+
+  } else if (scene3 == true) {
     $('.class3').show();
+    $('.class2').hide();
     checkFlap1();
-    
+
   } else if (playSecondVid == true) {
     scene2 = true;
     scene1 = false;
@@ -169,11 +190,7 @@ if(scene4 == true){
       playSaveMe();
     }
     if (currentframeAF > 87) {
-      var targetastx = 600;
-      var targetasty = 600;
-      image(asteroid, ast_x + random(-3, 3), ast_y + random(-3, 3));
-      ast_x = abs(targetastx - ast_x) * .05;
-
+      asteroidEnter();
     }
     if (currentframeAF < totalaftercapeframes) {
       image(aftercape_frames[currentframeAF++], 0, 0, windowWidth, windowWidth / aspect);
@@ -195,7 +212,6 @@ function keyPressed() {
     }
     //   if (keyCode === 66) {
     //   console.log('b was pressed');
-    //   animateInsttocorner();
     // }
   } else if (scene1 === true) {
     if (keyCode === ENTER) {
@@ -206,34 +222,30 @@ function keyPressed() {
       scene2 == true;
 
     }
-  } else if (key === ' ') {
-    print('pressed space');
-    currentframe++;
-    image(earthorbit_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
+  } else if (scene5 === true) { //game
+    if (key === ' ') {
+      currentframe++;
+      image(earthorbit_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
+    }
+    return false;
   }
-  // return false;
 
+} ///KEYPRESS ENDS/////////////
+
+function playGame() {
+  scene4 = false;
+  scene5 = true;
 }
 
 
 
 function loadfirstinstruction() {
-  $('.instructions').show();
+  $('.class2').show();
 }
 
-function animateInsttocorner() {
-  inst.size(instscaledown, instscaledown);
-  inst.position(900, 900);
 
-  if (instscaledown == 40) {
-    instscaledown = 40;
-  } else if (instscaledown > 40) {
-    instscaledown--;
-  }
 
-}
-
-function resize() {
+function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
@@ -243,4 +255,13 @@ function EndIntro() {
     $('#loading').hide();
   }
   scene1 = false;
+}
+
+function asteroidEnter() {
+  var targetastx = 400 + random(-50, 50);
+  var targetasty = 400 + random(-50, 50);
+  ast_x += (targetastx - ast_x) * .05;
+  ast_y += (targetasty - ast_y) * .05;
+  image(asteroid, ast_x, ast_y);
+
 }

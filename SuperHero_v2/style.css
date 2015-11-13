@@ -1,7 +1,14 @@
+.countdown{
+  display:block;
+  text-align:center;
+  font-size:9em;
+  font-family: "brandon-grotesque";
+  margin:auto;
+}
 .header{
   display:block;
   text-align:center;
-  font-size:4em;
+  font-size:5em;
   font-family: "brandon-grotesque";
 }
 
@@ -9,6 +16,9 @@
   background:blue;
 }
 .class3{
+  display:none;
+}
+.class4{
   display:none;
 }
 #loading{
