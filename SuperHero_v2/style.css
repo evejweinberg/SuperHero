@@ -5,7 +5,7 @@
 .countdown{
   display:block;
   text-align:center;
-  font-size:9em;
+  font-size:12em;
   font-family: "brandon-grotesque";
   margin:auto;
 }
@@ -56,4 +56,26 @@ body{
 
 #defaultCanvas0{
   position:absolute;
+}
+
+.fist{
+  backgroundimage:url('assets/fist.png');
+}
+
+.cappink{
+   position: fixed;
+    bottom: 0;
+    left: 0;
+     border: 3px solid #73AD21;
+}
+
+.capblue{
+  position: fixed;
+    bottom: 0;
+    left: 30;
+}
+
+#newspaper{
+    font-size:12em;
+  font-family: "brandon-grotesque";
 }

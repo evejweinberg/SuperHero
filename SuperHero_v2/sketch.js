@@ -1,18 +1,22 @@
-var earthorbit, inst, saveme, bg01, asteroid, scene3header, flapTemp, dearEarth, scene5countdown;
+var cd_3, cd_2, cd_1, cd_f, earthorbit, earthspin, inst, saveme, bg01, asteroid, scene3header, flapTemp, dearEarth, scene5countdown, cappink, capblue;
 var instscaledown = 300;
 var earthorbit_frames = [];
-var aftercape_frames = [];
-var currentframeAF = 0;
+var Scn2_frames = [];
+var earthspin_frames = [];
 var currentframe = 0;
-var sceneCounter=0;
+var Scn2frmct = 0;
+var Scn3_frmct = 0;
+var Scn5_frmct = 0;
+var Scn5_clock = 0;
+var Scn4_frmct = 0;
+var totalearthspin = 159;
 var totalearthorbitframes = 320;
-var totalaftercapeframes = 326;
+var totalaftercapeframes = 325;
 var aspect = 1920 / 1080;
 var aftercape, Timer, TotalSeconds;
 var playSecondVid = false;
 var instructionsready = false;
 var strokevar = 1;
-var particleList = [];
 var singlestar = [];
 var savmeplaying = false;
 var bgplaying = false;
@@ -27,6 +31,7 @@ var scene2 = false;
 var scene3 = false;
 var scene4 = false;
 var scene5 = false;
+var scene6 = false;
 
 
 function starfield1() {
@@ -63,16 +68,24 @@ function preload() {
   for (var i = 0; i < totalearthorbitframes; i++) { //load all the image names
     earthorbit = "assets/EarthOrbit" + nf(i, 3) + ".png";
     earthorbit_frames.push(loadImage(earthorbit)); //push them all into an array
-
+  }
+  for (var i = 0; i < totalearthspin; i++) { //load all the image names
+    earthspin = "assets/spin_" + nf(i, 3) + ".png";
+    earthspin_frames.push(loadImage(earthspin)); //push them all into an array
   }
   for (var i = 0; i < totalaftercapeframes; i++) { //load all the image names
     aftercape = "assets/AC2_" + nf(i, 3) + ".png";
-    aftercape_frames.push(loadImage(aftercape)); //push them all into an array
+    Scn2_frames.push(loadImage(aftercape)); //push them all into an array
   }
   saveme = loadSound('assets/saveme.m4a');
   bg01 = loadSound('assets/bg01.mp3');
   dearEarth = loadSound('assets/dearEarth.m4a');
+  cd_3 = loadSound('assets/three.m4a');
   asteroid = loadImage('assets/asteroid.png');
+  cappink = createImg('assets/cappink.png');
+  capblue = createImg('assets/capblue.png');
+  cappink.class('class4').id('cappink');
+  capblue.class('class4').id('capblue');
 }
 
 
@@ -101,11 +114,13 @@ function setup() {
   flapTemp2 = createImg('assets/flytestpre.png');
   flapTemp3 = createImg('assets/flytestpre.png');
   flapTemp1.position(100, 300).class('class3').id('flap1').class('flap1');
-  flapTemp2.position(800, 300).class('class3');
-  flapTemp3.position(1400, 300).class('class3');
+  flapTemp2.position(800, 300).class('class3').id('flap2');
+  flapTemp3.position(1400, 300).class('class3').id('flap3');
 
-  inst = createImg('assets/getinstructions.png');
-  inst.class('instructions').class('class2');
+  // inst = createImg('assets/fist.png');
+  // inst.class('instructions').class('class2');
+  inst = createDiv('');
+  inst.id('fist').class('class2');
   scene3header = createP('we need to test your flight skills, pronto');
   scene3header.class('header').class('class3');
 
@@ -116,12 +131,13 @@ function setup() {
   scene4button.mouseClicked(playGame);
 
   scene5countdown = createP('3');
-  scene5countdown.class('countdown').class('class5');
+  scene5countdown.class('countdown').class('class5').id('countdowntofly');
   $('.header').hide();
   $('.class3').hide();
   $('.class2').hide();
   $('.class4').hide();
   $('.class5').hide();
+  $('.class6').hide();
 
 
   for (var m = 0; m < totalstars; m++) {
@@ -130,10 +146,18 @@ function setup() {
 } ///SETUP ENDS
 
 
-function checkFlap1() {
-  scene3counter++;
-  if (scene3counter > 400) {
+function flyingTest() {
+  Scn3_frmct++;
+  if (Scn3_frmct < 400) {
+    console.log("scn3 counter:  " + Scn3_frmct);
+  }
+
+  if (Scn3_frmct > 400) {
+
+    console.log('scene 4 should be true now')
     scene4 = true;
+    scene3 = false;
+
   }
 
 }
@@ -144,59 +168,96 @@ function checkFlap1() {
 function draw() {
   bgmusic();
   clear();
-  if (scene5 == true) {
+
+  if (scene3 == true) {
+    $('.class3').show();
+    $('.class2').hide();
+    flyingTest();
+
+  } else if (scene4 === true) {
+    console.log('scene 4 IS true')
+    $('.class3').hide();
+    $('.class4').show();
+    scene3 = false;
+    dearEarthVO();
+    // background(236, 115, 105);
+    noFill();
+    strokeWeight(5);
+    stroke(0, 166, 255);
+    ellipse(500, 500, 500, 500);
+    Scn4_frmct++;
+    console.log('scn4 framect:   ' + Scn4_frmct);
+    image(earthspin_frames[Scn4_frmct], 300, 300, 300, 300);
+    if (Scn4_frmct > totalearthspin) {
+      Scn4_frmct = 0;
+    }
+
+
+  } else if (scene5 == true) {
+    background(247, 209, 66);
+    scene4 = false;
     dearEarth.stop();
     $('.class4').hide();
     $('.class5').show();
-
-    sceneCounter++;
-    if (sceneCounter > 30 && sceneCounter < 60) {
-      scene5countdown.innerHTML='2';
-    } else if (sceneCounter > 60 && sceneCounter < 90) {
-      scene5countdown.innerHTML='1';
-    } else if (sceneCounter > 90) {
-      scene5countdown.html='FLY!';
+    image(earthorbit_frames[0], 0, 0, windowWidth, windowWidth / aspect);
+    console.log('scene5 frm ct:   ' + Scn5_frmct);
+    Scn5_frmct++;
+    Scn5_clock++;
+    if (Scn5_clock > 30000) {
+      scene5 = false;
+      scene6 = true;
     }
-    scene4 = false;
-    background(247, 209, 66);
-    image(earthorbit_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
+    
+    if (Scn5_frmct ==0){
+    cd_3.play();
+  }
+    if (Scn5_frmct > 30 && Scn5_frmct < 60) {
 
-  } else if (scene4 == true) {
-    $('.class3').hide();
-    scene3 = false;
-    dearEarthVO();
-    background(236, 115, 105);
-    $('.class4').show();
+      document.getElementById('countdowntofly').innerHTML = '2';
+    } else if (Scn5_frmct > 60 && Scn5_frmct < 90) {
+      document.getElementById('countdowntofly').innerHTML = '1';
+    } else if (Scn5_frmct > 90) {
+      document.getElementById('countdowntofly').innerHTML = 'FLY!';
+    }
 
 
-  } else if (scene3 == true) {
-    $('.class3').show();
-    $('.class2').hide();
-    checkFlap1();
+
 
   } else if (playSecondVid == true) {
     scene2 = true;
     scene1 = false;
+    Scn2frmct++;
     console.log("scene2=true");
-    scene1 = false;
+    console.log("scenectis" + Scn2frmct);
     for (var o = 0; o < totalstars; o++) {
       singlestar[o].display();
       singlestar[o].twinkle();
     }
-    if (currentframeAF == 57) {
+    if (Scn2frmct == 57) {
       playSaveMe();
     }
-    if (currentframeAF > 87) {
+    if (Scn2frmct > 87) {
       asteroidEnter();
     }
-    if (currentframeAF < totalaftercapeframes) {
-      image(aftercape_frames[currentframeAF++], 0, 0, windowWidth, windowWidth / aspect);
+    if (Scn2frmct < 324) {
+      image(Scn2_frames[Scn2frmct], 0, 0, windowWidth, windowWidth / aspect);
     } else {
-      image(aftercape_frames[currentframeAF - 1], 0, 0, windowWidth, windowWidth / aspect);
+      image(Scn2_frames[324], 0, 0, windowWidth, windowWidth / aspect);
       loadfirstinstruction();
     }
+  } else if (scene6 === true) {
+      $('.class5').hide();
+        $('.class6').show();
+    background(244, 179, 100);
+    var newspapertemp = createP('You are a hero');
+    newspapertemp.class('class6').id('newspaper');
+
   }
 }
+
+
+
+
 
 function keyPressed() {
 
@@ -208,14 +269,25 @@ function keyPressed() {
       playSecondVid = false;
     }
 
-  } else if (scene3===true){
-    if (key === 'a'){
-   console.log('a was pressed');
-    $('flap1').src = 'assets/flytestafter.png';
+  } else if (scene3 === true) {
+    if (keyCode === ENTER) {
+      console.log('scene3end');
+      scene3 == false;
+      scene4 == true;
 
- }
-  }
-  else if (scene1 === true) {
+    }
+    if (keyCode === 65 || keyCode === 97) { //A
+      console.log('a was pressed');
+      document.getElementById('flap1').src = 'assets/flytestafter.png';
+      var flap2change = document.getElementById('flap1');
+      flap2change.src = 'assets/flapTemp.gif';
+    } else if (keyCode === 66 || keyCode === 98) { //B
+      console.log('B was pressed');
+      var flap3change = document.getElementById('flap1');
+      // flap2change.src = 'assets/fflytestafter.png';
+      flap3change.src = 'assets/flapTemp.gif';
+    }
+  } else if (scene1 === true) {
     if (keyCode === ENTER) {
       console.log('scene1end');
       EndIntro();
@@ -223,6 +295,14 @@ function keyPressed() {
       scene1 == false;
       scene2 == true;
 
+    }
+  } else if (scene4 === true) {
+    if (keyCode === ENTER) {
+      console.log('scene4end');
+      scene5 = true;
+      $('.class5').show();
+      scene4 = false;
+      $('.class4').hide();
     }
   } else if (scene5 === true) { //game
     if (key === ' ') {
@@ -232,11 +312,13 @@ function keyPressed() {
     return false;
   }
 
+
 } ///KEYPRESS ENDS/////////////
 
 function playGame() {
   scene4 = false;
   scene5 = true;
+
 }
 
 
@@ -265,7 +347,7 @@ function asteroidEnter() {
   var targetasty = 400 + random(-50, 50);
   ast_x += (targetastx - ast_x) * .05;
   ast_y += (targetasty - ast_y) * .05;
-  ast_size -= (ast_size-targetsize) *.05;
-  image(asteroid, ast_x, ast_y, ast_size,ast_size);
+  ast_size -= (ast_size - targetsize) * .05;
+  image(asteroid, ast_x, ast_y, ast_size, ast_size);
 
 }
