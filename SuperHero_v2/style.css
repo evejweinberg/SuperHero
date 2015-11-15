@@ -7,7 +7,8 @@
   text-align:center;
   font-size:12em;
   font-family: "brandon-grotesque";
-  margin:auto;
+  margin:0 auto;
+ 
 }
 .header{
   display:block;
@@ -59,7 +60,7 @@ body{
 }
 
 .fist{
-  backgroundimage:url('assets/fist.png');
+  background-image:url('assets/fist.png');
 }
 
 .cappink{

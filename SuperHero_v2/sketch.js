@@ -9,7 +9,8 @@ var Scn3_frmct = 0;
 var Scn5_frmct = 0;
 var Scn5_clock = 0;
 var Scn4_frmct = 0;
-var totalearthspin = 159;
+var transitionCounter = 0;
+var Scn4_totalframes = 159;
 var totalearthorbitframes = 320;
 var totalaftercapeframes = 325;
 var aspect = 1920 / 1080;
@@ -69,7 +70,7 @@ function preload() {
     earthorbit = "assets/EarthOrbit" + nf(i, 3) + ".png";
     earthorbit_frames.push(loadImage(earthorbit)); //push them all into an array
   }
-  for (var i = 0; i < totalearthspin; i++) { //load all the image names
+  for (var i = 0; i < Scn4_totalframes; i++) { //load all the image names
     earthspin = "assets/spin_" + nf(i, 3) + ".png";
     earthspin_frames.push(loadImage(earthspin)); //push them all into an array
   }
@@ -111,8 +112,8 @@ function bgmusic() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   flapTemp1 = createImg('assets/flapTemp.gif');
-  flapTemp2 = createImg('assets/flytestpre.png');
-  flapTemp3 = createImg('assets/flytestpre.png');
+  flapTemp2 = createImg('assets/flytestpre2.png');
+  flapTemp3 = createImg('assets/flytestpre3.png');
   flapTemp1.position(100, 300).class('class3').id('flap1').class('flap1');
   flapTemp2.position(800, 300).class('class3').id('flap2');
   flapTemp3.position(1400, 300).class('class3').id('flap3');
@@ -148,17 +149,17 @@ function setup() {
 
 function flyingTest() {
   Scn3_frmct++;
-  if (Scn3_frmct < 400) {
+  if (Scn3_frmct < 100) {
     console.log("scn3 counter:  " + Scn3_frmct);
   }
 
-  if (Scn3_frmct > 400) {
+  // if (Scn3_frmct > 100) {
 
-    console.log('scene 4 should be true now')
-    scene4 = true;
-    scene3 = false;
+  //   console.log('scene 4 should be true now')
+  //   scene4 = true;
+  //   scene3 = false;
 
-  }
+  // }
 
 }
 
@@ -185,12 +186,14 @@ function draw() {
     strokeWeight(5);
     stroke(0, 166, 255);
     ellipse(500, 500, 500, 500);
-    Scn4_frmct++;
+
     console.log('scn4 framect:   ' + Scn4_frmct);
-    image(earthspin_frames[Scn4_frmct], 300, 300, 300, 300);
-    if (Scn4_frmct > totalearthspin) {
+
+    if (Scn4_frmct >= Scn4_totalframes) {
       Scn4_frmct = 0;
     }
+    image(earthspin_frames[Scn4_frmct], 300, 300, 300, 300);
+    Scn4_frmct++;
 
 
   } else if (scene5 == true) {
@@ -200,24 +203,28 @@ function draw() {
     $('.class4').hide();
     $('.class5').show();
     image(earthorbit_frames[0], 0, 0, windowWidth, windowWidth / aspect);
-    console.log('scene5 frm ct:   ' + Scn5_frmct);
+    // console.log('scene5 frm ct:   ' + Scn5_frmct);
     Scn5_frmct++;
     Scn5_clock++;
     if (Scn5_clock > 30000) {
       scene5 = false;
       scene6 = true;
     }
-    
-    if (Scn5_frmct ==0){
-    cd_3.play();
-  }
-    if (Scn5_frmct > 30 && Scn5_frmct < 60) {
 
+    if (Scn5_frmct == 1) {
+      cd_3.play();
+    }
+    if (Scn5_frmct > 60 && Scn5_frmct < 120) {
+      console.log('TWO!')
+        // scene5countdown.innerHTML
       document.getElementById('countdowntofly').innerHTML = '2';
-    } else if (Scn5_frmct > 60 && Scn5_frmct < 90) {
+    } else if (Scn5_frmct > 120 && Scn5_frmct < 180) {
+      console.log('ONE!')
       document.getElementById('countdowntofly').innerHTML = '1';
-    } else if (Scn5_frmct > 90) {
+    } else if (Scn5_frmct > 180 && Scn5_frmct < 240) {
       document.getElementById('countdowntofly').innerHTML = 'FLY!';
+    } else if (Scn5_frmct > 240) {
+      document.getElementById('countdowntofly').innerHTML = '';
     }
 
 
@@ -246,8 +253,8 @@ function draw() {
       loadfirstinstruction();
     }
   } else if (scene6 === true) {
-      $('.class5').hide();
-        $('.class6').show();
+    $('.class5').hide();
+    $('.class6').show();
     background(244, 179, 100);
     var newspapertemp = createP('You are a hero');
     newspapertemp.class('class6').id('newspaper');
@@ -272,28 +279,30 @@ function keyPressed() {
   } else if (scene3 === true) {
     if (keyCode === ENTER) {
       console.log('scene3end');
-      scene3 == false;
-      scene4 == true;
+      scene3 = false;
+      scene4 = true;
 
     }
     if (keyCode === 65 || keyCode === 97) { //A
       console.log('a was pressed');
       document.getElementById('flap1').src = 'assets/flytestafter.png';
-      var flap2change = document.getElementById('flap1');
-      flap2change.src = 'assets/flapTemp.gif';
+      document.getElementById('flap2').src = 'assets/flapTemp.gif';
     } else if (keyCode === 66 || keyCode === 98) { //B
       console.log('B was pressed');
-      var flap3change = document.getElementById('flap1');
-      // flap2change.src = 'assets/fflytestafter.png';
-      flap3change.src = 'assets/flapTemp.gif';
+      document.getElementById('flap2').src = 'assets/flytestafter.png';
+      document.getElementById('flap3').src = 'assets/flapTemp.gif';
+    } else if (keyCode === 67 || keyCode === 99) { //C
+      console.log('B was pressed');
+      document.getElementById('flap3').src = 'assets/flytestafter.png';
+     transitionfrom3to4();
     }
   } else if (scene1 === true) {
     if (keyCode === ENTER) {
       console.log('scene1end');
       EndIntro();
       playSecondVid = true;
-      scene1 == false;
-      scene2 == true;
+      scene1 = false;
+      scene2 = true;
 
     }
   } else if (scene4 === true) {
@@ -350,4 +359,17 @@ function asteroidEnter() {
   ast_size -= (ast_size - targetsize) * .05;
   image(asteroid, ast_x, ast_y, ast_size, ast_size);
 
+}
+
+function transitionfrom3to4(){
+  // document.getElementById('flap3').position(300,300);
+  scene3header.innerHTML('FLIGHT TEST COMPLETE');
+  transitionCounter++;
+  if (transitionCounter > 120){
+    scene3 = false;
+    scene4 = true;
+    
+  }
+  
+  
 }
