@@ -1,8 +1,10 @@
 #gametimerAll {
-  font-size: 12em;
+  font-size: 6em;
   position: absolute;
-  left: 130px;
+  left: 180px;
   z-index: 10;
+   font-family: "brandon-grotesque";
+   color: white;
 }
 
 .class5{
@@ -23,20 +25,23 @@
 
 #sec{
   position:absolute;
-  left:180px;
+  left:210px;
+  top:0px;
+   font-family: "brandon-grotesque";
 }
 
 .gametimer {
   text-align: right;
+   font-family: "brandon-grotesque";
 }
 
 .countdown {
   display: block;
   text-align: center;
-  font-size: 32em;
+  font-size: 300px;
   font-family: "brandon-grotesque";
   margin: 0 auto;
-  /*font-weight: bold;*/
+  line-height:1em;
     z-index: 10;
 }
 #countdowntofly{
@@ -124,17 +129,17 @@ body {
   }
 }
 
-.cappink {
+#cappink {
   position: fixed;
   bottom: 0;
   left: 0;
   border: 3px solid #73AD21;
 }
 
-.capblue {
+#capblue {
   position: fixed;
   bottom: 0;
-  left: 30;
+  left: 160px;
 }
 
 #newspaper {

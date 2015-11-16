@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>SuperHero_v3</title>
+  <script src="https://use.typekit.net/lkw3axm.js"></script>
+  <script>
+    try {
+      Typekit.load({
+        async: true
+      });
+    } catch (e) {}
+  </script>
+
+  <script src="libraries/snap.js" type="text/javascript"></script>
+  <script src="libraries/p5.js" type="text/javascript"></script>
+
+  <script src="libraries/p5.dom.js" type="text/javascript"></script>
+  <script src="libraries/p5.sound.js" type="text/javascript"></script>
+  <script src="libraries/two.js" type="text/javascript"></script>
+
+  <script src="sketch.js" type="text/javascript"></script>
+  <script src="snappertest.js" type="text/javascript"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+    
+    canvas {
+      vertical-align: top;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <div id='everything'></div>
+  <div id='gametimerAll' class='class5'>
+    <span id="timer" class="gametimer class5"></span>
+    <span id="sec" class="class5">sec</span>
+  </div>
+
+  <div id="loading">
+    <video width='100%' height='100%' autoplay loop> //EDIT: loop="true" and autoplay="autoplay" are deprecated
+      <source src="assets/Intro3.mp4" type="video/mp4" /> Your browser does not support the video tag.
+    </video>
+  </div>
+  <div id="timer">
+  </div>
+
+</body>
+
+</html>

@@ -6,6 +6,10 @@ var fisty = 200;
 var game_frames = [];
 var Scn2_frames = [];
 var earthspin_frames = [];
+var turbo;
+var turbo_frames = [];
+var turboFrameNum = 0;
+var turboTotalFrames = 30;
 var currentframe = 0;
 var Scn2frmct = 0;
 var Scn3_frmct = 0;
@@ -38,6 +42,7 @@ var scene6 = false;
 var count = 30;
 var countermillis = 60;
 var counter;
+var canvas, capture, mycam, button, img;
 
 
 function starfield1() {
@@ -71,9 +76,15 @@ function playSaveMe() {
 
 
 function preload() {
+  img = loadImage('assets/newspaper.PNG');
   for (var i = 0; i < totalgameframes; i++) { //load all the image names
     game = "assets/GAME_" + nf(i, 3) + ".png";
     game_frames.push(loadImage(game)); //push them all into an array
+  }
+
+  for (var i = 0; i < turboTotalFrames; i++) { //load all the image names
+    turbo = "assets/TurboA_" + nf(i, 3) + ".png";
+    turbo_frames.push(loadImage(turbo)); //push them all into an array
   }
   for (var i = 0; i < Scn4_totalframes; i++) { //load all the image names
     earthspin = "assets/spin_" + nf(i, 3) + ".png";
@@ -118,7 +129,13 @@ function bgmusic() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  canvas = createCanvas(windowWidth, windowHeight);
+  capture = createCapture(VIDEO);
+  capture.size(640, 480).position(30, 510).class('class6');
+  capture.hide();
+  savePhotoButton = createButton('Superhero!');
+  savePhotoButton.position(500, 19).class('class6');
+  savePhotoButton.mousePressed(savePicture);
 
   newspapertempheader = createP('The Press wants a photo!');
   newspapertempheader.class('class6').class('header');
@@ -130,8 +147,8 @@ function setup() {
   flapTemp1.class('class3').id('flap1').class('flap1').parent(flapdiv);
   flapTemp2.class('class3').id('flap2').parent(flapdiv);
   flapTemp3.class('class3').id('flap3').parent(flapdiv);
-  
-  
+
+
 
   fist = createImg('assets/fist.png');
   fist.class('fist').class('class2').position(fistx, fisty);
@@ -147,13 +164,31 @@ function setup() {
   scene4button.mouseClicked(playGame);
 
   scene5countdown = createP('3');
-  scene5countdown.class('countdown').class('class5').id('countdowntofly').position(windowWidth / 2, windowHeight / 2); //subtract element width/2 and hright
+  scene5countdown.class('countdown').class('class5').id('countdowntofly').position((windowWidth / 2), ((windowWidth / aspect) / 2) - 150); //subtract element width/2 and hright
+
   $('.header').hide();
-  $('.class3').hide();
-  $('.class2').hide();
-  $('.class4').hide();
-  $('.class5').hide();
-  $('.class6').hide();
+    $('.class3').hide();
+    $('.class2').hide();
+    $('.class4').hide();
+    $('.class5').hide();
+    $('.class6').hide();
+    
+  // function changeScene(num) {
+  //   if (num == true) {
+
+  //   }
+  //   // $('.header').hide();
+  //   // $('.class3').hide();
+  //   // $('.class2').hide();
+  //   // $('.class4').hide();
+  //   // $('.class5').hide();
+  //   // $('.class6').hide();
+  //   // $('.class3').show();
+  //   // $('.class2').show();
+  //   // $('.class4').show();
+  //   // $('.class5').show();
+  //   // $('.class6').show();
+  // }
 
 
   for (var m = 0; m < totalstars; m++) {
@@ -192,9 +227,9 @@ function draw() {
     if (Scn2frmct > 87) {
       asteroidEnter();
     }
-    if (Scn2frmct > 110) {
+    if (Scn2frmct > 120) {
 
-      fisty--;
+      fisty--; //does this even do anything
       fistx--;
 
     }
@@ -226,17 +261,15 @@ function draw() {
     scene4 = false;
     dearEarth.stop();
     image(game_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
-    // console.log('scene5 frm ct:   ' + Scn5_frmct);
+    image(turbo_frames[turboFrameNum], 0, 0, windowWidth, windowWidth / aspect);
+
     Scn5_frmct++;
-    // console.log('after :   ' + Scn5_frmct)
 
+    if (Scn5_frmct > 3000) {
+      scene5 = false;
+      scene6 = true;
 
-    // if (Scn5_frmct > 30000) {
-    //   scene5 = false;
-    //   $('.class5').hide();
-    //   scene6 = true;
-    //   $('.class6').show();
-    // }
+    }
 
     if (Scn5_frmct == 1) {
       cd_3.play();
@@ -266,8 +299,12 @@ function draw() {
 
   } else if (scene6 == true) {
     background(57, 42, 48);
+    image(img, 0, 0);
+
+    // fill(0);
 
   }
+
 
 
 } ///DRAW ENDS////////
@@ -346,7 +383,18 @@ function keyPressed() {
     if (key === ' ') {
       currentframe++; //this will be a sensor later
     }
+    if (keyCode === 65 || keyCode === 97) { //a
+      runTurbo(); //this will be a sensor later
+
+    }
     return false;
+  } else if (scene6 === true) {
+    if (keyCode === ENTER) {
+      //   scene6 = false;
+      // $('.class6').hide();
+      // scene7 = true;
+      // $('.class7').show();
+    }
   }
 
 
@@ -407,14 +455,28 @@ function transitionfrom3to4() {
 
 function timer() {
   count = count - .03333;
-  if (count <= 0) {
-    clearInterval(counter);
-    return;
-  }
   var adjustedTimer = String(Math.round(count * 100) / 100);
   document.getElementById("timer").innerHTML = adjustedTimer.replace('.', ':'); // watch for spelling
-  if (count == 0) {
+  if (count <= 0) {
+    console.log('setting GAME OVER');
     document.getElementById('countdowntofly').innerHTML = 'GAME OVER';
+    clearInterval(counter);
+  }
+
+
+} ////TIMER ENDS
+
+
+function savePicture() {
+  save(canvas);
+}
+
+function runTurbo() {
+  if (turboFrameNum < turboTotalFrames - 1) {
+    turboFrameNum++;
+  }
+  if (turboFrameNum = turboTotalFrames - 1) {
+    turboFrameNum = 0;
   }
 
 }
