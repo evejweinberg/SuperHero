@@ -1,20 +1,22 @@
-var cd_3, cd_2, cd_1, cd_f, earthorbit, earthspin, inst, saveme, bg01, asteroid, scene3header, flapTemp, dearEarth, scene5countdown, cappink, capblue;
+var newspapertempheader, cd_3, cd_2, cd_1, cd_fly, game, earthspin, inst, saveme, bg01, asteroid, scene3header, flapTemp, dearEarth, scene5countdown, cappink, capblue;
 var instscaledown = 300;
-var earthorbit_frames = [];
+var fist, fistinst;
+var fistx = -100;
+var fisty = 200;
+var game_frames = [];
 var Scn2_frames = [];
 var earthspin_frames = [];
 var currentframe = 0;
 var Scn2frmct = 0;
 var Scn3_frmct = 0;
 var Scn5_frmct = 0;
-var Scn5_clock = 0;
 var Scn4_frmct = 0;
 var transitionCounter = 0;
 var Scn4_totalframes = 159;
-var totalearthorbitframes = 320;
+var totalgameframes = 720;
 var totalaftercapeframes = 325;
 var aspect = 1920 / 1080;
-var aftercape, Timer, TotalSeconds;
+var aftercape, TotalSeconds;
 var playSecondVid = false;
 var instructionsready = false;
 var strokevar = 1;
@@ -33,6 +35,9 @@ var scene3 = false;
 var scene4 = false;
 var scene5 = false;
 var scene6 = false;
+var count = 30;
+var countermillis = 60;
+var counter;
 
 
 function starfield1() {
@@ -66,9 +71,9 @@ function playSaveMe() {
 
 
 function preload() {
-  for (var i = 0; i < totalearthorbitframes; i++) { //load all the image names
-    earthorbit = "assets/EarthOrbit" + nf(i, 3) + ".png";
-    earthorbit_frames.push(loadImage(earthorbit)); //push them all into an array
+  for (var i = 0; i < totalgameframes; i++) { //load all the image names
+    game = "assets/GAME_" + nf(i, 3) + ".png";
+    game_frames.push(loadImage(game)); //push them all into an array
   }
   for (var i = 0; i < Scn4_totalframes; i++) { //load all the image names
     earthspin = "assets/spin_" + nf(i, 3) + ".png";
@@ -82,6 +87,9 @@ function preload() {
   bg01 = loadSound('assets/bg01.mp3');
   dearEarth = loadSound('assets/dearEarth.m4a');
   cd_3 = loadSound('assets/three.m4a');
+  cd_2 = loadSound('assets/two.m4a');
+  cd_1 = loadSound('assets/one.m4a');
+  cd_fly = loadSound('assets/fly.m4a');
   asteroid = loadImage('assets/asteroid.png');
   cappink = createImg('assets/cappink.png');
   capblue = createImg('assets/capblue.png');
@@ -111,19 +119,26 @@ function bgmusic() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  newspapertempheader = createP('The Press wants a photo!');
+  newspapertempheader.class('class6').class('header');
   flapTemp1 = createImg('assets/flapTemp.gif');
   flapTemp2 = createImg('assets/flytestpre2.png');
   flapTemp3 = createImg('assets/flytestpre3.png');
-  flapTemp1.position(100, 300).class('class3').id('flap1').class('flap1');
-  flapTemp2.position(800, 300).class('class3').id('flap2');
-  flapTemp3.position(1400, 300).class('class3').id('flap3');
+  var flapdiv = createDiv('');
+  flapdiv.class('flapdiv');
+  flapTemp1.class('class3').id('flap1').class('flap1').parent(flapdiv);
+  flapTemp2.class('class3').id('flap2').parent(flapdiv);
+  flapTemp3.class('class3').id('flap3').parent(flapdiv);
+  
+  
 
-  // inst = createImg('assets/fist.png');
-  // inst.class('instructions').class('class2');
-  inst = createDiv('');
-  inst.id('fist').class('class2');
+  fist = createImg('assets/fist.png');
+  fist.class('fist').class('class2').position(fistx, fisty);
+  fistinst = createP('close right fist like this to begin');
+  fistinst.position(fistx, fisty).class('class2').class('header').id('fistinst');
   scene3header = createP('we need to test your flight skills, pronto');
-  scene3header.class('header').class('class3');
+  scene3header.class('header').class('class3').id('scene3header');
 
   scene4header = createP('Dear Earthling Superheros');
   scene4header.class('header').class('class4');
@@ -132,7 +147,7 @@ function setup() {
   scene4button.mouseClicked(playGame);
 
   scene5countdown = createP('3');
-  scene5countdown.class('countdown').class('class5').id('countdowntofly');
+  scene5countdown.class('countdown').class('class5').id('countdowntofly').position(windowWidth / 2, windowHeight / 2); //subtract element width/2 and hright
   $('.header').hide();
   $('.class3').hide();
   $('.class2').hide();
@@ -153,13 +168,6 @@ function flyingTest() {
     console.log("scn3 counter:  " + Scn3_frmct);
   }
 
-  // if (Scn3_frmct > 100) {
-
-  //   console.log('scene 4 should be true now')
-  //   scene4 = true;
-  //   scene3 = false;
-
-  // }
 
 }
 
@@ -170,25 +178,42 @@ function draw() {
   bgmusic();
   clear();
 
-  if (scene3 == true) {
-    $('.class3').show();
-    $('.class2').hide();
+  if (playSecondVid == true) {
+    scene2 = true;
+    scene1 = false;
+    Scn2frmct++;
+    for (var o = 0; o < totalstars; o++) {
+      singlestar[o].display();
+      singlestar[o].twinkle();
+    }
+    if (Scn2frmct == 57) {
+      playSaveMe();
+    }
+    if (Scn2frmct > 87) {
+      asteroidEnter();
+    }
+    if (Scn2frmct > 110) {
+
+      fisty--;
+      fistx--;
+
+    }
+    if (Scn2frmct < 324) {
+      image(Scn2_frames[Scn2frmct], 0, 0, windowWidth, windowWidth / aspect);
+    } else {
+      image(Scn2_frames[324], 0, 0, windowWidth, windowWidth / aspect);
+      loadfirstinstruction();
+    }
+  } else if (scene3 == true) {
     flyingTest();
 
   } else if (scene4 === true) {
-    console.log('scene 4 IS true')
-    $('.class3').hide();
-    $('.class4').show();
     scene3 = false;
     dearEarthVO();
-    // background(236, 115, 105);
     noFill();
     strokeWeight(5);
     stroke(0, 166, 255);
     ellipse(500, 500, 500, 500);
-
-    console.log('scn4 framect:   ' + Scn4_frmct);
-
     if (Scn4_frmct >= Scn4_totalframes) {
       Scn4_frmct = 0;
     }
@@ -200,71 +225,61 @@ function draw() {
     background(247, 209, 66);
     scene4 = false;
     dearEarth.stop();
-    $('.class4').hide();
-    $('.class5').show();
-    image(earthorbit_frames[0], 0, 0, windowWidth, windowWidth / aspect);
+    image(game_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
     // console.log('scene5 frm ct:   ' + Scn5_frmct);
     Scn5_frmct++;
-    Scn5_clock++;
-    if (Scn5_clock > 30000) {
-      scene5 = false;
-      scene6 = true;
-    }
+    // console.log('after :   ' + Scn5_frmct)
+
+
+    // if (Scn5_frmct > 30000) {
+    //   scene5 = false;
+    //   $('.class5').hide();
+    //   scene6 = true;
+    //   $('.class6').show();
+    // }
 
     if (Scn5_frmct == 1) {
       cd_3.play();
     }
+    if (Scn5_frmct == 60) {
+      cd_2.play();
+    }
+    if (Scn5_frmct == 120) {
+      cd_1.play();
+    }
+    if (Scn5_frmct == 180) {
+      cd_fly.play();
+    }
     if (Scn5_frmct > 60 && Scn5_frmct < 120) {
       console.log('TWO!')
-        // scene5countdown.innerHTML
+
       document.getElementById('countdowntofly').innerHTML = '2';
     } else if (Scn5_frmct > 120 && Scn5_frmct < 180) {
       console.log('ONE!')
       document.getElementById('countdowntofly').innerHTML = '1';
     } else if (Scn5_frmct > 180 && Scn5_frmct < 240) {
       document.getElementById('countdowntofly').innerHTML = 'FLY!';
-    } else if (Scn5_frmct > 240) {
+    } else if (Scn5_frmct == 240) {
       document.getElementById('countdowntofly').innerHTML = '';
+      counter = setInterval(timer, 33); //1000 will  run it every 1 second
     }
 
-
-
-
-  } else if (playSecondVid == true) {
-    scene2 = true;
-    scene1 = false;
-    Scn2frmct++;
-    console.log("scene2=true");
-    console.log("scenectis" + Scn2frmct);
-    for (var o = 0; o < totalstars; o++) {
-      singlestar[o].display();
-      singlestar[o].twinkle();
-    }
-    if (Scn2frmct == 57) {
-      playSaveMe();
-    }
-    if (Scn2frmct > 87) {
-      asteroidEnter();
-    }
-    if (Scn2frmct < 324) {
-      image(Scn2_frames[Scn2frmct], 0, 0, windowWidth, windowWidth / aspect);
-    } else {
-      image(Scn2_frames[324], 0, 0, windowWidth, windowWidth / aspect);
-      loadfirstinstruction();
-    }
-  } else if (scene6 === true) {
-    $('.class5').hide();
-    $('.class6').show();
-    background(244, 179, 100);
-    var newspapertemp = createP('You are a hero');
-    newspapertemp.class('class6').id('newspaper');
+  } else if (scene6 == true) {
+    background(57, 42, 48);
 
   }
+
+
+} ///DRAW ENDS////////
+
+
+
+function callnextscene() {
+
+  $('.class5').hide();
+  $('.class6').show();
+
 }
-
-
-
-
 
 function keyPressed() {
 
@@ -272,6 +287,8 @@ function keyPressed() {
     if (keyCode === ENTER) {
       console.log('scene2end');
       scene3 = true;
+      $('.class2').hide();
+      $('.class3').show();
       scene2 = false;
       playSecondVid = false;
     }
@@ -280,21 +297,23 @@ function keyPressed() {
     if (keyCode === ENTER) {
       console.log('scene3end');
       scene3 = false;
+      $('.class3').hide();
+      $('.class4').show();
       scene4 = true;
 
     }
     if (keyCode === 65 || keyCode === 97) { //A
-      console.log('a was pressed');
+
       document.getElementById('flap1').src = 'assets/flytestafter.png';
       document.getElementById('flap2').src = 'assets/flapTemp.gif';
     } else if (keyCode === 66 || keyCode === 98) { //B
-      console.log('B was pressed');
+
       document.getElementById('flap2').src = 'assets/flytestafter.png';
       document.getElementById('flap3').src = 'assets/flapTemp.gif';
     } else if (keyCode === 67 || keyCode === 99) { //C
-      console.log('B was pressed');
+
       document.getElementById('flap3').src = 'assets/flytestafter.png';
-     transitionfrom3to4();
+      transitionfrom3to4();
     }
   } else if (scene1 === true) {
     if (keyCode === ENTER) {
@@ -302,11 +321,14 @@ function keyPressed() {
       EndIntro();
       playSecondVid = true;
       scene1 = false;
+      $('.class1').hide();
       scene2 = true;
+      $('.class2').show();
 
     }
   } else if (scene4 === true) {
     if (keyCode === ENTER) {
+
       console.log('scene4end');
       scene5 = true;
       $('.class5').show();
@@ -314,9 +336,15 @@ function keyPressed() {
       $('.class4').hide();
     }
   } else if (scene5 === true) { //game
+    if (keyCode === ENTER) {
+      scene5 = false;
+      $('.class5').hide();
+      scene6 = true;
+      $('.class6').show();
+      callnextscene();
+    }
     if (key === ' ') {
-      currentframe++;
-      image(earthorbit_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
+      currentframe++; //this will be a sensor later
     }
     return false;
   }
@@ -326,7 +354,9 @@ function keyPressed() {
 
 function playGame() {
   scene4 = false;
+  $('.class4').hide();
   scene5 = true;
+  $('.class5').show();
 
 }
 
@@ -334,6 +364,7 @@ function playGame() {
 
 function loadfirstinstruction() {
   $('.class2').show();
+
 }
 
 
@@ -361,15 +392,29 @@ function asteroidEnter() {
 
 }
 
-function transitionfrom3to4(){
-  // document.getElementById('flap3').position(300,300);
-  scene3header.innerHTML('FLIGHT TEST COMPLETE');
+function transitionfrom3to4() {
+  document.getElementById('scene3header').innerHTML = 'FLIGHT TEST COMPLETE';
   transitionCounter++;
-  if (transitionCounter > 120){
+  if (transitionCounter > 120) {
     scene3 = false;
     scene4 = true;
-    
+
   }
-  
-  
+
+
+}
+
+
+function timer() {
+  count = count - .03333;
+  if (count <= 0) {
+    clearInterval(counter);
+    return;
+  }
+  var adjustedTimer = String(Math.round(count * 100) / 100);
+  document.getElementById("timer").innerHTML = adjustedTimer.replace('.', ':'); // watch for spelling
+  if (count == 0) {
+    document.getElementById('countdowntofly').innerHTML = 'GAME OVER';
+  }
+
 }

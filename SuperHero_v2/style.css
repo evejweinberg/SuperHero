@@ -1,82 +1,143 @@
-#timer{
+#gametimerAll {
+  font-size: 12em;
+  position: absolute;
+  left: 130px;
+  z-index: 10;
+}
+
+.class5{
+  display:none;
+}
+.class3 {
+  display: none;
+}
+
+.class4 {
+  display: none;
+}
+
+.class2 {
+  display: none;
+}
+
+
+#sec{
   position:absolute;
-  z-index:10px;
+  left:180px;
 }
-.countdown{
-  display:block;
-  text-align:center;
-  font-size:12em;
+
+.gametimer {
+  text-align: right;
+}
+
+.countdown {
+  display: block;
+  text-align: center;
+  font-size: 32em;
   font-family: "brandon-grotesque";
-  margin:0 auto;
- 
+  margin: 0 auto;
+  /*font-weight: bold;*/
+    z-index: 10;
 }
-.header{
-  display:block;
-  text-align:center;
-  font-size:5em;
+#countdowntofly{
+    z-index: 10;
+}
+
+.header {
+  display: block;
+  text-align: center;
+  font-size: 5em;
   font-family: "brandon-grotesque";
 }
 
-#flaptemp{
-  background:blue;
+#flaptemp {
+  background: blue;
 }
-.class3{
-  display:none;
-}
-.class4{
-  display:none;
-}
-#loading{
+
+
+
+#loading {
   font-size: 5em;
   margin-left: 0px;
-  margin-right:0px;
+  margin-right: 0px;
   color: blue;
-  background-size:cover;
+  background-size: cover;
   /*min-height:100%;*/
-  width:100%;
-  display:block;
+  width: 100%;
+  display: block;
 }
 
-#everything{
-  display:block;
-   margin-left: 0px;
-  
+#everything {
+  display: block;
+  margin-left: 0px;
 }
 
-body{
+body {
   background: #7bc8a6;
 }
 
-.instructions{
-  z-index:10px;
+.instructions {
+  z-index: 10px;
   top: 50%;
   left: 50%;
-  display:none;
-  position:absolute;
+  display: none;
+  position: absolute;
 }
 
-#defaultCanvas0{
-  position:absolute;
+#defaultCanvas0 {
+  position: absolute;
 }
 
-.fist{
-  background-image:url('assets/fist.png');
+.fist {
+  background-image: url('assets/fist.png');
+   animation: nudge 5s infinite;
+  
 }
 
-.cappink{
-   position: fixed;
-    bottom: 0;
-    left: 0;
-     border: 3px solid #73AD21;
+.flapdiv{
+  display: flex;
+  width: 100%;
+  position: absolute;
+  justify-content: space-around;
 }
 
-.capblue{
+#flap1{
+}
+
+#flap3{
+}
+
+#flap2{
+}
+
+@keyframes nudge {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  
+  50% {
+    transform: translate(150px, 0);
+  }
+  
+  80% {
+    transform: translate(-150px, 0);
+  }
+}
+
+.cappink {
   position: fixed;
-    bottom: 0;
-    left: 30;
+  bottom: 0;
+  left: 0;
+  border: 3px solid #73AD21;
 }
 
-#newspaper{
-    font-size:12em;
+.capblue {
+  position: fixed;
+  bottom: 0;
+  left: 30;
+}
+
+#newspaper {
+  font-size: 12em;
   font-family: "brandon-grotesque";
 }
