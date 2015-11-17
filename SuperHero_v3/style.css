@@ -53,6 +53,7 @@
   text-align: center;
   font-size: 5em;
   font-family: "brandon-grotesque";
+  background:white;
 }
 
 #flaptemp {
@@ -108,15 +109,15 @@ body {
 }
 
 #flap1{
-  /*top:200px;*/
+
 }
 
 #flap3{
-   /*top:200px;*/
+
 }
 
 #flap2{
-   /*top:200px;*/
+ 
 }
 
 @keyframes nudge {
@@ -134,7 +135,7 @@ body {
 }
 
 #cappink {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   border: 3px solid #73AD21;
