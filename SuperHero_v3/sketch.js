@@ -1,5 +1,6 @@
-var newspapertempheader, cd_3, cd_2, cd_1, cd_fly, game, inst, saveme, bg01, asteroid, scene3header, flapTemp, dearEarth, scene5countdown, cappink, capblue;
+var newspapertempheader, cd_3, cd_2, cd_1, cd_fly, game, inst, saveme, bg01, asteroid, scene3header, scene2header, flapTemp, dearEarth, scene5countdown, cappink, capblue;
 var instscaledown = 300;
+var colors;
 var fist, fistinst;
 var fistx = -100;
 var fisty = 200;
@@ -46,6 +47,9 @@ var count = 30;
 var counter;
 //photobooth
 var canvas, capture, mycam, button, img;
+var totalParticles = 12; //number of total particles
+var arrayOfBalls = []; //empty array to be filled
+var arrayOfLines = [];
 
 //scene 2
 function starfield1() {
@@ -133,6 +137,18 @@ function bgmusic() {
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
+  colors = [
+    color(57, 42, 48), //brown
+    color(246, 209, 68), //yellow
+    color(236, 115, 105), //pink 
+    color(123, 200, 166), //green
+    color(244, 179, 100), //orange 
+    color(165, 218, 194), //light green
+    color(231, 8268), //drkpink
+    color(0, 166, 155) //blue
+
+  ]
+
   capture = createCapture(VIDEO);
   capture.size(640, 480).position(30, 510).class('class6');
   capture.hide();
@@ -141,7 +157,7 @@ function setup() {
   savePhotoButton.mousePressed(savePicture);
 
   newspapertempheader = createP('The Press wants a photo!');
-  newspapertempheader.class('class6').class('header');
+  newspapertempheader.class('class6').class('header').id('press');
   // scene 3 flap calibration
   flapTemp1 = createImg('assets/flapTemp.gif');
   flapTemp2 = createImg('assets/flytestpre2.png');
@@ -151,15 +167,19 @@ function setup() {
   flapTemp1.class('class3').id('flap1').class('flap1').parent(flapdiv);
   flapTemp2.class('class3').id('flap2').parent(flapdiv);
   flapTemp3.class('class3').id('flap3').parent(flapdiv);
+  scene3header = createP('we need to test your flight skills, pronto');
+  scene3header.class('header').class('class3').id('scene3header');
 
 
   // scene 2 trigger the glove switch fist
   fist = createImg('assets/fist.png');
-  fist.class('fist').class('class2').class('fistMove').position(fistx, fisty);
-  fistinst = createP('close right fist' + '\n' + 'like this to begin');
-  fistinst.position(fistx + 300, fisty + 400).class('class2').class('header').class('fistMove');
-  scene3header = createP('we need to test your flight skills, pronto');
-  scene3header.class('header').class('class3').id('scene3header');
+  fist.id('fist').class('class2').position(fistx, fisty);
+  fistinst = createP('close right fist' + '\n' + 'like this to begin').id('fistinst');
+  fistinst.position(fistx + 300, fisty + 400).class('class2').class('header');
+  scene2header = createP('MISSION: ASTEROID');
+  scene2header.class('header').class('class2').id('scene2header');
+  $('#fist').hide();
+  $('#fistinst').hide();
 
   // scene 4
   scene4header = createP('Dear Earthling Superheros');
@@ -169,7 +189,7 @@ function setup() {
   scene4button.mouseClicked(function() {
     changeScene(5)
   });
-  
+
 
   scene5countdown = createP('3');
   scene5countdown.class('countdown').class('class5').id('countdowntofly').position((windowWidth / 2), ((windowWidth / aspect) / 2) - 150); //subtract element width/2 and hright
@@ -182,16 +202,23 @@ function setup() {
   changeScene(1);
 } ///SETUP ENDS
 
-function changeScene(num) {
+function changeScene(num) { //these only get called once, based on a sensor or keypress
   $('.class1').hide();
   $('.class2').hide();
   $('.class3').hide();
   $('.class4').hide();
   $('.class5').hide();
   $('.class6').hide();
+  scene1 = false;
+  scene2 = false;
+  scene3 = false;
+  scene4 = false;
+  scene5 = false;
+  scene6 = false;
 
   if (num == 1) {
     $('.class1').show();
+    scene1 = true;
 
   }
 
@@ -199,11 +226,13 @@ function changeScene(num) {
     scene1 = false;
     scene2 = true;
     $('.class2').show();
+    $('#fist').hide();
+    $('#fistinst').hide();
 
   }
   if (num == 3) {
     scene3 = true;
-    scene2 = false;
+
 
     $('.class3').show();
 
@@ -211,14 +240,14 @@ function changeScene(num) {
 
   if (num == 4) {
     scene4 = true;
-    scene3 = false;
+
 
     $('.class4').show();
 
   }
   if (num == 5) {
     scene5 = true;
-    scene4 = false;
+
 
     $('.class5').show();
 
@@ -226,15 +255,13 @@ function changeScene(num) {
 
   if (num == 6) {
     scene6 = true;
-    scene5 = false;
 
     $('.class6').show();
   }
 } //function ends
 
 
-function flyingTest() {
-}
+function flyingTest() {}
 
 
 
@@ -246,6 +273,7 @@ function draw() {
   if (scene2 == true) {
     scene2 = true;
     scene1 = false;
+    // console.log(Scn2frmct);
     Scn2frmct++;
     for (var o = 0; o < totalstars; o++) {
       singlestar[o].display();
@@ -255,8 +283,14 @@ function draw() {
       playSaveMe();
     } else if (Scn2frmct > 87) {
       asteroidEnter();
-    } else if (Scn2frmct > 107) {
-      $('.fistMove').show();
+
+    }
+    if (Scn2frmct == 107) {
+      $('#fist').show();
+      $('#fistinst').show();
+      $("#fist").addClass('fistMove'); //why doesn't this work
+      var changefist
+
     }
     // animated earth "save me"
     if (Scn2frmct < 324) {
@@ -267,6 +301,17 @@ function draw() {
     // flying test calibration
   } else if (scene3 == true) {
     flyingTest();
+    for (var i = 0; i < arrayOfBalls.length; i++) {
+      arrayOfBalls[i].display(); //display them all
+      arrayOfBalls[i].explode(); //explode them all
+    }
+
+    for (var i = 0; i < arrayOfBalls.length; i++) {
+
+      if (arrayOfBalls[i].size === 0) {
+        arrayOfBalls.splice(i, 1);
+      }
+    }
 
   } else if (scene4 === true) {
     dearEarthVO();
@@ -274,12 +319,12 @@ function draw() {
     strokeWeight(5);
     stroke(0, 166, 255);
     ellipse(500, 500, 500, 500);
-    console.log(Math.round(Scn4_frmct));
+    // console.log(Math.round(Scn4_frmct));
     if (Math.round(Scn4_frmct) >= earthSpinFrames) {
       Scn4_frmct = 0;
     }
     image(earthspin_frames[Math.round(Scn4_frmct)], 300, 300, 300, 300);
-    Scn4_frmct=Scn4_frmct+.3;
+    Scn4_frmct = Scn4_frmct + .3;
 
 
   } else if (scene5 == true) {
@@ -308,11 +353,11 @@ function draw() {
       cd_fly.play();
     }
     if (Scn5_frmct > 60 && Scn5_frmct < 120) {
-      console.log('TWO!')
+      // console.log('TWO!')
 
       document.getElementById('countdowntofly').innerHTML = '2';
     } else if (Scn5_frmct > 120 && Scn5_frmct < 180) {
-      console.log('ONE!')
+      // console.log('ONE!')
       document.getElementById('countdowntofly').innerHTML = '1';
     } else if (Scn5_frmct > 180 && Scn5_frmct < 240) {
       document.getElementById('countdowntofly').innerHTML = 'FLY!';
@@ -340,7 +385,7 @@ function keyPressed() {
 
   if (scene2 === true) {
     if (keyCode === ENTER) {
-      console.log('scene2end');
+      // console.log('scene2end');
       scene3 = true;
       changeScene(3);
       scene2 = false;
@@ -349,21 +394,40 @@ function keyPressed() {
 
   } else if (scene3 === true) {
     if (keyCode === ENTER) {
-      console.log('scene3end');
+      // console.log('scene3end');
       scene3 = false;
       changeScene(4);
       scene4 = true;
 
     }
     if (keyCode === 65 || keyCode === 97) { //A
+      for (var i = 0; i < totalParticles; i++) {
+
+        arrayOfBalls.push(new flapWin1(width / 3, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+
+        arrayOfBalls.push(new flapWin2(width / 3, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+      }
 
       document.getElementById('flap1').src = 'assets/flytestafter.png';
       document.getElementById('flap2').src = 'assets/flapTemp.gif';
     } else if (keyCode === 66 || keyCode === 98) { //B
+    for (var i = 0; i < totalParticles; i++) {
+
+        arrayOfBalls.push(new flapWin1(width / 2, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+
+        arrayOfBalls.push(new flapWin2(width / 2, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+      }
+
 
       document.getElementById('flap2').src = 'assets/flytestafter.png';
       document.getElementById('flap3').src = 'assets/flapTemp.gif';
     } else if (keyCode === 67 || keyCode === 99) { //C
+    for (var i = 0; i < totalParticles; i++) {
+
+        arrayOfBalls.push(new flapWin1(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+
+        arrayOfBalls.push(new flapWin2(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+      }
 
       document.getElementById('flap3').src = 'assets/flytestafter.png';
       transitionfrom3to4();
@@ -378,7 +442,7 @@ function keyPressed() {
   } else if (scene4 === true) {
     if (keyCode === ENTER) {
 
-      console.log('scene4end');
+      // console.log('scene4end');
       changeScene(5);
     }
   } else if (scene5 === true) { //game
@@ -452,7 +516,7 @@ function timer() {
   var adjustedTimer = String(Math.round(count * 100) / 100);
   document.getElementById("timer").innerHTML = adjustedTimer.replace('.', ':'); // watch for spelling
   if (count <= 0) {
-    console.log('setting GAME OVER');
+    // console.log('setting GAME OVER');
     document.getElementById('countdowntofly').innerHTML = 'GAME OVER';
     clearInterval(counter);
   }

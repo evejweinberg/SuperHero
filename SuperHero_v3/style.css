@@ -1,3 +1,11 @@
+#scene2header{
+    font-size: 6em;
+}
+
+#press{
+  position:absolute;
+  margin: 0px auto;
+}
 #gametimerAll {
   font-size: 6em;
   position: absolute;
@@ -25,7 +33,7 @@
 
 #sec{
   position:absolute;
-  left:210px;
+  left:250px;
   top:0px;
    font-family: "brandon-grotesque";
 }
@@ -38,8 +46,9 @@
 .countdown {
   display: block;
   text-align: center;
-  font-size: 300px;
-  font-family: "brandon-grotesque";
+  font-size: 500px;
+  font-weight:bold;
+  /*font-family: "brandon-grotesque";*/
   margin: 0 auto;
   line-height:1em;
     z-index: 10;
@@ -79,7 +88,7 @@
 }
 
 body {
-  background: #7bc8a6;
+  background: #92e5c0;
 }
 
 .instructions {
@@ -94,11 +103,7 @@ body {
   position: absolute;
 }
 
-.fist {
-  background-image: url('assets/fist.png');
-   animation: nudge 5s infinite;
-  
-}
+
 
 .flapdiv{
   display: flex;
@@ -134,18 +139,7 @@ body {
   }
 }
 
-#cappink {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  border: 3px solid #73AD21;
-}
 
-#capblue {
-  position: fixed;
-  bottom: 0;
-  left: 160px;
-}
 
 #newspaper {
   font-size: 12em;

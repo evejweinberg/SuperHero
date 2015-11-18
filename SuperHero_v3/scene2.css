@@ -1,3 +1,4 @@
+
 .fistMove{
   animation: animationFrames ease-in-out 1.5s;
   animation-iteration-count: 1;
@@ -38,5 +39,15 @@
   100% {
     -webkit-transform:  translate(-12px,-28px)  rotate(4deg) ;
   }
+}
+
+#fist {
+  background-image: url('assets/fist.png');
+   /*animation: nudge 5s infinite;*/
+  
+}
+
+.instructionheader{
+  
 }
 
