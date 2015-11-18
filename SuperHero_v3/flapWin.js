@@ -19,10 +19,10 @@ function flapWin1(x, y, targetX, targetY) {
     noStroke();
     push();
     translate(this.x - 10, this.y - 10);
-    fill(colors[random(7)]); //red
+    fill(colors[1]); //red
     ellipse(this.x, this.y, this.size, this.size); //these rotate later
     rotate(this.size / 5); //spin rectangles around
-    fill(colors[random(7)]); //blue
+    fill(0); //blue
     rect(10, 10, this.size, this.size);
     pop();
 
@@ -34,7 +34,7 @@ function flapWin1(x, y, targetX, targetY) {
     push();
     translate(this.xStatic, this.yStatic);
     rotate(this.size / 50); //rotate whole explosion
-    fill(colors[random(7)]);
+    fill(colors[2]);
     textAlign(CENTER);
     textSize(40 + this.size);
     // text("XXXXXXX", 0, 0);
@@ -84,9 +84,9 @@ function flapWin2(x, y, targetX, targetY) {
     rotate(angle2);
 
     var distance = dist(this.x, this.y, 0, 0);
-    stroke(colors[random(7)]);
+    stroke(colors[3]);
     line(0, 0, this.linelength, this.linelength);
-    stroke(colors[random(7)]);
+    stroke(colors[4]);
     line(0, 0, this.linelength, this.linelength);
     // line(distance - this.linelength, 0, distance, 0);
     pop();
