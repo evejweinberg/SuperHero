@@ -153,7 +153,7 @@ function setup() {
   capture.size(640, 480).position(30, 510).class('class6');
   capture.hide();
   savePhotoButton = createButton('Superhero!');
-  savePhotoButton.position(500, 19).class('class6');
+  savePhotoButton.position(700, 209).class('class6');
   savePhotoButton.mousePressed(savePicture);
 
   newspapertempheader = createP('The Press wants a photo!');

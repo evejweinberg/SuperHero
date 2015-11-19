@@ -1,0 +1,13 @@
+.voiceover{
+  background-color:black;
+  font-family: futura;
+  color:white;
+  margin:30px;
+  width:400px;
+  overflow-wrap: 1 normal
+}
+
+.hide
+{
+    display:none;
+}
