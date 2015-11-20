@@ -1,0 +1,36 @@
+.flighttestbg {
+  background-image: url('assets/flighttestbg.gif');
+  padding: 40em;
+  background-repeat: repeat;
+  /*background-position: right 20px bottom 10px;*/
+  /*box-shadow: 0.1em 0.1em 0 #42bab2, 0.1em 0.2em 0 #42bab2, 0.1em 0.3em 0 #55c1b9, 0.4em 0.4em 0 #8ad6d0, 0.5em 0.5em 0 #96dbd5;*/
+}
+
+.flightschoolheader {
+  position: absolute;
+   /*display: block;*/
+  text-align: center;
+  font-size: 5em;
+  font-family: "brandon-grotesque";
+  background:white;
+  width: 800px;
+  left: 50%;
+  top:0px;
+  -webkit-animation: bounce 1s infinite;
+}
+
+@-webkit-keyframes bounce {
+  0% {
+    bottom: 5px;
+  }
+  25%,
+  75% {
+    bottom: 15px;
+  }
+  50% {
+    bottom: 20px;
+  }
+  100% {
+    bottom: 0;
+  }
+}

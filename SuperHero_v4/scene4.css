@@ -4,11 +4,11 @@
   color:black;
   margin:30px;
   width:800px;
-  font-size: 50px;
-  overflow-wrap: 1 normal
+  font-size: 40px;
+  overflow-wrap: 1 normal;
+  padding: 10px 10px 20px 50px;
   
 }
-
 
 
 .spacebg{
