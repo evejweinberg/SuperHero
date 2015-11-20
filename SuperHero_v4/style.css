@@ -2,6 +2,12 @@
     font-size: 6em;
 }
 
+.centeredcallibration{
+  position: absolute;
+  left:50%
+  top 50%;
+}
+
 #press{
   position:absolute;
   margin: 0px auto;
@@ -65,14 +71,6 @@
   background:white;
 }
 
-.header2 {
-  position: absolute;
-  /*display: block;*/
-  text-align: center;
-  font-size: 3em;
-  font-family: "brandon-grotesque";
-  /*background:white;*/
-}
 
 #flaptemp {
   background: blue;

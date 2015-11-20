@@ -25,7 +25,7 @@ var index = 0;
 var lastCue = 0;
 var Scn4_frmct = 0;
 var words = [];
-var timings = [90, 120, 200,300, 310, 350, 400, 410, 450];
+var timings = [90, 120, 200, 300, 310, 350, 400, 410, 450];
 var transcript, currentText;
 var earthSpinFrames = 26;
 var flysmall;
@@ -55,6 +55,7 @@ var scene3 = false;
 var scene4 = false;
 var scene5 = false;
 var scene6 = false;
+var scene7 = false;//callibration scene
 var count = 30;
 var counter;
 //photobooth
@@ -65,6 +66,10 @@ var arrayOfBalls = []; //empty array to be filled
 var arrayOfLines = [];
 var flightschool1;
 var flightschoolheader;
+var flap1type, flap2type, flap3type;
+//scene7 callibration
+var callibrationImage;
+var callibrationHeader, callibrationExplainer;
 
 
 
@@ -184,6 +189,9 @@ function setup() {
 
   newspapertempheader = createP('The Press wants a photo!');
   newspapertempheader.class('class6').class('header').id('press');
+  //scene 7 callibration
+  callibrationImage = createImg('assets/callibration.png');
+  callibrationImage.class('class7').class('centeredcallibration');
   // scene 3 flap calibration
   flapTemp1 = createImg('assets/flightTest01.gif');
   flapTemp2 = createImg('assets/flytestpre2.png');
@@ -241,12 +249,14 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   $('.class4').hide();
   $('.class5').hide();
   $('.class6').hide();
+  $('.class7').hide(); //callibration
   scene1 = false;
   scene2 = false;
   scene3 = false;
   scene4 = false;
   scene5 = false;
   scene6 = false;
+  scene7 = false;
   $(document.body).removeClass('spacebg');
   $(document.body).removeClass('flighttestbg');
 
@@ -295,6 +305,13 @@ function changeScene(num) { //these only get called once, based on a sensor or k
     scene6 = true;
 
     $('.class6').show();
+  }
+
+
+  if (num == 7) {
+    $('.class7').show();
+    scene7 = true;
+
   }
 } //function ends
 
@@ -426,6 +443,11 @@ function draw() {
 
 
   }
+  
+  else if (scene7 == true) {
+    text('CALLIBRATION',30,30);
+    // image(callibrationImage,40,40);
+  }
 
 
 
@@ -510,7 +532,15 @@ function keyPressed() {
     }
     // return false;
   } else if (scene6 === true) {
-    if (keyCode === ENTER) {}
+    if (keyCode === ENTER) {
+      changeScene(2);
+    }
+  }
+  
+  else if (scene7 === true) {
+    if (keyCode === ENTER) {
+      changeScene(3);
+    }
   }
 
 

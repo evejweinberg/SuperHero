@@ -27,10 +27,10 @@ window.onload = function() {
 
   var cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
-  for (var i = 0; i < 20; i++) {
-    cubeB[i] = new THREE.Mesh(geometry, material);
-    scene.add(cube[i]);
-  }
+  // for (var i = 0; i < 20; i++) {
+  //   cubeB[i] = new THREE.Mesh(geometry, material);
+  //   scene.add(cube[i]);
+  // }
 
   sun = new THREE.Object3D();
   var sunMaterial = new THREE.MeshBasicMaterial({

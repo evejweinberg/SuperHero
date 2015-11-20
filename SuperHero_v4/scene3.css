@@ -1,3 +1,14 @@
+/*flight school scene*/
+
+.header2 {
+  position: absolute;
+  /*display: block;*/
+  text-align: center;
+  font-size: 3em;
+  font-family: "brandon-grotesque";
+  /*background:white;*/
+}
+
 .flighttestbg {
   background-image: url('assets/flighttestbg.gif');
   padding: 40em;
