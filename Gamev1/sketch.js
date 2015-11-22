@@ -40,7 +40,7 @@ window.onload = function() {
   sun.add(sunMesh);
 
 
-  camera.position.z = moveforward;
+  Gamecamera.position.z = moveforward;
 
 
  
@@ -55,9 +55,9 @@ window.onload = function() {
   building1 = new THREE.Object3D();
   cube.position.z = -10;
 
-  cube.position.x = 10;
-  cube2.position.z = 200;
-  cube2.position.x = -10;
+  // cube.position.x = 10;
+  // cube2.position.z = 200;
+  // cube2.position.x = -10;
   // Offset the earth's position so that it rotates at a distance.
   earth.position.x = -15;
 
@@ -97,10 +97,10 @@ function animate() {
   sun.rotation.y += 0.01;
   earth.rotation.y += 0.01;
   moveforward = moveforward - 10;
-  camera.position.z = moveforward;
+  Gamecamera.position.z = moveforward;
 
   // Finish with a new render call
-  renderer.render(scene, camera);
+  renderer.render(scene, Gamecamera);
 
   // Tell our function to loop again on the next frame
   requestAnimationFrame(animate);

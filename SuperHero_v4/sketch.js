@@ -55,7 +55,7 @@ var scene3 = false;
 var scene4 = false;
 var scene5 = false;
 var scene6 = false;
-var scene7 = false;//callibration scene
+var scene7 = false; //callibration scene
 var count = 30;
 var counter;
 //photobooth
@@ -70,6 +70,23 @@ var flap1type, flap2type, flap3type;
 //scene7 callibration
 var callibrationImage;
 var callibrationHeader, callibrationExplainer;
+var sliderTemp; //the sensor will replace this later
+var restingNumbers = [];
+var isCallibrationReady = [];
+var NumstoCallibrate = [];
+var SensorVal, gd;
+var distanceofvalues = 0;
+var averageValpreCal = 0;
+var sum = 0;
+var callibrationPreStage = true;
+var callibrationStage = false;
+var calibrateFinal = false;
+var sceneNextScene = false;
+var timer;
+var CallibratedRestingNum = 0;
+var callibrationCountdown = 5;
+var calcountdown;
+var UserArmOutNum = 0;
 
 
 
@@ -162,6 +179,12 @@ function bgmusic() {
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
+
+  //scene7, calibration
+  gd = new getCalibrationSensorValChange();
+  sliderTemp = createSlider(500, 600, 550); //the sensor will replace this later
+  sliderTemp.position(300, 300).class('class7');
+
 
 
   for (var i = 0; i < turboTotalFrames; i++) { //load all the image names
@@ -311,6 +334,10 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   if (num == 7) {
     $('.class7').show();
     scene7 = true;
+    timer = setTimeout(function() {
+      CalibrationgetCalibrationSensorValChangeges();
+    }, 3000);
+
 
   }
 } //function ends
@@ -382,7 +409,7 @@ function draw() {
     noFill();
     strokeWeight(15);
     stroke(0, 166, 255);
-    ellipse(900, 400, 500, 500);
+    ellipse(920, 420, 500, 500);
 
     if (Math.round(Scn4_frmct) >= earthSpinFrames) {
       Scn4_frmct = 0;
@@ -442,12 +469,95 @@ function draw() {
     image(img, 0, 0);
 
 
-  }
-  
-  else if (scene7 == true) {
-    text('CALLIBRATION',30,30);
-    // image(callibrationImage,40,40);
-  }
+  } else if (scene7 == true) {
+    background(colors[1]);
+    textSize(20);
+    textAlign(CENTER);
+    text('raw value     ' + SensorVal, 40, 60);
+    // text('fluctuation     ' + distanceofvalues, 40, 80);
+    gd.display();
+    SensorVal = sliderTemp.value();
+
+
+    if (calibrateFinal == true) {
+      textSize(60);
+      text('GREAT! \r\nNOW YOU ARE READY FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 60);
+      console.log('User Resting Num is:' + UserArmOutNum)
+      calcountdown = window.setInterval(function() {
+        calibrationOver();
+      }, 5000); //wait 5 seconds
+
+    }
+
+    if (sceneNextScene == true) {
+      background(0);
+    }
+
+
+    if (callibrationStage === true) {
+      textSize(30);
+      text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 100);
+      textSize(60);
+
+      text('HOLD STEADY FOR:  ' + callibrationCountdown, windowWidth / 2, 580);
+
+      if (callibrationCountdown <= 0) {
+        CalibrationgetCalibrationSensorValChangeges2();
+        window.clearInterval(calcountdown);
+      }
+      textSize(20);
+      text('resting value    ' + CallibratedRestingNum, 40, 150);
+      NumstoCallibrate.push(SensorVal); //now that we're steady, lets gather the actual number
+      if (NumstoCallibrate.length > 100) { // write over the 100 numbers in the array
+        NumstoCallibrate.splice(0, 1);
+      }
+      sum = 0;
+      for (var i = 0; i < NumstoCallibrate.length; i++) { //100 times
+        var num = Number(NumstoCallibrate[i]); //raw sensor numbers
+        sum = sum + num; //add them all up
+      }
+      CallibratedRestingNum = sum / NumstoCallibrate.length;
+
+
+    } ///callibration over
+
+    if (callibrationPreStage === true) {
+      textSize(30);
+      text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 100);
+      textSize(60);
+      if (distanceofvalues > 6) {
+        text("NOT STEADY ENOUGH", windowWidth / 2, 580);
+      } else if (distanceofvalues < 6) {
+        text("STEADY   ", windowWidth / 2, 580);
+      }
+      textSize(20);
+      text('average fluctuation     ' + averageValpreCal, 40, 100);
+      isCallibrationReady.push(distanceofvalues);
+      if (isCallibrationReady.length > 10) { // write over the 10 numbers in the array
+        isCallibrationReady.splice(0, 1);
+      }
+      sum = 0;
+      for (var i = 0; i < isCallibrationReady.length; i++) {
+        var num = Number(isCallibrationReady[i]);
+        sum = sum + num;
+      }
+      averageValpreCal = sum / isCallibrationReady.length;
+    } ///pre-callibration over
+
+
+    if (averageValpreCal > 6) {
+
+      window.clearTimeout(timer)
+
+      timer = setTimeout(function() {
+        CalibrationgetCalibrationSensorValChangeges();
+      }, 3000);
+
+
+
+    }
+
+  } //scene 7 ends
 
 
 
@@ -511,11 +621,17 @@ function keyPressed() {
   } else if (scene1 === true) {
     if (keyCode === ENTER) {
       EndIntro();
-      scene2 = true;
-      changeScene(2);
+      scene7 = true;
+      changeScene(7);
 
     }
-  } else if (scene4 === true) {
+  } else if (scene7===true){
+    if (keyCode === ENTER) {
+      changeScene(4);
+    }
+  }
+  
+  else if (scene4 === true) {
     if (keyCode === ENTER) {
       changeScene(3);
     }
@@ -535,9 +651,7 @@ function keyPressed() {
     if (keyCode === ENTER) {
       changeScene(2);
     }
-  }
-  
-  else if (scene7 === true) {
+  } else if (scene7 === true) {
     if (keyCode === ENTER) {
       changeScene(3);
     }
@@ -621,25 +735,52 @@ function runTurbo() {
 
 }
 
-// function seeNsayText() {
-//   $(document).ready(function() {
-//     var $el = $('voiceover'),
-//       text = $el.text(),
-//       speed = 1000; //ms
 
-//     $el.empty();
+function CalibrationgetCalibrationSensorValChangeges() {
+  if (callibrationPreStage == true) {
 
-//     var wordArray = text.split(' '),
-//       i = 0;
+    callibrationPreStage = false;
+    callibrationStage = true;
+    Begincountdown();
+  }
+}
 
-//     INV = setInterval(function() {
-//       if (i >= wordArray.length - 1) {
-//         clearInterval(INV);
-//       }
-//       $el.append(wordArray[i] + ' ');
-//       i++;
-//     }, speed);
-//   });
+function CalibrationgetCalibrationSensorValChangeges2() {
+  if (callibrationStage == true) {
+    callibrationStage = false;
+    UserArmOutNum = CallibratedRestingNum;
+    calibrateFinal = true;
+  }
+}
 
+function getCalibrationSensorValChange() {
+  this.currentVal = SensorVal;
+  console.log('cv' + this.currentVal);
+  this.previousVal = SensorVal;
+  this.lastcheck = 0;
 
-// }
+  this.display = function() {
+    this.currentVal = SensorVal;
+
+    if (millis() - this.lastcheck > 120) { //read every 10th of a second
+      distanceofvalues = abs(this.currentVal - this.previousVal);
+      // console.log('changeAmount:  ' + distanceofvalues);
+      this.previousVal = this.currentVal;
+      this.lastcheck = millis();
+    }
+  }
+}
+
+function Begincountdown() {
+  calcountdown = window.setInterval(function() {
+    console.log(callibrationCountdown);
+    Math.round(callibrationCountdown--);
+  }, 1000);
+}
+
+function calibrationOver() {
+  if (calibrateFinal == true) {
+    calibrateFinal = false;
+    sceneNextScene = true;
+  }
+}

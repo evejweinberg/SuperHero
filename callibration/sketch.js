@@ -15,129 +15,137 @@ var averageValpreCal = 0;
 var sum = 0;
 var callibrationPreStage = true;
 var callibrationStage = false;
-var scene1 = false;
+var sceneFake1 = false;
+var sceneNextScene = false;
 var timer;
 var CallibratedRestingNum = 0;
 var callibrationCountdown = 5;
 var calcountdown;
+var UserArmOutNum = 0;
+var scene7 = true;
 
 function setup() {
-  createCanvas(700, 700);
-  gd = new getSensorValChange();
+  createCanvas(windowWidth, windowHeight);
+  gd = new getCalibrationSensorValChange();
   sliderTemp = createSlider(500, 600, 550); //the sensor will replace this later
+  sliderTemp.position(300, 300).class('class7');
 
   timer = setTimeout(function() {
-    togglestages();
+    CalibrationgetCalibrationSensorValChangeges();
   }, 3000);
 
 }
 
 function draw() {
-  background(255);
-  textSize(20);
-  text('raw value     ' + SensorVal, 40, 60);
-  text('fluctuation     ' + distanceofvalues, 40, 80);
 
-  // console.log('sum is     ' + sum);
-  // console.log('calibrationSensorVal' + isCallibrationReady);
-  // console.log(SensorValVal);
-  gd.display();
-  SensorVal = sliderTemp.value();
-
-
-  if (scene1 == true) {
-    background(0);
-    fill(255, 0, 0);
-    text('GAME ON  ', 40, 40);
-  }
+  if (scene7 == true) {
+    background(255);
+    textSize(20);
+    textAlign(CENTER);
+    text('raw value     ' + SensorVal, 40, 60);
+    // text('fluctuation     ' + distanceofvalues, 40, 80);
+    gd.display();
+    SensorVal = sliderTemp.value();
 
 
-  if (callibrationStage === true) {
-    text('CALLIBRATING! HOLD STEADY FOR:  ' + callibrationCountdown, 40, 40);
+    if (sceneFake1 == true) {
+      textSize(60);
+      text('GREAT! \r\nNOW YOU ARE READY FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 60);
+      console.log('User Resting Num is:' + UserArmOutNum)
+      calcountdown = window.setInterval(function() {
+        calibrationOver();
+      }, 5000); //wait 5 seconds
 
-    // var calcountdown = setTimeout(function() {
-    //   console.log(callibrationCountdown);
-    //   Math.round(callibrationCountdown--);
-
-    // }, 1000);
-    // clearTimeout ( calcountdown );
-
-    // if (millis()%1000==0){
-    //   console.log(callibrationCountdown);
-    // round(callibrationCountdown--);
-    // }
-    if (callibrationCountdown <= 0) {
-      togglestages2();
-      window.clearInterval(calcountdown);
     }
-    text('resting value    ' + CallibratedRestingNum, 40, 150);
-    NumstoCallibrate.push(SensorVal); //now that we're steady, lets gather the actual number
-    if (NumstoCallibrate.length > 100) { // write over the 100 numbers in the array
-      NumstoCallibrate.splice(0, 1);
+
+    if (sceneNextScene == true) {
+      background(0);
     }
-    sum = 0;
-    for (var i = 0; i < NumstoCallibrate.length; i++) { //100 times
-      var num = Number(NumstoCallibrate[i]); //raw sensor numbers
-      sum = sum + num; //add them all up
+
+
+    if (callibrationStage === true) {
+      textSize(30);
+      text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 100);
+      textSize(60);
+
+      text('HOLD STEADY FOR:  ' + callibrationCountdown, windowWidth / 2, 580);
+
+      if (callibrationCountdown <= 0) {
+        CalibrationgetCalibrationSensorValChangeges2();
+        window.clearInterval(calcountdown);
+      }
+      textSize(20);
+      text('resting value    ' + CallibratedRestingNum, 40, 150);
+      NumstoCallibrate.push(SensorVal); //now that we're steady, lets gather the actual number
+      if (NumstoCallibrate.length > 100) { // write over the 100 numbers in the array
+        NumstoCallibrate.splice(0, 1);
+      }
+      sum = 0;
+      for (var i = 0; i < NumstoCallibrate.length; i++) { //100 times
+        var num = Number(NumstoCallibrate[i]); //raw sensor numbers
+        sum = sum + num; //add them all up
+      }
+      CallibratedRestingNum = sum / NumstoCallibrate.length;
+
+
+    } ///callibration over
+
+    if (callibrationPreStage === true) {
+      textSize(30);
+      text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 100);
+      textSize(60);
+      if (distanceofvalues > 6) {
+        text("NOT STEADY ENOUGH", windowWidth / 2, 580);
+      } else if (distanceofvalues < 6) {
+        text("STEADY   ", windowWidth / 2, 580);
+      }
+      textSize(20);
+      text('average fluctuation     ' + averageValpreCal, 40, 100);
+      isCallibrationReady.push(distanceofvalues);
+      if (isCallibrationReady.length > 10) { // write over the 10 numbers in the array
+        isCallibrationReady.splice(0, 1);
+      }
+      sum = 0;
+      for (var i = 0; i < isCallibrationReady.length; i++) {
+        var num = Number(isCallibrationReady[i]);
+        sum = sum + num;
+      }
+      averageValpreCal = sum / isCallibrationReady.length;
+    } ///pre-callibration over
+
+
+    if (averageValpreCal > 6) {
+
+      window.clearTimeout(timer)
+
+      timer = setTimeout(function() {
+        CalibrationgetCalibrationSensorValChangeges();
+      }, 3000);
+
+
+
     }
-    CallibratedRestingNum = sum / NumstoCallibrate.length;
-
-
-  }
-
-  if (callibrationPreStage === true) {
-    text('STARTING CALLIBRATION', 40, 40);
-    if (distanceofvalues > 6) {
-      text("YOU'RE NOT STEADY ENOUGH", 280, 180);
-    }
-    text('average fluctuation     ' + averageValpreCal, 40, 100);
-    isCallibrationReady.push(distanceofvalues);
-    if (isCallibrationReady.length > 10) { // write over the 10 numbers in the array
-      isCallibrationReady.splice(0, 1);
-    }
-    sum = 0;
-    for (var i = 0; i < isCallibrationReady.length; i++) {
-      var num = Number(isCallibrationReady[i]);
-      sum = sum + num;
-    }
-    averageValpreCal = sum / isCallibrationReady.length;
-  }
-
-
-  if (averageValpreCal > 6) {
-
-    window.clearTimeout(timer)
-
-    timer = setTimeout(function() {
-      console.log("fire togglestages")
-      togglestages();
-    }, 3000);
-
-
-
-  }
+  } //scene 7 ends
 } //draw ends
 
-function togglestages() {
+function CalibrationgetCalibrationSensorValChangeges() {
   if (callibrationPreStage == true) {
 
     callibrationPreStage = false;
     callibrationStage = true;
     Begincountdown();
   }
-
-
-
 }
 
-function togglestages2() {
+function CalibrationgetCalibrationSensorValChangeges2() {
   if (callibrationStage == true) {
     callibrationStage = false;
-    scene1 = true;
+    UserArmOutNum = CallibratedRestingNum;
+    sceneFake1 = true;
   }
 }
 
-function getSensorValChange() {
+function getCalibrationSensorValChange() {
   this.currentVal = SensorVal;
   console.log('cv' + this.currentVal);
   this.previousVal = SensorVal;
@@ -146,7 +154,7 @@ function getSensorValChange() {
   this.display = function() {
     this.currentVal = SensorVal;
 
-    if (millis() - this.lastcheck > 100) { //read every 10th of a second
+    if (millis() - this.lastcheck > 120) { //read every 10th of a second
       distanceofvalues = abs(this.currentVal - this.previousVal);
       // console.log('changeAmount:  ' + distanceofvalues);
       this.previousVal = this.currentVal;
@@ -160,4 +168,11 @@ function Begincountdown() {
     console.log(callibrationCountdown);
     Math.round(callibrationCountdown--);
   }, 1000);
+}
+
+function calibrationOver() {
+  if (sceneFake1 == true) {
+    sceneFake1 = false;
+    sceneNextScene = true;
+  }
 }
