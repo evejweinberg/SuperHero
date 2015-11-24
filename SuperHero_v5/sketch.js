@@ -1,3 +1,4 @@
+var centerH=0;
 var newspapertempheader, cd_3, cd_2, cd_1, cd_fly, game, inst, saveme, bg01, asteroid, scene3header, scene2header, flapTemp, dearEarth, scene5countdown, cappink, capblue;
 var instscaledown = 300;
 var colors;
@@ -16,16 +17,17 @@ var currentframe = 0;
 var Scn2frmct = 0;
 var Scn3_frmct = 0;
 var Scn5_frmct = 0;
-
 var transitionCounter = 0;
+
 //scene4
+var asteroidHit;
 var scene4Script;
 var Scn4_textcounter = 0;
 var index = 0;
 var lastCue = 0;
 var Scn4_frmct = 0;
 var words = [];
-var timings = [90, 120, 190, 220, 250, 300, 330, 350, 370];
+var timings = [90, 120, 160, 200, 220, 230, 240, 250, 270];
 var transcript, currentText;
 var earthSpinFrames = 26;
 var flysmall;
@@ -46,7 +48,7 @@ var dearEarthplaying = false;
 //astroid 
 var ast_x = -100;
 var ast_y = -100;
-var ast_size = 366;
+var ast_size = 766;
 var scene3counter = 0;
 var totalstars = 20;
 var scene1 = true;
@@ -58,16 +60,21 @@ var scene6 = false;
 var scene7 = false; //callibration scene
 var count = 30;
 var counter;
+
 //photobooth
 var canvas, capture, mycam, button, img;
+
 //scene3
 var totalParticles = 12; //number of total particles
 var arrayOfBalls = []; //empty array to be filled
 var arrayOfLines = [];
 var flightschool1;
 var flightschoolheader;
-var flap1type, flap2type, flap3type;
+var flap1type, flap2type;
+var FlightSchoolSign;
+
 //scene7 callibration
+var calibrateSteadyType;
 var callibrationImage;
 var callibrationHeader, callibrationExplainer;
 var sliderTemp; //the sensor will replace this later
@@ -81,12 +88,27 @@ var sum = 0;
 var callibrationPreStage = true;
 var callibrationStage = false;
 var calibrateFinal = false;
+var calibrationHeader;
 var sceneNextScene = false;
 var timer;
 var CallibratedRestingNum = 0;
 var callibrationCountdown = 5;
 var calcountdown;
 var UserArmOutNum = 0;
+var serial; // variable to hold an instance of the serialport library
+var portName = '/dev/cu.usbmodemfa131'; // fill in your serial port name here
+var inData0, inData1, inData2; // for incoming serial data
+var xPos = 0;
+var loadingOvervid;
+var spacebg;
+var CapeCalibrationSign;
+var cc;
+var isccplaying = false;
+
+var transitionToStory = [];
+var trans;
+var readyfortrans;
+var transitionTicker = 0;
 
 
 
@@ -115,13 +137,18 @@ function playSaveMe() {
   if (!savmeplaying) {
     saveme.play();
     savmeplaying = true;
+  }
+}
 
+function playcc() {
+  if (!isccplaying) {
+    cc.play();
+    isccplaying = true;
   }
 }
 
 //scene4
 function dearEarthVO() {
-  // seeNsayText();
   if (!dearEarthplaying) {
     dearEarth.setVolume(0.6);
     dearEarth.play();
@@ -135,6 +162,12 @@ function dearEarthVO() {
 function preload() {
   transcript = loadStrings('assets/script.txt');
   img = loadImage('assets/newspaper.PNG');
+
+  for (var i = 0; i < 13; i++) { //load all the image names
+    trans = "assets/spaceCompress_" + nf(i, 2) + ".png";
+    transitionToStory.push(loadImage(trans)); //push them all into an array
+  }
+
   for (var i = 0; i < totalgameframes; i++) { //load all the image names
     game = "assets/GAME_" + nf(i, 3) + ".png";
     game_frames.push(loadImage(game)); //push them all into an array
@@ -149,6 +182,7 @@ function preload() {
     Scn2_frames.push(loadImage(aftercape)); //push them all into an array
   }
   saveme = loadSound('assets/saveme.m4a');
+  cc = loadSound('assets/cc.wav');
   bg01 = loadSound('assets/bg01.mp3');
   dearEarth = loadSound('assets/DearEarthlings_01.m4a');
   cd_3 = loadSound('assets/three.m4a');
@@ -156,15 +190,6 @@ function preload() {
   cd_1 = loadSound('assets/one.m4a');
   cd_fly = loadSound('assets/fly.m4a');
   asteroid = loadImage('assets/asteroid.png');
-  // cappink = createImg('assets/cappink.png');
-  // capblue = createImg('assets/capblue.png');
-  // cappink.class('class4').id('cappink');
-  // capblue.class('class4').id('capblue');
-  flightschool1 = createVideo('assets/flightTest01.mp4');
-  flightschool1.loop(); // set the video to loop and start playing
-  flightschool1.hide(); // by default video shows up in separate dom
-  // element. hide it and draw it to the canvas
-  // instead
 
 }
 
@@ -179,11 +204,27 @@ function bgmusic() {
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
-
+centerH = (windowWidth / 2);
   //scene7, calibration
   gd = new getCalibrationSensorValChange();
-  sliderTemp = createSlider(500, 600, 550); //the sensor will replace this later
-  sliderTemp.position(300, 700).class('class7');
+  serial = new p5.SerialPort(); // make a new instance of the serialport library
+  serial.on('connected', serverConnected); // callback for connecting to the server
+  serial.on('open', portOpen); // callback for the port opening
+  serial.on('data', serialEvent); // callback for when new data arrives
+  serial.on('error', serialError); // callback for errors
+  serial.open(portName); // open a serial port
+  loadingOvervid = document.getElementById("loadingOver");
+  loadingOvervid.pause();
+  spacebg = loadImage('assets/spaceEdges2.png');
+  CapeCalibrationSign = createImg('assets/CapeCalibrationSign.png');
+  CapeCalibrationSign.class('class7').class('bounceInDown').position((windowWidth / 2) - 443, 30);
+  FlightSchoolSign = createImg('assets/FlightSchoolSign.png');
+  FlightSchoolSign.class('class3').class('bounceInDown').class('sign');
+
+  function playVid() {
+    loadingOvervid.play();
+  }
+
 
 
 
@@ -200,7 +241,6 @@ function setup() {
     color(165, 218, 194), //light green
     color(231, 8268), //drkpink
     color(0, 166, 155) //blue
-
   ]
 
   capture = createCapture(VIDEO);
@@ -213,21 +253,25 @@ function setup() {
   newspapertempheader = createP('The Press wants a photo!');
   newspapertempheader.class('class6').class('header').id('press');
   //scene 7 callibration
-  callibrationImage = createImg('assets/callibration.png');
-  callibrationImage.class('class7').class('centeredcallibration');
+  calibrateSteadyType = createP('');
+  calibrationHeader = createP('Put Your Arms Out \r\n Like This');
+  calibrationHeader.class('class7').position((windowWidth / 2)-150, 200).class('header2');
+  calibrateSteadyType.class('class7').id('calibrateHoldSteady');
+  callibrationImage = loadImage('assets/callibration.png');
+
+
   // scene 3 flap calibration
   flapTemp1 = createImg('assets/flightTest01.gif');
-  flapTemp2 = createImg('assets/flytestpre2.png');
-  flapTemp3 = createImg('assets/flytestpre3.png');
+  flapTemp2 = createImg('assets/turbo.gif');
+  // flapTemp3 = createImg('assets/flytestpre3.png');
   var flapdiv = createDiv('');
   flapdiv.class('flapdiv');
-  flapTemp1.class('class3').id('flap1').class('flap1').parent(flapdiv);
-  flapTemp2.class('class3').id('flap2').parent(flapdiv);
-  flapTemp3.class('class3').id('flap3').parent(flapdiv);
-  scene3header = createP('we need to test your flight skills, pronto');
-  scene3header.class('header2').class('class3').id('scene3header');
-  flightschoolheader = createP('FLIGHT SCHOOL');
-  flightschoolheader.class('flightschoolheader').class('class3');
+  flapTemp1.class('class3').id('flap1').class('flap1').parent(flapdiv).position(0, 0);
+  flapTemp2.class('class3').id('flap2').parent(flapdiv).position(-700, 700);
+  // scene3header = createP('we need to test your flight skills, pronto');
+  // scene3header.class('header2').class('class3').id('scene3header');
+  // flightschoolheader = createP('FLIGHT SCHOOL');
+  // flightschoolheader.class('flightschoolheader').class('class3');
 
 
   // scene 2 trigger the glove switch fist
@@ -239,28 +283,26 @@ function setup() {
   scene2header.class('header').class('class2').id('scene2header');
   $('#fist').hide();
   $('#fistinst').hide();
+  for (var m = 0; m < totalstars; m++) {
+    singlestar.push(new starfield1());
+  }
 
   // scene 4
   scene4Script = createP('');
   scene4Script.class('class4').class('voiceover');
   currentText = scene4Script.html();
   words = split(transcript[0], '#');
-  scene4button = createButton('GET BACK INTO READY POSITION');
-  scene4button.position(300, 600).class('class4').class('header').id('playbutton');
+  scene4button = createButton('BACK INTO READY POSITION TO PLAY');
+  scene4button.position(300, 700).class('class4').class('header2').id('playbutton');
   scene4button.mouseClicked(function() {
-    changeScene(3)
+    changeScene(5)
   });
   flysmall = createImg('assets/flying.gif');
   flysmall.class('class4');
 
-
   scene5countdown = createP('3');
-  scene5countdown.class('countdown').class('class5').id('countdowntofly').position((windowWidth / 2), ((windowWidth / aspect) / 2) - 150); //subtract element width/2 and hright
+  scene5countdown.class('countdown').class('class5').id('countdowntofly').position((windowWidth / 2), ((windowHeight / 2)) - 150); //subtract element width/2 and hright
 
-  //scene 2
-  for (var m = 0; m < totalstars; m++) {
-    singlestar.push(new starfield1());
-  }
 
   changeScene(1);
 } ///SETUP ENDS
@@ -315,6 +357,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
     $('.class6').show();
   }
   if (num == 7) {
+    playcc();
     $('.class7').show();
     scene7 = true;
     timer = setTimeout(function() {
@@ -326,12 +369,13 @@ function changeScene(num) { //these only get called once, based on a sensor or k
 } //function ends
 
 
-function flyingTest() {}
+
 
 
 
 
 function draw() {
+  centerH = (windowWidth / 2);
   bgmusic();
   clear();
 
@@ -347,7 +391,8 @@ function draw() {
     if (Scn2frmct == 57) {
       playSaveMe();
     } else if (Scn2frmct > 87) {
-      asteroidEnter();
+      asteroidBounceandHit();
+
 
     }
     if (Scn2frmct == 107) {
@@ -365,9 +410,18 @@ function draw() {
     }
     // flying test calibration
   } else if (scene3 == true) {
-    flyingTest();
+    image(spacebg, 0, 0, windowWidth, windowHeight);
+    if (readyfortrans == true) {
+      // transitionCounter++;
+      transitionTicker=transitionTicker+.3;
+      image(transitionToStory[round(transitionTicker)], 0, 0, windowWidth, windowWidth / aspect);
+      if (transitionTicker > 12) {
+        scene3 = false;
+        scene4 = true;
+        changeScene(4);
+      }
+    }
 
-    // image(flightschool1,150,150);
     for (var i = 0; i < arrayOfBalls.length; i++) {
       arrayOfBalls[i].display(); //display them all
       arrayOfBalls[i].explode(); //explode them all
@@ -381,6 +435,7 @@ function draw() {
     }
 
   } else if (scene4 === true) {
+    // image(asteroid, 100, 100, 40, 40);
     Scn4_textcounter++;
     var orbitRadius = 250;
     var circl = map(millis() / 10, 0, 440, 0, PI / 3); //i'll figure this out later
@@ -393,6 +448,10 @@ function draw() {
     strokeWeight(15);
     stroke(0, 166, 255);
     ellipse(880, 420, 500, 500);
+
+    if (Scn4_textcounter > 50) {
+      asteroidHitandBounce();
+    }
 
     if (Math.round(Scn4_frmct) >= earthSpinFrames) {
       Scn4_frmct = 0;
@@ -409,7 +468,7 @@ function draw() {
 
 
   } else if (scene5 == true) {
-    background(247, 209, 66);
+    background(246, 209, 66);
     dearEarth.stop();
     image(game_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
     image(turbo_frames[turboFrameNum], 0, 0, windowWidth, windowWidth / aspect);
@@ -453,19 +512,22 @@ function draw() {
 
 
   } else if (scene7 == true) {
-    background(colors[1]);
+    background(246, 209, 66);
+    image(spacebg, 0, 0, windowWidth, windowHeight);
+    image(callibrationImage, (windowWidth / 2) - 200, (windowHeight / 2) - 200, 400, 400);
+
     textSize(20);
     textAlign(CENTER);
-    text('raw value     ' + SensorVal, 40, 60);
+    text('raw value     ' + inData2, 80, 60);
     // text('fluctuation     ' + distanceofvalues, 40, 80);
     gd.display();
-    SensorVal = sliderTemp.value();
+    SensorVal = inData2;
 
 
     if (calibrateFinal == true) {
       textSize(60);
-      text('GREAT! \r\nNOW YOU ARE READY FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 60);
-      console.log('User Resting Num is:' + UserArmOutNum)
+      text('GREAT! YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 60);
+      // console.log('User Resting Num is:' + UserArmOutNum)
       calcountdown = window.setInterval(function() {
         calibrationOver();
       }, 5000); //wait 5 seconds
@@ -479,7 +541,7 @@ function draw() {
 
     if (callibrationStage === true) {
       textSize(30);
-      text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 100);
+      text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 120);
       textSize(60);
 
       text('HOLD STEADY FOR:  ' + callibrationCountdown, windowWidth / 2, 580);
@@ -505,13 +567,19 @@ function draw() {
     } ///callibration over
 
     if (callibrationPreStage === true) {
+      var t = document.getElementById('calibrateHoldSteady');
+      t.innerHTML = '';
       textSize(30);
-      text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 100);
+      textAlign(CENTER);
+      text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 120);
       textSize(60);
       if (distanceofvalues > 6) {
-        text("NOT STEADY ENOUGH", windowWidth / 2, 580);
+
+        t.innerHTML = 'NOT STEADY';
+        // text("NOT STEADY ENOUGH", windowWidth / 2, 580);
       } else if (distanceofvalues < 6) {
-        text("STEADY   ", windowWidth / 2, 580);
+        t.innerHTML = 'STEADY';
+        // text("STEADY   ", windowWidth / 2, 580);
       }
       textSize(20);
       text('average fluctuation     ' + averageValpreCal, 40, 100);
@@ -552,7 +620,7 @@ function draw() {
 // soon to be replaced with sensor detection
 function keyPressed() {
 
-  if (scene2 === true) {//do we go here anymore?
+  if (scene2 === true) { //do we go here anymore?
     if (keyCode === ENTER) {
       // console.log('scene2end');
       scene3 = true; //Backstory
@@ -564,11 +632,15 @@ function keyPressed() {
   } else if (scene3 === true) { //flightschool
     if (keyCode === ENTER) {
       scene3 = false;
-      changeScene(4);//backstory
+      changeScene(4); //backstory
       scene4 = true;
 
     }
-    if (keyCode === 65 || keyCode === 97) { //A
+    if (keyCode === 65 || keyCode === 97) { //A KEY
+      $("#flap1").addClass('flyaway'); //why doesn't this work
+      $("#flap2").addClass('fly-in'); //why doesn't this work
+      $("#flap2").addClass('flyfrombottomclass'); //why doesn't this work
+
       for (var i = 0; i < totalParticles; i++) {
 
         arrayOfBalls.push(new flapWin1(width / 3, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
@@ -576,9 +648,8 @@ function keyPressed() {
         arrayOfBalls.push(new flapWin2(width / 3, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
       }
 
-      document.getElementById('flap1').src = 'assets/flightTest01after.png';
-      document.getElementById('flap2').src = 'assets/flightTest01.gif';
-    } else if (keyCode === 66 || keyCode === 98) { //B
+
+    } else if (keyCode === 66 || keyCode === 98) { //B KEY
       for (var i = 0; i < totalParticles; i++) {
 
         arrayOfBalls.push(new flapWin1(width / 2, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
@@ -586,30 +657,35 @@ function keyPressed() {
         arrayOfBalls.push(new flapWin2(width / 2, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
       }
 
+    } else if (keyCode === 67 || keyCode === 99) { //C KEY
 
-      document.getElementById('flap2').src = 'assets/flytestafter.png';
-      document.getElementById('flap3').src = 'assets/flightTest01.gif';
-    } else if (keyCode === 67 || keyCode === 99) { //C
       for (var i = 0; i < totalParticles; i++) {
 
         arrayOfBalls.push(new flapWin1(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
 
         arrayOfBalls.push(new flapWin2(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
       }
+      readyfortrans = true;
 
-      document.getElementById('flap3').src = 'assets/flytestafter.png';
-      transitionfrom3to4();
+
     }
   } else if (scene1 === true) {
     if (keyCode === ENTER) {
-      EndIntro();
-      scene7 = true;
-      changeScene(7);
+      $('#loadingvideo').hide();
+      $('#loadingOver').show();
+      loadingOvervid.play();
+      $('video#loadingOver').bind('ended', function() {
+        $('#loading').remove();
+        changeScene(7);
+      });
+      // EndIntro();
+      // // scene7 = true;
+      // // changeScene(7);
 
     }
   } else if (scene7 === true) {
     if (keyCode === ENTER) {
-      changeScene(3);//flightschool
+      changeScene(3); //flightschool
     }
   } else if (scene4 === true) {
     if (keyCode === ENTER) {
@@ -654,37 +730,46 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
-
-function EndIntro() {
-  if ($('#loading').is(':visible')) {
-    $('#loading').hide();
-  }
+function myHandler(e) {
   scene1 = false;
+  scene7 = true;
+  changeScene(7);
 }
 
-function asteroidEnter() {
+function toCalibration() {
+  if ($('#loading').is(':visible')) {
+    $('#loadingvideo').hide();
+  }
+  scene1 = false;
+  scene7 = true;
+  changeScene(7);
+}
+
+function EndIntro() {
+
+  if ($('#loadingvideo').is(':visible')) {
+    $('#loadingvideo').hide();
+  }
+  scene1 = false;
+  scene7 = true;
+  changeScene(7);
+
+
+}
+
+
+
+function asteroidHitandBounce() {
   var targetsize = 100;
-  var targetastx = 400 + random(-50, 50);
+  var targetastx = 600 + random(-50, 50);
   var targetasty = 400 + random(-50, 50);
-  ast_x += (targetastx - ast_x) * .05;
-  ast_y += (targetasty - ast_y) * .05;
+  ast_x += (targetastx - ast_x) * .01;
+  ast_y += (targetasty - ast_y) * .01;
   ast_size -= (ast_size - targetsize) * .05;
   image(asteroid, ast_x, ast_y, ast_size, ast_size);
 
 }
 
-function transitionfrom3to4() {
-  document.getElementById('scene3header').innerHTML = 'FLIGHT TEST COMPLETE';
-  transitionCounter++;
-  if (transitionCounter > 120) {
-    scene3 = false;
-    scene4 = true;
-    changeScene(4);
-
-  }
-
-
-}
 
 
 function timer() {
@@ -735,7 +820,7 @@ function CalibrationgetCalibrationSensorValChangeges2() {
 
 function getCalibrationSensorValChange() {
   this.currentVal = SensorVal;
-  console.log('cv' + this.currentVal);
+  // console.log('cv' + this.currentVal);
   this.previousVal = SensorVal;
   this.lastcheck = 0;
 
@@ -753,7 +838,7 @@ function getCalibrationSensorValChange() {
 
 function Begincountdown() {
   calcountdown = window.setInterval(function() {
-    console.log(callibrationCountdown);
+    // console.log(callibrationCountdown);
     Math.round(callibrationCountdown--);
   }, 1000);
 }
@@ -761,6 +846,31 @@ function Begincountdown() {
 function calibrationOver() {
   if (calibrateFinal == true) {
     calibrateFinal = false;
-    sceneNextScene = true;
+    changeScene(3); //switch to flgiht school
+  }
+}
+
+function serverConnected() {
+  println('connected to server.');
+}
+
+function portOpen() {
+  println('the serial port opened.')
+}
+
+// function serialEvent() {
+//   inData = Number(serial.read());
+// }
+
+function serialError(err) {
+  println('Something went wrong with the serial port. ' + err);
+}
+
+function serialEvent() {
+  var inString = serial.readStringUntil('\r\n');
+  if (inString.length > 0) {
+    var sensors = split(inString, ',');
+    inData2 = int(sensors[0]);
+    console.log(inData2);
   }
 }

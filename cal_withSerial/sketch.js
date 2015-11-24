@@ -17,15 +17,15 @@ var calcountdown;
 var UserArmOutNum = 0;
 var scene7 = true;
 var serial; // variable to hold an instance of the serialport library
-var portName = '/dev/cu.usbmodem1411'; // fill in your serial port name here
+var portName = '/dev/cu.usbmodemfa131'; // fill in your serial port name here
 var inData0, inData1, inData2; // for incoming serial data
 var xPos = 0;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   gd = new getCalibrationSensorValChange();
-  sliderTemp = createSlider(500, 600, 550); //the sensor will replace this later
-  sliderTemp.position(300, 300).class('class7');
+  // sliderTemp = createSlider(500, 600, 550); //the sensor will replace this later
+  // sliderTemp.position(300, 300).class('class7');
 
   timer = setTimeout(function() {
     CalibrationgetCalibrationSensorValChangeges();
@@ -36,7 +36,6 @@ function setup() {
   serial.on('open', portOpen); // callback for the port opening
   serial.on('data', serialEvent); // callback for when new data arrives
   serial.on('error', serialError); // callback for errors
-
   serial.open(portName); // open a serial port
 
 }
@@ -47,15 +46,15 @@ function draw() {
     background(255);
     textSize(20);
     textAlign(CENTER);
-    text('raw value     ' + SensorVal, 40, 60);
+    text('raw value     ' + inData2, 40, 60);
     // text('fluctuation     ' + distanceofvalues, 40, 80);
     gd.display();
-    inData2 = sliderTemp.value();
+    SensorVal = inData2;
 
 
     if (sceneFake1 == true) {
       textSize(60);
-      text('GREAT! \r\nNOW YOU ARE READY FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 60);
+      text('GREAT! \r\nNOW YOU ARE \r\nREADY FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 60);
       console.log('User Resting Num is:' + UserArmOutNum)
       calcountdown = window.setInterval(function() {
         calibrationOver();
@@ -64,7 +63,10 @@ function draw() {
     }
 
     if (sceneNextScene == true) {
-      background(0);
+      background(50);
+      fill(244, 0, 0);
+      textSize(70);
+      text('your resting zero number is:' + UserArmOutNum, 50, 50);
     }
 
 

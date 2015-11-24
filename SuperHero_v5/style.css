@@ -1,11 +1,32 @@
+#loadingOver{
+  display:none;
+}
+
+img.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #scene2header{
     font-size: 6em;
 }
 
-.centeredcallibration{
+.header2 {
   position: absolute;
-  left:50%
-  top 50%;
+  /*display: block;*/
+  text-align: center;
+  font-size: 3em;
+  left: 50%;
+  /*text-align: CENTER;*/
+  font-family: "brandon-grotesque";
+  /*background:white;*/
+}
+
+
+
+p{
+ font-family: "brandon-grotesque"; 
 }
 
 #press{
@@ -33,6 +54,10 @@
 }
 
 .class2 {
+  display: none;
+}
+
+.class7 {
   display: none;
 }
 
@@ -112,25 +137,6 @@ body {
 
 
 
-.flapdiv{
-  display: flex;
-  width: 100%;
-   top:200px;
-  position: absolute;
-  justify-content: space-around;
-}
-
-#flap1{
-
-}
-
-#flap3{
-
-}
-
-#flap2{
- 
-}
 
 @keyframes nudge {
   0%, 100% {
