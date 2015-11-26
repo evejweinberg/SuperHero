@@ -1,5 +1,6 @@
 var scene, camera, renderer;
 var camZ = 30000;
+var camY = 0;
 var moveforwardRate = 0; //if 16...it will go 28,800 px is 30 sec
 var sun, earth, building;
 var bgcolor;
@@ -25,24 +26,30 @@ function setup() {
 
 
 window.onload = function() {
+    // var stats = initStats();
     r = 100;
     g = 200;
     b = 250;
     bgcolor = "rgb(" + r + "," + g + "," + b + ")";
     // bgcolor = 0xffffff;
     scene = new THREE.Scene();
-    // scene.fog = new THREE.FogExp2( 0xffffff, 0.0001 );
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+    camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, .1, 500);
     renderer = new THREE.WebGLRenderer({
       alpha: true
     }); //have an alpha channel
+    var x=0;
+    var y=0;
+    var z=0;
+    camera.lookAt(new THREE.Vector3(x,y,z));
     renderer.setClearColor(bgcolor, 1);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMapEnabled = true;
+    scene.fog = new THREE.Fog("rgb(255,0,0)", 50, 1000); //red fog
+    // scene.fog=new THREE.FogExp2( 0xffffff, 0.01 );
     document.getElementById("container").appendChild(renderer.domElement);
 
     // create the ground plane
-    var planeGeometry = new THREE.PlaneGeometry(10, 10020);
+    var planeGeometry = new THREE.PlaneGeometry(100, 400);
     var planeMaterial = new THREE.MeshLambertMaterial({
       color: "rgb(255,0,0)"
     });
@@ -50,81 +57,42 @@ window.onload = function() {
     plane.receiveShadow = true;
 
     // rotate and position the plane
-    plane.rotation.x = 3;
+    // plane.rotation.y = 50;
+    plane.rotation.x = -99;
     plane.position.x = 0;
-    plane.position.y = -30;
-    plane.position.z = 29000;
+    plane.position.y = -10;
+    plane.position.z = 29700;
     scene.add(plane);
 
 
     var geometry = new THREE.BoxGeometry(4, 10, 4);
     var geometryB = new THREE.BoxGeometry(4, 20, 4);
-    var material = new THREE.MeshLambertMaterial({
-      color: 0x7777ff
+    var materialBlue = new THREE.MeshLambertMaterial({
+      color: 0x7777ff//blue
     });
     var materialB = new THREE.MeshLambertMaterial({
-      color: 0xb0af00
+      color: 0xb0af00 //mustard
     });
-    var cube = new THREE.Mesh(geometry, material);
-    cube.position.x = 6;
-    cube.position.z = 29000;
-    scene.add(cube);
+    // var cubeMaterialExample = new THREE.MeshLambertMaterial({color: 0xff0000});
+  
+for (var j = 0; j < (70); j++) {
+      for (var i = 0; i < 5; i++) {
+        var cubeGeometryB = new THREE.BoxGeometry(random(.5, 1.4), random(2, 9), 1);
+        var rnd = Math.random() * 0.75 + 0.25;
+        var cubeMaterial = new THREE.MeshLambertMaterial();
+        var cubeMaterialExample = new THREE.MeshLambertMaterial({color: 0xff0000});//red
+        cubeMaterial.color = new THREE.Color(rnd, rnd, rnd);
+        var cubey = new THREE.Mesh(cubeGeometryB, materialBlue);
+         cubey.castShadow = true;
 
-    var cuber = new THREE.Mesh(geometry, materialB);
-    cuber.position.x = 5;
-    cuber.position.z = 28500;
-    scene.add(cuber);
-    cuber.castShadow = true;
+        cubey.position.z = 30000 - (j * 10);
+        cubey.position.x = 9 - (i * 5);
+        cubey.position.y = -3;
 
-    var cubea = new THREE.Mesh(geometry, material);
-    cubea.position.x = 14;
-    cubea.position.z = 29800;
-    scene.add(cubea);
-    cubea.castShadow = true;
+        scene.add(cubey);
+      }
+    }
 
-
-    var cubeb = new THREE.Mesh(geometry, materialB);
-    cubeb.position.x = 1;
-    cubeb.position.z = 29500;
-    scene.add(cubeb);
-    cubeb.castShadow = true;
-
-    var cubec = new THREE.Mesh(geometry, material);
-    cubec.position.x = 3;
-    cubec.position.z = 29900;
-    scene.add(cubec);
-
-    var cubed = new THREE.Mesh(geometry, materialB);
-    cubed.position.x = -3;
-    cubed.position.z = 29600;
-    scene.add(cubed);
-
-    var cubee = new THREE.Mesh(geometry, material);
-    cubee.position.x = -13;
-    cubee.position.z = 29500;
-    scene.add(cubee);
-
-    var cubef = new THREE.Mesh(geometry, materialB);
-    cubef.position.x = -6;
-    cubef.position.z = 29500;
-    scene.add(cubef);
-
-    var cubeg = new THREE.Mesh(geometry, material);
-    cubeg.position.x = -3;
-    cubeg.position.z = 23400;
-    scene.add(cubeg);
-
-    var cubeh = new THREE.Mesh(geometryB, materialB);
-    cubeh.position.x = 12;
-    cubeh.position.z = 29000;
-    scene.add(cubeh);
-    cubeh.castShadow = true;
-
-    var cubei = new THREE.Mesh(geometryB, materialB);
-    cubei.position.x = -30;
-    cubei.position.z = 29300;
-    scene.add(cubei);
-    cubei.castShadow = true;
 
 
 
@@ -156,25 +124,41 @@ window.onload = function() {
     // Add it to our sun object
     sun.add(sunMesh);
     camera.position.z = camZ;
-    // camera.position.y = 0;
+    camera.position.y = camY;
+    scene.overrideMaterial = new THREE.MeshLambertMaterial({
+      color: 0xffffff
+    });
 
 
 
     // Add a point light to the center of the world, for the sunlight
-    var sunlight = new THREE.PointLight(0xff0040, 2, 50);
-    light2 = new THREE.PointLight(0x0040ff, 40, 80);
-    var pointLight = new THREE.PointLight(0x0040ff, 2, -4000);
+    // var sunlight = new THREE.PointLight(0xffffff, 2, 50);
+    light2 = new THREE.PointLight(0xffffff, 40, 80);
+    var pointLight = new THREE.PointLight(0xff0000, 1000, 100);
     var light3 = new THREE.PointLight(0xffffff);
     light3.position.set(0, 150, 12000);
     scene.add(light3);
     var light4 = new THREE.PointLight(0xffffff);
     light4.position.set(0, 150, 14000);
     scene.add(light4);
+    var ambientLight1 = new THREE.AmbientLight(0xffffff);
+     var ambiColor = "#0c0c0c";
+        var ambientLight = new THREE.AmbientLight(ambiColor);
+        scene.add(ambientLight);
+        
+         // add spotlight for the shadows
+        var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(100, 10, 39000);
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+
+
 
     // Add it to our scene
-    scene.add(sunlight);
-    scene.add(light2);
+    // scene.add(sunlight);
+    // scene.add(light2);
     camera.add(pointLight);
+    // scene.add(ambientLight1);
 
 
 
@@ -250,6 +234,25 @@ window.onload = function() {
 
     // Now, set up a loop function for animation
     requestAnimationFrame(animate);
+    // var gui = new dat.GUI();
+    // gui.add(controls, 'rotationSpeed', 0, 0.5);
+    // gui.add(controls, 'addCube');
+
+    // function initStats() {
+
+    //   var stats = new Stats();
+
+    //   stats.setMode(0); // 0: fps, 1: ms
+
+    //   // Align top-left
+    //   stats.domElement.style.position = 'absolute';
+    //   stats.domElement.style.left = '0px';
+    //   stats.domElement.style.top = '0px';
+
+    //   document.getElementById("Stats-output").appendChild(stats.domElement);
+
+    //   return stats;
+    // }
 
   } ///////ON LOAD ENDS///////////
 
@@ -257,34 +260,30 @@ window.onload = function() {
 
 
 function animate() { //looping function
+  // stats.update();
   range1 = 0;
   range2 = 0;
   range3 = 0;
-  
-  gmapped = round(map(camZ, 28000, 30000, 0, 255));
-  rmapped = round(map(camZ, 28000, 30000, 20, 150));
-  bmapped = round(map(camZ, 28000, 30000, 40, 150));
+
+  gmapped = round(map(camZ, 29000, 30000, 0, 255));
+  rmapped = round(map(camZ, 29000, 30000, 10, 150));
+  bmapped = round(map(camZ, 29000, 30000, 30, 150));
   //why does this go negative?
 
 
   renderer.setClearColor(bgcolor, 1);
   bgcolor = "rgb(" + rmapped + "," + gmapped + "," + b + ")";
-  // r = 100;
-  // g = 200;
-  // b = 250;
 
-  // if (camZ < 28000) {
-  //   bgcolor = 0x1aaaE5;
-  // }
 
   if (sliderTemp.value() < (UserArmNum - 400) || sliderTemp.value() > (UserArmNum + 400)) {
-    range1 = 6;
+    range1 = 4;
+    console.log('range1 = 4')
   }
   if (sliderTemp.value() < (UserArmNum - 250) || sliderTemp.value() > (UserArmNum + 250)) {
-    range1 = 2.5;
+    range1 = 2;
   }
   if (sliderTemp.value() < (UserArmNum - 90) || sliderTemp.value() > (UserArmNum + 90)) {
-    range1 = 1;
+    range1 = .5;
   } else {
     range1 = 0;
     range2 = 0;
@@ -293,14 +292,20 @@ function animate() { //looping function
 
   moveforwardRate = range1 + range2 + range3;
   camZ = camZ - moveforwardRate;
-
+  // console.log('MoveCamrate  ' + moveforwardRate)
+  // console.log('slider  ' + sliderTemp.value())
+  if (camZ > 28000) {
+    // camY=camY+.5;
+    camY = map(camZ, 28000, 30000, 100, 0)
+  }
+  console.log('camY:   ' + camY)
+  console.log('camZ:   ' + camZ)
 
 
   camera.position.z = camZ;
-  light2.position.z = camZ;
-  // if (camZ > 29000){
-  //   camera.position.y = camera.position.y + .2;
-  // }
+  camera.position.y = camY;
+  // light2.position.z = camZ;
+
 
   // Finish with a new render call
   renderer.render(scene, camera);

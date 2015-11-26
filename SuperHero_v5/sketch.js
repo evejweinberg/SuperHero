@@ -1,13 +1,27 @@
-var centerH=0;
-var newspapertempheader, cd_3, cd_2, cd_1, cd_fly, game, inst, saveme, bg01, asteroid, scene3header, scene2header, flapTemp, dearEarth, scene5countdown, cappink, capblue;
+//all scenes
+var centerH = 0;
+var spacebg;
+var earthspin;
+var earthspin_frames = [];
+var scene1 = true;
+var scene2 = false;
+var scene3 = false;
+var scene4 = false;
+var scene5 = false;
+var scene6 = false;
+var scene7 = false; //callibration scene
+var count = 30;
+var counter;
+var cd_3, cd_2, cd_1, cd_fly, game, inst, saveme, bg01, asteroid, scene3header, scene2header, flapTemp, dearEarth, scene5countdown, cappink, capblue;
 var instscaledown = 300;
 var colors;
 var fist, fistinst;
 var fistx = -100;
 var fisty = 200;
-var earthspin;
+
+//scene2
 var Scn2_frames = [];
-var earthspin_frames = [];
+
 // turbo png sequence
 var turbo;
 var turbo_frames = [];
@@ -51,15 +65,16 @@ var ast_y = -100;
 var ast_size = 766;
 var scene3counter = 0;
 var totalstars = 20;
-var scene1 = true;
-var scene2 = false;
-var scene3 = false;
-var scene4 = false;
-var scene5 = false;
-var scene6 = false;
-var scene7 = false; //callibration scene
-var count = 30;
-var counter;
+//FFParticle
+var particles = [];
+var flyingSize = 100;
+var ffcenterX = 900;
+var ffcenterY = 300;
+var angle = 0;
+var firstround = true;
+var orbitRadius = 250;
+var switchAstMove = false;
+
 
 //photobooth
 var canvas, capture, mycam, button, img;
@@ -74,6 +89,8 @@ var flap1type, flap2type;
 var FlightSchoolSign;
 
 //scene7 callibration
+var calimgX, calimgY;
+var calibrationStillGoing = true;
 var calibrateSteadyType;
 var callibrationImage;
 var callibrationHeader, callibrationExplainer;
@@ -100,7 +117,6 @@ var portName = '/dev/cu.usbmodemfa131'; // fill in your serial port name here
 var inData0, inData1, inData2; // for incoming serial data
 var xPos = 0;
 var loadingOvervid;
-var spacebg;
 var CapeCalibrationSign;
 var cc;
 var isccplaying = false;
@@ -109,6 +125,12 @@ var transitionToStory = [];
 var trans;
 var readyfortrans;
 var transitionTicker = 0;
+
+//scene 6
+var Scene6counter = 0;
+var newspaperRotate = 0;
+var newspaperscale = 0;
+var newspapertempheader;
 
 
 
@@ -160,7 +182,7 @@ function dearEarthVO() {
 
 
 function preload() {
-  transcript = loadStrings('assets/script.txt');
+
   img = loadImage('assets/newspaper.PNG');
 
   for (var i = 0; i < 13; i++) { //load all the image names
@@ -173,15 +195,11 @@ function preload() {
     game_frames.push(loadImage(game)); //push them all into an array
   }
 
-  for (var i = 0; i < earthSpinFrames; i++) { //load all the image names
-    earthspin = "assets/earthSpin02_" + nf(Math.round(i), 3) + ".png";
-    earthspin_frames.push(loadImage(earthspin)); //push them all into an array
-  }
   for (var i = 0; i < totalScn2frames; i++) { //load all the image names
     aftercape = "assets/AC2_" + nf(i, 3) + ".png";
     Scn2_frames.push(loadImage(aftercape)); //push them all into an array
   }
-  saveme = loadSound('assets/saveme.m4a');
+
   cc = loadSound('assets/cc.wav');
   bg01 = loadSound('assets/bg01.mp3');
   dearEarth = loadSound('assets/DearEarthlings_01.m4a');
@@ -189,7 +207,15 @@ function preload() {
   cd_2 = loadSound('assets/two.m4a');
   cd_1 = loadSound('assets/one.m4a');
   cd_fly = loadSound('assets/fly.m4a');
+
+  //scene4
+  saveme = loadSound('assets/saveme.m4a');
   asteroid = loadImage('assets/asteroid.png');
+  transcript = loadStrings('assets/script.txt');
+  for (var i = 0; i < earthSpinFrames; i++) { //load all the image names
+    earthspin = "assets/earthSpin02_" + nf(Math.round(i), 3) + ".png";
+    earthspin_frames.push(loadImage(earthspin)); //push them all into an array
+  }
 
 }
 
@@ -204,7 +230,7 @@ function bgmusic() {
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
-centerH = (windowWidth / 2);
+  centerH = (windowWidth / 2);
   //scene7, calibration
   gd = new getCalibrationSensorValChange();
   serial = new p5.SerialPort(); // make a new instance of the serialport library
@@ -218,44 +244,39 @@ centerH = (windowWidth / 2);
   spacebg = loadImage('assets/spaceEdges2.png');
   CapeCalibrationSign = createImg('assets/CapeCalibrationSign.png');
   CapeCalibrationSign.class('class7').class('bounceInDown').position((windowWidth / 2) - 443, 30);
-  FlightSchoolSign = createImg('assets/FlightSchoolSign.png');
-  FlightSchoolSign.class('class3').class('bounceInDown').class('sign');
 
   function playVid() {
     loadingOvervid.play();
   }
-
-
-
 
   for (var i = 0; i < turboTotalFrames; i++) { //load all the image names
     turbo = "assets/TurboA_" + nf(i, 3) + ".png";
     turbo_frames.push(loadImage(turbo)); //push them all into an array
   }
   colors = [
-    color(57, 42, 48), //brown
-    color(246, 209, 68), //yellow
-    color(236, 115, 105), //pink 
-    color(123, 200, 166), //green
-    color(244, 179, 100), //orange 
-    color(165, 218, 194), //light green
-    color(231, 8268), //drkpink
-    color(0, 166, 155) //blue
-  ]
-
+      color(57, 42, 48), //brown
+      color(246, 209, 68), //yellow
+      color(236, 115, 105), //pink 
+      color(123, 200, 166), //green
+      color(244, 179, 100), //orange 
+      color(165, 218, 194), //light green
+      color(231, 8268), //drkpink
+      color(0, 166, 155) //blue
+    ]
+    //scene6
   capture = createCapture(VIDEO);
   capture.size(640, 480).position(30, 510).class('class6');
   capture.hide();
   savePhotoButton = createButton('Superhero!');
   savePhotoButton.position(700, 209).class('class6');
   savePhotoButton.mousePressed(savePicture);
-
   newspapertempheader = createP('The Press wants a photo!');
   newspapertempheader.class('class6').class('header').id('press');
+
   //scene 7 callibration
   calibrateSteadyType = createP('');
   calibrationHeader = createP('Put Your Arms Out \r\n Like This');
-  calibrationHeader.class('class7').position((windowWidth / 2)-150, 200).class('header2');
+  calibrationHeader.class('class7').position((windowWidth / 2) - 240, 200).class('header2');
   calibrateSteadyType.class('class7').id('calibrateHoldSteady');
   callibrationImage = loadImage('assets/callibration.png');
 
@@ -272,6 +293,8 @@ centerH = (windowWidth / 2);
   // scene3header.class('header2').class('class3').id('scene3header');
   // flightschoolheader = createP('FLIGHT SCHOOL');
   // flightschoolheader.class('flightschoolheader').class('class3');
+  FlightSchoolSign = createImg('assets/FlightSchoolSign.png');
+  FlightSchoolSign.class('class3').class('bounceInDown').class('sign');
 
 
   // scene 2 trigger the glove switch fist
@@ -413,8 +436,8 @@ function draw() {
     image(spacebg, 0, 0, windowWidth, windowHeight);
     if (readyfortrans == true) {
       // transitionCounter++;
-      transitionTicker=transitionTicker+.3;
-      image(transitionToStory[round(transitionTicker)], 0, 0, windowWidth, windowWidth / aspect);
+      transitionTicker = transitionTicker + .3;
+      image(transitionToStory[round(transitionTicker)], 0, 0, windowWidth, windowHeight);
       if (transitionTicker > 12) {
         scene3 = false;
         scene4 = true;
@@ -435,36 +458,59 @@ function draw() {
     }
 
   } else if (scene4 === true) {
-    // image(asteroid, 100, 100, 40, 40);
+
+
     Scn4_textcounter++;
-    var orbitRadius = 250;
-    var circl = map(millis() / 10, 0, 440, 0, PI / 3); //i'll figure this out later
-    var circy = sin(circl) * orbitRadius + 435;
-    var circx = cos(circl) * orbitRadius + 810;
-    flyingOrbitRate = (flyingOrbitRate + .21);
-    flysmall.position(circx, circy).size(100, 100).rotate(180 + flyingOrbitRate);
     dearEarthVO();
-    noFill();
-    strokeWeight(15);
-    stroke(0, 166, 255);
-    ellipse(880, 420, 500, 500);
-
-    if (Scn4_textcounter > 50) {
-      asteroidHitandBounce();
-    }
-
-    if (Math.round(Scn4_frmct) >= earthSpinFrames) {
-      Scn4_frmct = 0;
-    }
-    image(earthspin_frames[Math.round(Scn4_frmct)], 710, 280, 300, 300);
-    Scn4_frmct = Scn4_frmct + .3;
-
     if (Scn4_textcounter - lastCue > timings[index]) {
       currentText = scene4Script.html();
       lastCue = Scn4_textcounter;
       index = index + 1;
     }
     scene4Script.html(currentText + words[index]);
+
+    Scn4_textcounter++;
+    angleMode(DEGREES);
+    angle = angle + .5;
+    if (angle > 360) {
+      angle = 0;
+      firstround = false;
+    }
+
+
+    var circl = map(millis(), 0, 30000, 0, 10); //30 sec to ten?
+    var offsetX = ffcenterX;
+    var offsetY = ffcenterY;
+    var circx = cos(angle) * orbitRadius + ffcenterX + orbitRadius / 2 - 30;
+    var circy = sin(angle) * orbitRadius + ffcenterY + orbitRadius / 2 - 30;
+    flyingOrbitRate = (flyingOrbitRate + .55);
+    flysmall.position(circx, circy).size(flyingSize, flyingSize).rotate(180 + flyingOrbitRate);
+
+
+    if (Scn4_textcounter > 850) {
+      asteroidHitandBounce();
+    }
+
+    if (Math.round(Scn4_frmct) >= earthSpinFrames) {
+      Scn4_frmct = 0;
+    }
+
+    image(earthspin_frames[Math.round(Scn4_frmct)], ffcenterX, ffcenterY, 300, 300); //center of circle
+    Scn4_frmct = Scn4_frmct + .3;
+
+
+    if (angle < 360 && firstround == true) {
+      particles.push(new FFParticle(circx + flyingSize / 2, circy + flyingSize / 2));
+    }
+
+    for (var i = 0; i < particles.length; i++) {
+      particles[i].update();
+      particles[i].display();
+    }
+
+    if (Math.round(Scn4_frmct) == 3) {
+      playSaveMe();
+    }
 
 
   } else if (scene5 == true) {
@@ -507,14 +553,35 @@ function draw() {
     }
 
   } else if (scene6 == true) {
+    newspaperRotate += (720 - newspaperRotate) * .05;
+    newspaperscale += (1 - newspaperscale) * .05;
     background(57, 42, 48);
-    image(img, 0, 0);
+    push();
+    translate(500, 100);
+    scale(newspaperscale, newspaperscale);
+    rotate(newspaperRotate);
+    capture.position(100, 100);
+    image(img, -200, -400);
+    pop();
+    Scene6counter++;
+    if (Scene6counter < 10) {
+      for (var i = 0; i < totalParticles; i++) {
+
+        arrayOfBalls.push(new flapWin1(width / 3, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+
+        arrayOfBalls.push(new flapWin2(width / 3, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+      }
+    }
 
 
   } else if (scene7 == true) {
     background(246, 209, 66);
     image(spacebg, 0, 0, windowWidth, windowHeight);
-    image(callibrationImage, (windowWidth / 2) - 200, (windowHeight / 2) - 200, 400, 400);
+    // if (calibrationStillGoing == true){
+    // image(callibrationImage, calimgX, calimgY, 400, 400);
+    // }
+
+    image(callibrationImage, calimgX, calimgY, 400, 400);
 
     textSize(20);
     textAlign(CENTER);
@@ -525,26 +592,28 @@ function draw() {
 
 
     if (calibrateFinal == true) {
-      textSize(60);
-      text('GREAT! YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 60);
-      // console.log('User Resting Num is:' + UserArmOutNum)
+      calimgX++;
+      calimgY--;
+      textSize(100);
+
+      text('YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 160);
+
       calcountdown = window.setInterval(function() {
         calibrationOver();
       }, 5000); //wait 5 seconds
 
     }
 
-    if (sceneNextScene == true) {
-      background(0);
-    }
+    // if (sceneNextScene == true) {
+    //   background(0);
+    // }
 
 
     if (callibrationStage === true) {
-      textSize(30);
-      text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 120);
-      textSize(60);
-
-      text('HOLD STEADY FOR:  ' + callibrationCountdown, windowWidth / 2, 580);
+      textSize(80);
+      text('HOLD STEADY FOR:  ' + callibrationCountdown, windowWidth / 2, 710);
+      calimgX = (windowWidth / 2) - 200;
+      calimgY = (windowHeight / 2) - 230;
 
       if (callibrationCountdown <= 0) {
         CalibrationgetCalibrationSensorValChangeges2();
@@ -571,6 +640,8 @@ function draw() {
       t.innerHTML = '';
       textSize(30);
       textAlign(CENTER);
+      calimgX = (windowWidth / 2) - 200;
+    calimgY = (windowHeight / 2) - 230;
       text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 120);
       textSize(60);
       if (distanceofvalues > 6) {
@@ -721,7 +792,6 @@ function keyPressed() {
 
 function loadfirstinstruction() {
   $('.class2').show();
-
 }
 
 
@@ -745,33 +815,80 @@ function toCalibration() {
   changeScene(7);
 }
 
+//scene1
 function EndIntro() {
-
   if ($('#loadingvideo').is(':visible')) {
     $('#loadingvideo').hide();
   }
   scene1 = false;
   scene7 = true;
   changeScene(7);
-
-
 }
 
 
-
+//scene4
 function asteroidHitandBounce() {
-  var targetsize = 100;
-  var targetastx = 600 + random(-50, 50);
-  var targetasty = 400 + random(-50, 50);
-  ast_x += (targetastx - ast_x) * .01;
-  ast_y += (targetasty - ast_y) * .01;
-  ast_size -= (ast_size - targetsize) * .05;
-  image(asteroid, ast_x, ast_y, ast_size, ast_size);
+  var targetastx = ffcenterX - 150;
+  var targetasty = ffcenterY;
+  var targetastx2 = 300;
+  var targetasty2 = 1200;
+  // console.log('dist:' + dist(ast_x, ast_y, targetastx, targetasty))
+  if (dist(ast_x, ast_y, targetastx, targetasty) < 10) {
+    switchAstMove = true;
+  }
+  if (switchAstMove == false) {
+    var targetsize = 100;
+
+    ast_x += (targetastx - ast_x) * .011;
+    ast_y += (targetasty - ast_y) * .011;
+    ast_size -= (ast_size - targetsize) * .05;
+    image(asteroid, ast_x, ast_y, ast_size, ast_size);
+  }
+  if (switchAstMove == true) {
+    ast_x += (targetastx2 - ast_x) * .015;
+    ast_y += (targetasty2 - ast_y) * .015;
+
+    image(asteroid, ast_x, ast_y, ast_size, ast_size);
+  }
 
 }
 
+function FFParticle(_x, _y) {
+  this.x = _x;
+  this.y = _y;
+  this.initSize = random(5, 12);
+  this.straySize = random(10, 35);
+  this.size = this.initSize;
+  this.h = 120 + random(70, 120);
+  this.s = 100;
+  this.b = 100;
+  this.a = random(0.1, 1.0);
+  this.spd = random(0.02, 0.08);
+  this.noiseX = 0;
+  this.noiseY = 0;
+  this.noiseSpdX = random(0.001, 0.02);
+  this.noiseSpdY = random(0.001, 0.02);
+
+  this.update = function() {
+    this.size = this.initSize + sin(frameCount * this.spd) * 8;
+    this.noiseX = (noise(frameCount * this.noiseSpdX) - 0.5) * 20;
+    this.noiseY = (noise(frameCount * this.noiseSpdY) - 0.5) * 20;
+  }
+
+  this.display = function() {
+    push();
+    noStroke();
+    colorMode(HSB);
+    fill(this.h, this.s, this.b, this.a);
+    ellipse(this.x + this.straySize + this.noiseX, this.y + this.straySize + this.noiseY, this.size, this.size);
+
+    ellipse(this.x + this.straySize + this.noiseX, this.y + this.straySize + this.noiseY, this.size, this.size);
+    pop();
+  }
+}
 
 
+//scene5
 function timer() {
   count = count - .03333;
   var adjustedTimer = String(Math.round(count * 100) / 100);
@@ -785,7 +902,7 @@ function timer() {
 
 } ////TIMER ENDS
 
-
+//scene6
 function savePicture() {
   save(canvas);
 }
@@ -800,7 +917,7 @@ function runTurbo() {
 
 }
 
-
+//scene7
 function CalibrationgetCalibrationSensorValChangeges() {
   if (callibrationPreStage == true) {
 
