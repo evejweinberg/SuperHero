@@ -36,7 +36,7 @@ var transitionCounter = 0;
 //scene4
 var asteroidHit;
 var scene4Script;
-var Scn4_textcounter = 0;
+var Scn4_textcounter = -30;
 var index = 0;
 var lastCue = 0;
 var Scn4_frmct = 0;
