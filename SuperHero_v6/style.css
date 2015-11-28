@@ -1,0 +1,173 @@
+#container {
+  background-image: url('assets/spacebg.png');
+  background-repeat: repeat;
+}
+
+#loadingOver{
+  display:none;
+}
+
+img.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#scene2header{
+    font-size: 6em;
+}
+
+.header2 {
+  position: absolute;
+  text-align: center;
+  font-size: 3em;
+  left: 50%;
+  /*text-align: CENTER;*/
+  font-family: "brandon-grotesque";
+}
+
+.header3 {
+  position: absolute;
+  text-align: center;
+  font-size: 2.4em;
+  left: 50%;
+  /*text-align: CENTER;*/
+  font-family: "brandon-grotesque";
+}
+
+
+
+p{
+ font-family: "brandon-grotesque"; 
+}
+
+#press{
+  position:absolute;
+  margin: 0px auto;
+}
+#gametimerAll {
+  font-size: 6em;
+  position: absolute;
+  left: 180px;
+  z-index: 10;
+   font-family: "brandon-grotesque";
+   color: white;
+}
+
+.class5{
+  display:none;
+}
+.class3 {
+  display: none;
+  /*position:absolute;*/
+}
+
+.class4 {
+  display: none;
+}
+
+.class2 {
+  display: none;
+}
+
+.class7 {
+  display: none;
+}
+
+
+#sec{
+  position:absolute;
+  left:250px;
+  top:0px;
+   font-family: "brandon-grotesque";
+}
+
+.gametimer {
+  text-align: right;
+   font-family: "brandon-grotesque";
+}
+
+.countdown {
+  display: block;
+  text-align: center;
+  font-size: 500px;
+  font-weight:bold;
+  /*font-family: "brandon-grotesque";*/
+  margin: 0 auto;
+  line-height:1em;
+    z-index: 10;
+}
+#countdowntofly{
+    z-index: 10;
+}
+
+.header {
+  display: block;
+  text-align: center;
+  font-size: 5em;
+  font-family: "brandon-grotesque";
+  background:white;
+}
+
+
+#flaptemp {
+  background: blue;
+}
+
+
+
+#loading {
+  font-size: 5em;
+  margin-left: 0px;
+  margin-right: 0px;
+  color: blue;
+  background-size: cover;
+  /*min-height:100%;*/
+  width: 100%;
+  display: block;
+}
+
+#everything {
+  display: block;
+  margin-left: 0px;
+}
+
+body {
+  background: #92e5c0;
+}
+
+.instructions {
+  z-index: 10px;
+  top: 50%;
+  left: 50%;
+  display: none;
+  position: absolute;
+}
+
+#defaultCanvas0 {
+  position: absolute;
+}
+
+
+
+
+@keyframes nudge {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  
+  50% {
+    transform: translate(150px, 0);
+  }
+  
+  80% {
+    transform: translate(-150px, 0);
+  }
+}
+
+
+
+#newspaper {
+  font-size: 12em;
+  font-family: "brandon-grotesque";
+}
