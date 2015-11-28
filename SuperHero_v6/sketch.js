@@ -288,11 +288,31 @@ function setup() {
       color(0, 166, 155) //blue
     ]
     //scene6
+  back1Button = createButton('FlightSchool');
+  back2Button = createButton('Calibration');
+  back3Button = createButton('Hear The Mission');
+  back4Button = createButton('PlayAgain');
+  scene6buttons = createDiv('');
+  scene6buttons.class('class6').id('scene6buttonholder')
+  back1Button.parent(scene6buttons).class('class6').class('scene6buttons');
+  back2Button.parent(scene6buttons).class('class6').class('scene6buttons');
+  back3Button.parent(scene6buttons).class('class6').class('scene6buttons');
+  back4Button.parent(scene6buttons).class('class6').class('scene6buttons');
   savePhotoButton = createButton('Superhero!');
   savePhotoButton.position(700, 209).class('class6');
   savePhotoButton.mousePressed(savePicture);
-  // newspapertempheader = createP('The Press wants a photo!');
-  // newspapertempheader.class('class6').class('header').id('press');
+  back1Button.mousePressed(function() {
+    changeScene(3)
+  });
+  back2Button.mousePressed(function() {
+    changeScene(7)
+  });
+  back3Button.mousePressed(function() {
+    changeScene(4)
+  });
+  back4Button.mousePressed(function() {
+    changeScene(5)
+  });
   newspaperImage = createImg('assets/newspaper.png');
   newspaperImage.class('class6');
   capture = createCapture(VIDEO);
@@ -350,8 +370,8 @@ function setup() {
   flysmall.class('class4');
 
   //scene5
-  sliderTempCamMove = createSlider(0, 1000, 500);
-  sliderTempCamMove.position(0, 0).class('class5');
+  // sliderTempCamMove = createSlider(0, 1000, 500);
+  // sliderTempCamMove.position(0, 0).class('class5');
   scene5countdown = createP('3');
   scene5countdown.class('countdown').class('class5').id('countdowntofly').position((windowWidth / 2), ((windowHeight / 2)) - 150); //subtract element width/2 and hright
 
@@ -439,7 +459,6 @@ function draw() {
   if (scene2 == true) {
     scene2 = true;
     scene1 = false;
-    // console.log(Scn2frmct);
     Scn2frmct++;
     for (var o = 0; o < totalstars; o++) {
       singlestar[o].display();
@@ -449,28 +468,18 @@ function draw() {
       playSaveMe();
     } else if (Scn2frmct > 87) {
       asteroidBounceandHit();
-
-
     }
-    if (Scn2frmct == 107) {
-      $('#fist').show();
-      $('#fistinst').show();
-      $("#fist").addClass('fistMove'); //why doesn't this work
-      // var changefist
-
-    }
-    // animated earth "save me"
-    // if (Scn2frmct < 324) {
-    //   image(Scn2_frames[Scn2frmct], 0, 0, windowWidth, windowWidth / aspect);
-    // } else {
-    //   image(Scn2_frames[324], 0, 0, windowWidth, windowWidth / aspect);
+    //     if (Scn2frmct == 107) {
+    //       $('#fist').show();
+    //       $('#fistinst').show();
+    //       $("#fist").addClass('fistMove'); //why doesn't this work
     // }
-    // flying test calibration
+
   } else if (scene3 == true) {
     image(Allclouds[3], round(cloudMovex), 50);
     image(Allclouds[3], round(cloudMovex) + 1600, 350);
     image(Allclouds[0], floor(cloudMovex) + 500, 200);
-    image(Allclouds[1], floor(cloudMovex) , 400);
+    image(Allclouds[1], floor(cloudMovex), 400);
     image(Allclouds[2], round(cloudMovex) + 800, 300);
 
     image(spacebg, 0, 0, windowWidth, windowHeight);
@@ -572,9 +581,9 @@ function draw() {
 
     Scn5_frmct++;
 
-//     if (Scn5_frmct > 3000) {
-//       changeScene(6);
-// }
+    //     if (Scn5_frmct > 3000) {
+    //       changeScene(6);
+    // }
 
     if (Scn5_frmct == 1) {
       cd_3.play();
@@ -588,12 +597,12 @@ function draw() {
     if (Scn5_frmct == 180) {
       cd_fly.play();
     }
-    if (Scn5_frmct>180){
+    if (Scn5_frmct > 180) {
       timerStopwatch();
     }
-    gameTimeSecInterval = window.setInterval(function() {//
-        secondMarkerGame--;
-      }, 1000); //wait 5 seconds
+    gameTimeSecInterval = window.setInterval(function() { //
+      secondMarkerGame--;
+    }, 1000); //wait 5 seconds
     // document.getElementById('secondMarkerGame').innerHTML = round(secondMarkerGame);
     if (Scn5_frmct > 60 && Scn5_frmct < 120) {
       // console.log('TWO!')
@@ -610,7 +619,7 @@ function draw() {
     }
 
   } else if (scene6 == true) {
-    newspaperImage.position(windowWidth*.13,windowHeight*.12);
+    newspaperImage.position(windowWidth * .13, windowHeight * .12);
     capture.position(450, 500);
     Scene6counter++;
     if (Scene6counter < 50) {
@@ -645,8 +654,8 @@ function draw() {
 
       text('YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 160);
 
-      calcountdown = window.setInterval(function() {//
-        calibrationOver();//once over call this
+      calcountdown = window.setInterval(function() { //
+        calibrationOver(); //once over call this
       }, 5000); //wait 5 seconds
     }
 
@@ -876,14 +885,14 @@ function asteroidHitandBounce() {
   var targetastx2 = 300;
   var targetasty2 = 1200;
   // console.log('dist:' + dist(ast_x, ast_y, targetastx, targetasty))
-  if (dist(ast_x, ast_y, targetastx, targetasty) < 10) {
+  if (dist(ast_x, ast_y, targetastx, targetasty) < 15) {
     switchAstMove = true;
   }
   if (switchAstMove == false) {
     var targetsize = 100;
 
-    ast_x += (targetastx - ast_x) * .011;
-    ast_y += (targetasty - ast_y) * .011;
+    ast_x += (targetastx - ast_x) * .013;
+    ast_y += (targetasty - ast_y) * .013;
     ast_size -= (ast_size - targetsize) * .05;
     image(asteroid, ast_x, ast_y, ast_size, ast_size);
   }
@@ -935,7 +944,7 @@ function FFParticle(_x, _y) {
 function timerStopwatch() {
   count = count - .03333;
   var adjustedTimer = String(Math.round(count * 100) / 100);
-  console.log(count+"//"+ adjustedTimer);
+  console.log(count + "//" + adjustedTimer);
   document.getElementById("timerStopWatch").innerHTML = adjustedTimer.replace('.', ':'); // watch for spelling
   if (count <= 0) {
     // console.log('setting GAME OVER');
@@ -967,7 +976,7 @@ function CalibrationSensorValChangeges() {
 
     callibrationPreStage = false;
     callibrationStage = true;
-    Begincountdown();//move onto real countdown
+    Begincountdown(); //move onto real countdown
   }
 }
 
@@ -1000,7 +1009,7 @@ function getCalibrationSensorValChange() {
 function Begincountdown() {
   calcountdown = window.setInterval(function() {
     // console.log(callibrationCountdown);
-    Math.round(callibrationCountdown--);//every second do this.
+    Math.round(callibrationCountdown--); //every second do this.
   }, 1000);
 }
 

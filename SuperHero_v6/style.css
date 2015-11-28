@@ -1,6 +1,6 @@
-#container {
-  background-image: url('assets/spacebg.png');
-  background-repeat: repeat;
+#defaultCanvas0{
+  z-index:0px;
+  position:absolute;
 }
 
 #loadingOver{
@@ -22,7 +22,6 @@ img.center {
   text-align: center;
   font-size: 3em;
   left: 50%;
-  /*text-align: CENTER;*/
   font-family: "brandon-grotesque";
 }
 

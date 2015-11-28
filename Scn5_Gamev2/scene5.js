@@ -26,6 +26,7 @@ function setup() {
 
 
 window.onload = function() {
+
     var stats = initStats();
     r = 100;
     g = 200;
@@ -55,14 +56,13 @@ window.onload = function() {
     });
     var plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.receiveShadow = true;
-
-    // rotate and position the plane
-    // plane.rotation.y = 50;
     plane.rotation.x = -99;
     plane.position.x = 0;
     plane.position.y = -10;
     plane.position.z = 29700;
     scene.add(plane);
+
+
 
 
     var geometry = new THREE.BoxGeometry(4, 10, 4);
@@ -113,6 +113,17 @@ window.onload = function() {
       }
     }
 
+    function createMesh(geom) {
+      // assign two materials
+      var meshMaterial = new THREE.MeshNormalMaterial();
+      meshMaterial.side = THREE.DoubleSide;
+      var wireFrameMat = new THREE.MeshBasicMaterial();
+      wireFrameMat.wireframe = true;
+      // create a multimaterial
+      var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial, wireFrameMat]);
+      return mesh;
+    }
+
 
     var matArray = [];
     matArray.push(new THREE.MeshBasicMaterial({
@@ -157,8 +168,8 @@ window.onload = function() {
       var faceMaterial = new THREE.MeshFaceMaterial(matArray);
       var cubeColorfulGeom = new THREE.BoxGeometry(3, 3, 3);
       var cubeColorful = new THREE.Mesh(cubeColorfulGeom, faceMaterial);
-      cubeColorful.position.z = 29700 + (18*k) ;
-      cubeColorful.position.x =  (k * 10);
+      cubeColorful.position.z = 29700 + (18 * k);
+      cubeColorful.position.x = (k * 10);
       cubeColorful.position.y = 10;
       scene.add(cubeColorful);
     }
@@ -256,6 +267,18 @@ window.onload = function() {
         range2 = 0;
         range3 = 0;
       }
+      
+      for (var l = 0; l < 12; l++) {
+    torus = createMesh(new THREE.TorusGeometry(37, 6, 10, 6, Math.PI * 2));
+     torus2 = createMesh(new THREE.TorusGeometry(37, 6, 10, 6, Math.PI * 2));
+    // TorusGeometry(radius, tube, radialSegments, tubularSegments, arc)
+    torus.position.z = camZ-1000+(l*80);
+    // torus2.position.z = 29900;
+    torus.position.x = 0;
+    torus.position.y = 0;
+    scene.add(torus);
+    // scene.add(torus2);
+}
 
       moveforwardRate = range1 + range2 + range3;
       camZ = camZ - moveforwardRate;
@@ -266,10 +289,10 @@ window.onload = function() {
       }
       camera.position.z = camZ;
       camera.position.y = camY;
-    
+
       cubeColorful.rotation.y = cubeColorful.rotation.y + .05;
       cubeColorful.rotation.x = cubeColorful.rotation.x + .05;
-   
+
 
 
       renderer.render(scene, camera);

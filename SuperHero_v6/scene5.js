@@ -26,6 +26,8 @@
 
 
 window.onload = function() {
+    sliderTempCamMove = createSlider(0, 1000, 500);
+    sliderTempCamMove.position(0, 0).class('class5');
     var stats = initStats();
     r = 100;
     g = 200;
@@ -157,8 +159,8 @@ window.onload = function() {
       var faceMaterial = new THREE.MeshFaceMaterial(matArray);
       var cubeColorfulGeom = new THREE.BoxGeometry(3, 3, 3);
       var cubeColorful = new THREE.Mesh(cubeColorfulGeom, faceMaterial);
-      cubeColorful.position.z = 29700 + (18*k) ;
-      cubeColorful.position.x =  (k * 10);
+      cubeColorful.position.z = 29700 + (18 * k);
+      cubeColorful.position.x = (k * 10);
       cubeColorful.position.y = 10;
       scene.add(cubeColorful);
     }
@@ -242,10 +244,10 @@ window.onload = function() {
       bgcolor = "rgb(" + rmapped + "," + gmapped + "," + b + ")";
 
 
-      // if (sliderTempCamMove.value() < (UserArmNum - 400) || sliderTempCamMove.value() > (UserArmNum + 400)) {
-      //   range1 = 4;
-      //   // console.log('range1 = 4')
-      // }
+      if (sliderTempCamMove.value() < (UserArmNum - 400) || sliderTempCamMove.value() > (UserArmNum + 400)) {
+        range1 = 4;
+        // console.log('range1 = 4')
+      }
       // if (sliderTempCamMove.value() < (UserArmNum - 250) || sliderTempCamMove.value() > (UserArmNum + 250)) {
       //   range1 = 2;
       // }
@@ -266,10 +268,10 @@ window.onload = function() {
       }
       camera.position.z = camZ;
       camera.position.y = camY;
-    
+
       cubeColorful.rotation.y = cubeColorful.rotation.y + .05;
       cubeColorful.rotation.x = cubeColorful.rotation.x + .05;
-   
+
 
 
       renderer.render(scene, camera);
