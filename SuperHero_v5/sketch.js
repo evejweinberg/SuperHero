@@ -1,4 +1,5 @@
 //all scenes
+var shadow;
 var centerH = 0;
 var spacebg;
 var earthspin;
@@ -76,8 +77,9 @@ var orbitRadius = 250;
 var switchAstMove = false;
 
 
-//photobooth
+//scene6 //photobooth
 var canvas, capture, mycam, button, img;
+var newspaperImage;
 
 //scene3
 var totalParticles = 12; //number of total particles
@@ -87,6 +89,9 @@ var flightschool1;
 var flightschoolheader;
 var flap1type, flap2type;
 var FlightSchoolSign;
+var cloud;
+var Allclouds = [];
+var cloudMovex = 0;
 
 //scene7 callibration
 var calimgX, calimgY;
@@ -195,10 +200,15 @@ function preload() {
     game_frames.push(loadImage(game)); //push them all into an array
   }
 
-  for (var i = 0; i < totalScn2frames; i++) { //load all the image names
-    aftercape = "assets/AC2_" + nf(i, 3) + ".png";
-    Scn2_frames.push(loadImage(aftercape)); //push them all into an array
+  for (var i = 0; i < 4; i++) { //load all the image names
+    cloud = "assets/cloud_" + nf(i, 2) + ".png";
+    Allclouds.push(loadImage(cloud)); //push them all into an array
   }
+
+  // for (var i = 0; i < totalScn2frames; i++) { //load all the image names
+  //   aftercape = "assets/AC2_" + nf(i, 3) + ".png";
+  //   Scn2_frames.push(loadImage(aftercape)); //push them all into an array
+  // }
 
   cc = loadSound('assets/cc.wav');
   bg01 = loadSound('assets/bg01.mp3');
@@ -210,14 +220,14 @@ function preload() {
 
   //scene4
   saveme = loadSound('assets/saveme.m4a');
-  asteroid = loadImage('assets/asteroid.png');
+  asteroid = loadImage('assets/asteroid2.png');
   transcript = loadStrings('assets/script.txt');
   for (var i = 0; i < earthSpinFrames; i++) { //load all the image names
     earthspin = "assets/earthSpin02_" + nf(Math.round(i), 3) + ".png";
     earthspin_frames.push(loadImage(earthspin)); //push them all into an array
   }
 
-}
+} /////////PRELOAD ENDS///////
 
 //scene 1
 function bgmusic() {
@@ -243,7 +253,7 @@ function setup() {
   loadingOvervid.pause();
   spacebg = loadImage('assets/spaceEdges2.png');
   CapeCalibrationSign = createImg('assets/CapeCalibrationSign.png');
-  CapeCalibrationSign.class('class7').class('bounceInDown').position((windowWidth / 2) - 443, 30);
+  CapeCalibrationSign.class('class7').position((windowWidth / 2) - 443, 30);
 
   function playVid() {
     loadingOvervid.play();
@@ -260,7 +270,7 @@ function setup() {
       color(123, 200, 166), //green
       color(244, 179, 100), //orange 
       color(165, 218, 194), //light green
-      color(231, 8268), //drkpink
+      color(231, 82, 68), //drkpink
       color(0, 166, 155) //blue
     ]
     //scene6
@@ -272,29 +282,29 @@ function setup() {
   savePhotoButton.mousePressed(savePicture);
   newspapertempheader = createP('The Press wants a photo!');
   newspapertempheader.class('class6').class('header').id('press');
+  newspaperImage = createImg('assets/newspaper.png');
+  newspaperImage.class('class6');
+  
 
   //scene 7 callibration
   calibrateSteadyType = createP('');
   calibrationHeader = createP('Put Your Arms Out \r\n Like This');
-  calibrationHeader.class('class7').position((windowWidth / 2) - 240, 200).class('header2');
+  calibrationHeader.class('class7').position((windowWidth / 2) - 240, 150).class('header3');
   calibrateSteadyType.class('class7').id('calibrateHoldSteady');
-  callibrationImage = loadImage('assets/callibration.png');
+  callibrationImage = loadImage('assets/Callibration.png');
+  shadow = loadImage('assets/shadow.png');
 
 
-  // scene 3 flap calibration
+  // scene 3 flight test
   flapTemp1 = createImg('assets/flightTest01.gif');
   flapTemp2 = createImg('assets/turbo.gif');
-  // flapTemp3 = createImg('assets/flytestpre3.png');
   var flapdiv = createDiv('');
   flapdiv.class('flapdiv');
-  flapTemp1.class('class3').id('flap1').class('flap1').parent(flapdiv).position(0, 0);
-  flapTemp2.class('class3').id('flap2').parent(flapdiv).position(-700, 700);
-  // scene3header = createP('we need to test your flight skills, pronto');
-  // scene3header.class('header2').class('class3').id('scene3header');
-  // flightschoolheader = createP('FLIGHT SCHOOL');
-  // flightschoolheader.class('flightschoolheader').class('class3');
+  flapTemp1.class('class3').id('flap1').class('flap1').position(windowWidth / 2 - 250, 240);
+  flapTemp2.class('class3').id('flap2').size(462, 440).position(windowWidth / 2 - 250, 240).class('flyIn3');
+  $("#flap2").hide();
   FlightSchoolSign = createImg('assets/FlightSchoolSign.png');
-  FlightSchoolSign.class('class3').class('bounceInDown').class('sign');
+  FlightSchoolSign.class('class3').class('sign');
 
 
   // scene 2 trigger the glove switch fist
@@ -346,6 +356,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   scene6 = false;
   scene7 = false;
   $(document.body).removeClass('spacebg');
+  $(document.body).removeClass('pressbg');
   $(document.body).removeClass('flighttestbg');
 
   if (num == 1) {
@@ -364,6 +375,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
     scene3 = true;
     $(document.body).addClass('flighttestbg');
     $('.class3').show();
+    $("#flap2").hide();
 
   }
   if (num == 4) {
@@ -378,13 +390,14 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   if (num == 6) {
     scene6 = true;
     $('.class6').show();
+    $(document.body).addClass('pressbg');
   }
   if (num == 7) {
     playcc();
     $('.class7').show();
     scene7 = true;
     timer = setTimeout(function() {
-      CalibrationgetCalibrationSensorValChangeges();
+      CalibrationSensorValChangeges();
     }, 3000);
 
 
@@ -426,16 +439,32 @@ function draw() {
 
     }
     // animated earth "save me"
-    if (Scn2frmct < 324) {
-      image(Scn2_frames[Scn2frmct], 0, 0, windowWidth, windowWidth / aspect);
-    } else {
-      image(Scn2_frames[324], 0, 0, windowWidth, windowWidth / aspect);
-    }
+    // if (Scn2frmct < 324) {
+    //   image(Scn2_frames[Scn2frmct], 0, 0, windowWidth, windowWidth / aspect);
+    // } else {
+    //   image(Scn2_frames[324], 0, 0, windowWidth, windowWidth / aspect);
+    // }
     // flying test calibration
   } else if (scene3 == true) {
+    image(Allclouds[3], round(cloudMovex), 50);
+    image(Allclouds[0], floor(cloudMovex) + 500, 200);
+    image(Allclouds[1], floor(cloudMovex) - 700, 400);
+    image(Allclouds[2], round(cloudMovex) + 800, 300);
+
     image(spacebg, 0, 0, windowWidth, windowHeight);
+    if (frameCount % 15 == 0) {
+      cloudMovex = cloudMovex + 1;
+      console.log('move' + cloudMovex);
+    }
+
+    textAlign(CENTER);
+    fill(0, 0, 0);
+    textSize(35);
+    // text('Your Speed', windowWidth * .66, windowHeight / 2 - 120);
+    // text('MPH', windowWidth * .66, windowHeight / 2 +45);
+    textSize(70);
+    // text(UserArmOutNum, windowWidth * .66, windowHeight / 2 - 35);
     if (readyfortrans == true) {
-      // transitionCounter++;
       transitionTicker = transitionTicker + .3;
       image(transitionToStory[round(transitionTicker)], 0, 0, windowWidth, windowHeight);
       if (transitionTicker > 12) {
@@ -555,13 +584,16 @@ function draw() {
   } else if (scene6 == true) {
     newspaperRotate += (720 - newspaperRotate) * .05;
     newspaperscale += (1 - newspaperscale) * .05;
-    background(57, 42, 48);
+    // background(57, 42, 48);
     push();
     translate(500, 100);
     scale(newspaperscale, newspaperscale);
     rotate(newspaperRotate);
-    capture.position(100, 100);
-    image(img, -200, -400);
+    newspaperImage.position(0,0);
+    capture.position(400, 100);
+    newspaperImage.addClass('rotate');
+    capture.addClass('rotate');
+    // image(img, -200, -400);
     pop();
     Scene6counter++;
     if (Scene6counter < 10) {
@@ -577,11 +609,9 @@ function draw() {
   } else if (scene7 == true) {
     background(246, 209, 66);
     image(spacebg, 0, 0, windowWidth, windowHeight);
-    // if (calibrationStillGoing == true){
-    // image(callibrationImage, calimgX, calimgY, 400, 400);
-    // }
 
     image(callibrationImage, calimgX, calimgY, 400, 400);
+    image(shadow, windowWidth, windowHeight, 100, 20);
 
     textSize(20);
     textAlign(CENTER);
@@ -592,8 +622,8 @@ function draw() {
 
 
     if (calibrateFinal == true) {
-      calimgX++;
-      calimgY--;
+      calimgX = calimgX + 3;
+      calimgY = calimgY - 3;
       textSize(100);
 
       text('YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 160);
@@ -601,22 +631,18 @@ function draw() {
       calcountdown = window.setInterval(function() {
         calibrationOver();
       }, 5000); //wait 5 seconds
+}
 
-    }
-
-    // if (sceneNextScene == true) {
-    //   background(0);
-    // }
 
 
     if (callibrationStage === true) {
       textSize(80);
       text('HOLD STEADY FOR:  ' + callibrationCountdown, windowWidth / 2, 710);
       calimgX = (windowWidth / 2) - 200;
-      calimgY = (windowHeight / 2) - 230;
+      calimgY = (windowHeight / 2) - 160;
 
       if (callibrationCountdown <= 0) {
-        CalibrationgetCalibrationSensorValChangeges2();
+        CalibrationSensorValChangeges2();
         window.clearInterval(calcountdown);
       }
       textSize(20);
@@ -641,16 +667,14 @@ function draw() {
       textSize(30);
       textAlign(CENTER);
       calimgX = (windowWidth / 2) - 200;
-    calimgY = (windowHeight / 2) - 230;
+      calimgY = (windowHeight / 2) - 160;
       text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 120);
       textSize(60);
       if (distanceofvalues > 6) {
 
         t.innerHTML = 'NOT STEADY';
-        // text("NOT STEADY ENOUGH", windowWidth / 2, 580);
       } else if (distanceofvalues < 6) {
         t.innerHTML = 'STEADY';
-        // text("STEADY   ", windowWidth / 2, 580);
       }
       textSize(20);
       text('average fluctuation     ' + averageValpreCal, 40, 100);
@@ -672,7 +696,7 @@ function draw() {
       window.clearTimeout(timer)
 
       timer = setTimeout(function() {
-        CalibrationgetCalibrationSensorValChangeges();
+        CalibrationSensorValChangeges();
       }, 3000);
 
 
@@ -693,9 +717,9 @@ function keyPressed() {
 
   if (scene2 === true) { //do we go here anymore?
     if (keyCode === ENTER) {
-      // console.log('scene2end');
       scene3 = true; //Backstory
       changeScene(3);
+      $("#flap2").hide();
       scene2 = false;
 
     }
@@ -707,10 +731,12 @@ function keyPressed() {
       scene4 = true;
 
     }
-    if (keyCode === 65 || keyCode === 97) { //A KEY
-      $("#flap1").addClass('flyaway'); //why doesn't this work
-      $("#flap2").addClass('fly-in'); //why doesn't this work
-      $("#flap2").addClass('flyfrombottomclass'); //why doesn't this work
+    if (keyCode === 65 || keyCode === 97) { //A KEY // 'speed == 100mph'
+      $("#flap1").addClass('FlyAway2');
+      $("#flap2").show();
+      document.getElementById('targetSpeed').innerHTML = '600';
+      $("#flap2").addClass('FlyIn3');
+
 
       for (var i = 0; i < totalParticles; i++) {
 
@@ -918,7 +944,7 @@ function runTurbo() {
 }
 
 //scene7
-function CalibrationgetCalibrationSensorValChangeges() {
+function CalibrationSensorValChangeges() {
   if (callibrationPreStage == true) {
 
     callibrationPreStage = false;
@@ -927,7 +953,7 @@ function CalibrationgetCalibrationSensorValChangeges() {
   }
 }
 
-function CalibrationgetCalibrationSensorValChangeges2() {
+function CalibrationSensorValChangeges2() {
   if (callibrationStage == true) {
     callibrationStage = false;
     UserArmOutNum = CallibratedRestingNum;
@@ -963,7 +989,7 @@ function Begincountdown() {
 function calibrationOver() {
   if (calibrateFinal == true) {
     calibrateFinal = false;
-    changeScene(3); //switch to flgiht school
+    changeScene(3); //switch to flight school
   }
 }
 

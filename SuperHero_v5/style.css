@@ -14,13 +14,20 @@ img.center {
 
 .header2 {
   position: absolute;
-  /*display: block;*/
   text-align: center;
   font-size: 3em;
   left: 50%;
   /*text-align: CENTER;*/
   font-family: "brandon-grotesque";
-  /*background:white;*/
+}
+
+.header3 {
+  position: absolute;
+  text-align: center;
+  font-size: 2.4em;
+  left: 50%;
+  /*text-align: CENTER;*/
+  font-family: "brandon-grotesque";
 }
 
 
@@ -47,6 +54,7 @@ p{
 }
 .class3 {
   display: none;
+  /*position:absolute;*/
 }
 
 .class4 {
