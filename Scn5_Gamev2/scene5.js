@@ -18,6 +18,10 @@ var range1 = 0;
 var range2 = 0;
 var range3 = 0;
 var t = 0;
+var text1;
+var text2;
+var stars;
+var numStars=10;
 
 function setup() {
   noCanvas();
@@ -37,7 +41,6 @@ $(document).ready(function() {
   // sphere = new THREE.Mesh(new THREE.SphereGeometry(12, 12, 12), material);
 
   window.onload = function() {
-
       var stats = initStats();
       r = 100;
       g = 200;
@@ -45,7 +48,7 @@ $(document).ready(function() {
       bgcolor = "rgb(" + r + "," + g + "," + b + ")";
       // bgcolor = 0xffffff;
       scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, .1, 500);
+      camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, .1, 1000);
       renderer = new THREE.WebGLRenderer({
         alpha: true
       }); //have an alpha channel
@@ -59,6 +62,144 @@ $(document).ready(function() {
       scene.fog = new THREE.Fog("rgb(100,0,100)", 50, 1000); // fog
       // scene.fog=new THREE.FogExp2( 0xffffff, 0.01 );
       document.getElementById("container").appendChild(renderer.domElement);
+
+      //----------------TEXT begin----------------///
+      var textDetails = new function() {
+        this.asGeom = function() {
+          // remove the old plane
+          scene.remove(text1);
+          scene.remove(text2);
+          // create a new one
+
+          var options = {
+            size: 70,
+            height: 40,
+            // weight: "normal",
+            // font: "helvetiker",
+            // bevelThickness: 0,
+            // bevelSize: 0,
+            // bevelSegments: 0,
+            // bevelEnabled: true,
+            // curveSegments: 0,
+            // steps: 1
+          };
+          text1 = createTextMesh(new THREE.TextGeometry("Keep", options));
+          text1.position.z = 28500;
+          text1.position.y = 150;
+          text1.position.x = -3;
+
+          scene.add(text1);
+          text2 = createTextMesh(new THREE.TextGeometry("Going", options));
+          text2.position.z = 28500;
+          text2.position.y = 100;
+          scene.add(text2);
+        };
+
+      };
+
+      textDetails.asGeom();
+
+      function createTextMesh(geom) {
+
+        var meshMaterial = new THREE.MeshPhongMaterial({
+          specular: 'rgb(0,255,0)',
+          color: 'rgb(255,9,0)',
+          shininess: 100,
+          metal: true
+        });
+        var plane = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial]);
+
+        return plane;
+      }
+      //----------------TEXT OVER----------------///
+      function helper(o, x, y, z, w, h, d, c) {
+        var material = new THREE.MeshLambertMaterial({
+          color: c
+        });
+        var geometry = new THREE.CubeGeometry(w, h, d, 1, 1, 1);
+        var mesh = new THREE.Mesh(geometry, material);
+        mesh.position.x = x + (w / 2);
+        mesh.position.y = y - (h / 2);
+        mesh.position.z = z + (d / 2);
+        o.add(mesh);
+      }
+      rainbow = new THREE.Object3D();
+      for (var c = 0; c < 30 - 1; c++) {
+        var yOffset = 8;
+        if (c % 2 == 1) yOffset = 7;
+        var xOffset = (-c * 8) - 16.5;
+        helper(rainbow, xOffset, yOffset, 0, 8, 3, 1, 0xff0000);
+        helper(rainbow, xOffset, yOffset - 3, 0, 8, 3, 1, 0xff9900);
+        helper(rainbow, xOffset, yOffset - 6, 0, 8, 3, 1, 0xffff00);
+        helper(rainbow, xOffset, yOffset - 9, 0, 8, 3, 1, 0x33ff00);
+        helper(rainbow, xOffset, yOffset - 12, 0, 8, 3, 1, 0x0099ff);
+        helper(rainbow, xOffset, yOffset - 15, 0, 8, 3, 1, 0x6633ff);
+      }
+      scene.add(rainbow);
+      rainbow.position.z = 29000;
+      rainbow.position.y = 230;
+      rainbow.position.x = 40;
+      rainbow.rotation.y = 30;
+
+      //--------------RAINBOW LINES END------------------------//
+        //-------------STARS BEGIN--------------------//
+      stars = new Array();
+      for (var state = 0; state < 6; state++) {
+        stars.push(new Array());
+        for (var c = 0; c < numStars; c++) {
+          var star = new THREE.Object3D();
+          star.position.x = Math.random() * 200 - 100;
+          star.position.y = Math.random() * 700;
+          star.position.z = random(27500,28500);
+          buildStar(star, state);
+          scene.add(star);
+          stars[state].push(star);
+        }
+      }
+      function buildStar(star, state) {
+				switch(state){
+					case 0:
+						helper( star, 0, 0, 0, 1, 1, 1, 0xffffff);
+						break;
+					case 1:
+						helper( star, 1, 0, 0, 1, 1, 1, 0xffffff);
+						helper( star,-1, 0, 0, 1, 1, 1, 0xffffff);
+						helper( star, 0, 1, 0, 1, 1, 1, 0xffffff);
+						helper( star, 0,-1, 0, 1, 1, 1, 0xffffff);
+						break;
+					case 2:
+						helper( star, 1, 0, 0, 2, 1, 1, 0xffffff);
+						helper( star,-2, 0, 0, 2, 1, 1, 0xffffff);
+						helper( star, 0, 2, 0, 1, 2, 1, 0xffffff);
+						helper( star, 0,-1, 0, 1, 2, 1, 0xffffff);
+						break;
+					case 3:
+						helper( star, 0, 0, 0, 1, 1, 1, 0xffffff);
+						helper( star, 2, 0, 0, 2, 1, 1, 0xffffff);
+						helper( star,-3, 0, 0, 2, 1, 1, 0xffffff);
+						helper( star, 0, 3, 0, 1, 2, 1, 0xffffff);
+						helper( star, 0,-2, 0, 1, 2, 1, 0xffffff);
+						break;
+					case 4:
+						helper( star, 0, 3, 0, 1, 1, 1, 0xffffff);
+						helper( star, 2, 2, 0, 1, 1, 1, 0xffffff);
+						helper( star, 3, 0, 0, 1, 1, 1, 0xffffff);
+						helper( star, 2,-2, 0, 1, 1, 1, 0xffffff);
+						helper( star, 0,-3, 0, 1, 1, 1, 0xffffff);
+						helper( star,-2,-2, 0, 1, 1, 1, 0xffffff);
+						helper( star,-3, 0, 0, 1, 1, 1, 0xffffff);
+						helper( star,-2, 2, 0, 1, 1, 1, 0xffffff);
+						break;
+					case 5:
+						helper( star, 2, 0, 0, 1, 1, 1, 0xffffff);
+						helper( star,-2, 0, 0, 1, 1, 1, 0xffffff);
+						helper( star, 0, 2, 0, 1, 1, 1, 0xffffff);
+						helper( star, 0,-2, 0, 1, 1, 1, 0xffffff);
+						break;
+				}
+			}
+			
+//-------------STARS END--------------------//
 
       // create the ground plane
       var planeGeometry = new THREE.PlaneGeometry(100, 400, 10);
@@ -310,28 +451,32 @@ $(document).ready(function() {
         range3 = 0;
 
         gmapped = round(map(camZ, 29000, 30000, 0, 255));
-        rmapped = round(map(camZ, 29000, 30000, 10, 150));
-        bmapped = round(map(camZ, 29000, 30000, 30, 150));
-        //why does this go negative?
+        rmapped = round(map(camZ, 27000, 30000, 0, 150));
+        bmapped = round(map(camZ, 25000, 29000, 0, 250));
+        if (rmapped<0){
+          rmapped=0;
+        }
+         if (gmapped<0){
+          gmapped=0;
+        }
 
         renderer.setClearColor(bgcolor, 1);
-        bgcolor = "rgb(" + rmapped + "," + gmapped + "," + b + ")";
+        bgcolor = "rgb(" + rmapped + "," + gmapped + "," + bmapped + ")";
+console.log(bgcolor)
 
-
-        if (sliderTemp.value() < (UserArmNum - 400) || sliderTemp.value() > (UserArmNum + 400)) {
-          range1 = 4;
+        if (sliderTemp.value() < (UserArmNum - 300) || sliderTemp.value() > (UserArmNum + 300)) {
+          range1 = 10;
           // console.log('range1 = 4')
-        }
-        if (sliderTemp.value() < (UserArmNum - 250) || sliderTemp.value() > (UserArmNum + 250)) {
-          range1 = 2;
-        }
-        if (sliderTemp.value() < (UserArmNum - 90) || sliderTemp.value() > (UserArmNum + 90)) {
+        } else if (sliderTemp.value() < (UserArmNum - 250) || sliderTemp.value() > (UserArmNum + 250)) {
+          range1 = 3;
+        } else if (sliderTemp.value() < (UserArmNum - 90) || sliderTemp.value() > (UserArmNum + 90)) {
           range1 = .5;
-        } else {
-          range1 = 0;
-          range2 = 0;
-          range3 = 0;
         }
+        // else {
+        //   range1 = 0;
+        //   range2 = 0;
+        //   range3 = 0;
+        // }
 
         // document.addEventListener('keypress', function(e) {
 
@@ -375,7 +520,28 @@ $(document).ready(function() {
         cubeColorful.rotation.y = cubeColorful.rotation.y + .05;
         cubeColorful.rotation.x = cubeColorful.rotation.x + .05;
 
-
+//------------stars------------------//
+// for(var c=0;c<numStars;c++){
+// 						var tempX=stars[5][c].position.x,
+// 							tempY=stars[5][c].position.y,
+// 							tempZ=stars[5][c].position.z;
+// 						for(var state=5;state>0;state--){
+// 							var star=stars[state][c];
+// 							var star2=stars[state-1][c];
+// 							star.position.x=star2.position.x-8;
+// 							star.position.y=star2.position.y;
+// 							star.position.z=star2.position.z;
+							
+// 						// 	if(star.position.x<-100){
+// 								// star.position.x+=200;
+// 								// star.position.y = Math.random() * 200 - 100;
+// 								// star.position.z = Math.random() * 200 - 100;
+// 						// 	}
+// 						}
+// 						stars[0][c].position.x=tempX;
+// 						stars[0][c].position.y=tempY;
+// 						stars[0][c].position.z=tempZ;
+// 					}
 
         renderer.render(scene, camera);
         requestAnimationFrame(animate);

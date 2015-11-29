@@ -387,25 +387,26 @@
 }
 
 #blank{
-  width:50%;
-  position: relative;
+  width:33%;
+  /*position: relative;*/
   float:left;
+  font-Size: 45px;
 }
 
 #try-it {
-  position: relative;
+  /*position: relative;*/
   font-Size: 45px;
-  top:50%;
-  width:50%;
+  /*top:50%;*/
+  width:33%;
   float: left;
 }
 
 #your-speed{
-  position: relative;
+  /*position: relative;*/
   font-Size: 45px;
   float: left;
-  width:50%;
-  top:50%;
+  width:33%;
+  /*top:50%;*/
 }
 
 #targetSpeed{

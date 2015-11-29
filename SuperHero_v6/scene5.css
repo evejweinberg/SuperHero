@@ -13,3 +13,51 @@
   left: 0px;
   top: 0px;
 }
+
+#userSpeedDiv {
+  position: absolute;
+  line-height: 120%;
+  left: 32%;
+  top: 30%;
+  /*background-color: blue;*/
+  text-align: center;
+  font-size: 3em;
+  /*left: 50%;*/
+  font-family: "brandon-grotesque";
+  color: white;
+  border-radius: 500px;
+  opacity: 0.75;
+}
+
+
+#user-speed {}
+
+#update-speed {
+  font-size: 5em;
+  line-height: 70%;
+}
+
+.gametimer {
+  text-align: right;
+  font-family: "brandon-grotesque";
+}
+
+.countdown {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  text-align: center;
+  font-size: 500px;
+  font-weight: bold;
+  line-height: 80%;
+  left: 50%;
+  top: 50%;
+  margin: -320px 0 0 -500px;
+  /*line-height:1em;*/
+  z-index: 10;
+  color: white;
+}
+
+#countdowntofly {
+  z-index: 10;
+}

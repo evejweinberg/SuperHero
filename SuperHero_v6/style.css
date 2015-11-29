@@ -81,24 +81,6 @@ p{
    font-family: "brandon-grotesque";
 }
 
-.gametimer {
-  text-align: right;
-   font-family: "brandon-grotesque";
-}
-
-.countdown {
-  display: block;
-  text-align: center;
-  font-size: 500px;
-  font-weight:bold;
-  /*font-family: "brandon-grotesque";*/
-  margin: 0 auto;
-  line-height:1em;
-    z-index: 10;
-}
-#countdowntofly{
-    z-index: 10;
-}
 
 .header {
   display: block;

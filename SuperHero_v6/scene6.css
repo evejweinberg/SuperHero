@@ -7,6 +7,7 @@
   position: relative;
   left:50%;
   top:50%;
+  margin: -250px 0 0 -540px;
 }
 #scene6newspaper{
   position: relative;
@@ -32,6 +33,7 @@
 }
 
 .rotate{
+  /*rotation-point:30% 30%;*/
   animation: rotate ease-in 2s;
   animation-iteration-count: 1;
   transform-origin: 50% 50%;

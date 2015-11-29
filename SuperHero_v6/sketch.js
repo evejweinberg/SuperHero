@@ -289,6 +289,7 @@ function setup() {
       color(0, 166, 155) //blue
     ]
     //scene6
+    rotateDiv = createDiv('');
   back1Button = createButton('FlightSchool');
   back2Button = createButton('Calibration');
   back3Button = createButton('Hear The Mission');
@@ -299,7 +300,7 @@ function setup() {
   back2Button.parent(scene6buttons).class('class6').class('scene6buttons');
   back3Button.parent(scene6buttons).class('class6').class('scene6buttons');
   back4Button.parent(scene6buttons).class('class6').class('scene6buttons');
-  savePhotoButton = createButton('Superhero!');
+  savePhotoButton = createButton('Save This Photo!').parent(rotateDiv);
   savePhotoButton.position(700, 209).class('class6');
   savePhotoButton.mousePressed(savePicture);
   back1Button.mousePressed(function() {
@@ -314,7 +315,7 @@ function setup() {
   back4Button.mousePressed(function() {
     changeScene(5)
   });
-  rotateDiv = createDiv('');
+  
   rotateDiv.class('class6').class('newspaperDiv');
     capture = createCapture(VIDEO);
   capture.size(580, 340).class('class6').parent(rotateDiv).id('scene6capture');
@@ -377,7 +378,7 @@ function setup() {
   // sliderTempCamMove = createSlider(0, 1000, 500);
   // sliderTempCamMove.position(0, 0).class('class5');
   scene5countdown = createP('3');
-  scene5countdown.class('countdown').class('class5').id('countdowntofly').position((windowWidth / 2), ((windowHeight / 2)) - 150); //subtract element width/2 and hright
+  scene5countdown.class('countdown').class('class5').id('countdowntofly'); //subtract element width/2 and hright
 
 
   changeScene(1);
@@ -429,6 +430,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   if (num == 5) {
     scene5 = true;
     $('.class5').show();
+    $('#userSpeedDiv').hide();
   }
   if (num == 6) {
     scene6 = true;
@@ -484,12 +486,12 @@ function draw() {
     image(Allclouds[3], round(cloudMovex), 50);
     image(Allclouds[3], round(cloudMovex) + 1600, 350);
     image(Allclouds[0], floor(cloudMovex) + 500, 200);
-    image(Allclouds[1], floor(cloudMovex), 400);
-    image(Allclouds[2], round(cloudMovex) + 800, 300);
+    image(Allclouds[1], floor(cloudMovex)+300, 400);
+    image(Allclouds[2], round(cloudMovex) + 1000, 100);
 
     image(spacebg, 0, 0, windowWidth, windowHeight);
-    if (frameCount % 15 == 0) {
-      cloudMovex = cloudMovex + 1;
+    if (frameCount % 30 == 0) {
+      cloudMovex = cloudMovex + 2;
       // console.log('move' + cloudMovex);
     }
 
@@ -619,6 +621,7 @@ function draw() {
     } else if (Scn5_frmct > 180 && Scn5_frmct < 240) {
       document.getElementById('countdowntofly').innerHTML = 'FLY!';
     } else if (Scn5_frmct == 240) {
+      $('#userSpeedDiv').show();
       document.getElementById('countdowntofly').innerHTML = '';
       counter = setInterval(timer, 33); //1000 will  run it every 1 second
     }
