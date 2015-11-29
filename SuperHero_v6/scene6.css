@@ -1,3 +1,23 @@
+/*.newspaperDivA{*/
+/*  position: absolute;*/
+/*  left:50%;*/
+/*  top:50%;*/
+/*}*/
+.newspaperDiv{
+  position: relative;
+  left:50%;
+  top:50%;
+}
+#scene6newspaper{
+  position: relative;
+  left:0px;
+  top:0px;
+}
+#scene6capture{
+  position: relative;
+  left:275px;
+  top:670px;
+}
 #scene6buttonholder{
   position: absolute;
   z-index:30;

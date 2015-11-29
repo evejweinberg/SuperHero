@@ -238,7 +238,15 @@ window.onload = function() {
       gmapped = round(map(camZ, 29000, 30000, 0, 255));
       rmapped = round(map(camZ, 29000, 30000, 10, 150));
       bmapped = round(map(camZ, 29000, 30000, 30, 150));
-      //why does this go negative?
+     if (gmapped < 0){
+       gmapped = 0
+     }
+     if (rmapped < 0){
+       rmapped = 0
+     }
+     if (bmapped < 0){
+       bmapped = 0
+     }
 
       renderer.setClearColor(bgcolor, 1);
       bgcolor = "rgb(" + rmapped + "," + gmapped + "," + b + ")";
@@ -248,16 +256,16 @@ window.onload = function() {
         range1 = 4;
         // console.log('range1 = 4')
       }
-      // if (sliderTempCamMove.value() < (UserArmNum - 250) || sliderTempCamMove.value() > (UserArmNum + 250)) {
-      //   range1 = 2;
-      // }
-      // if (sliderTempCamMove.value() < (UserArmNum - 90) || sliderTempCamMove.value() > (UserArmNum + 90)) {
-      //   range1 = .5;
-      // } else {
-      //   range1 = 0;
-      //   range2 = 0;
-      //   range3 = 0;
-      // }
+      if (sliderTempCamMove.value() < (UserArmNum - 250) || sliderTempCamMove.value() > (UserArmNum + 250)) {
+        range1 = 2;
+      }
+      if (sliderTempCamMove.value() < (UserArmNum - 90) || sliderTempCamMove.value() > (UserArmNum + 90)) {
+        range1 = .5;
+      } else {
+        range1 = 0;
+        range2 = 0;
+        range3 = 0;
+      }
 
       moveforwardRate = range1 + range2 + range3;
       camZ = camZ - moveforwardRate;

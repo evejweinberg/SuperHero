@@ -113,6 +113,11 @@ var gameTimeSecInterval;
 //scene6 //photobooth
 var canvas, capture, mycam, button, img;
 var newspaperImage;
+var rotateDiv;
+var Scene6counter = 0;
+var newspaperRotate = 0;
+var newspaperscale = 0;
+// var newspapertempheader;
 
 //scene7 callibration
 var calimgX, calimgY;
@@ -152,11 +157,7 @@ var trans;
 var readyfortrans;
 var transitionTicker = 0;
 
-//scene 6
-var Scene6counter = 0;
-var newspaperRotate = 0;
-var newspaperscale = 0;
-// var newspapertempheader;
+
 
 
 
@@ -313,17 +314,20 @@ function setup() {
   back4Button.mousePressed(function() {
     changeScene(5)
   });
-  newspaperImage = createImg('assets/newspaper.png');
-  newspaperImage.class('class6');
-  capture = createCapture(VIDEO);
-  capture.size(570, 436).position(30, 510).class('class6');
+  rotateDiv = createDiv('');
+  rotateDiv.class('class6').class('newspaperDiv');
+    capture = createCapture(VIDEO);
+  capture.size(580, 340).class('class6').parent(rotateDiv).id('scene6capture');
   capture.hide();
+  newspaperImage = createImg('assets/newspaper2.png');
+  newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
+
 
 
   //scene 7 callibration
   calibrateSteadyType = createP('');
   calibrationHeader = createP('Put Your Arms Out \r\n Like This');
-  calibrationHeader.class('class7').position((windowWidth / 2) - 240, 150).class('header3');
+  calibrationHeader.class('class7').position((windowWidth / 2) - 240, 170).class('header3');
   calibrateSteadyType.class('class7').id('calibrateHoldSteady');
   callibrationImage = loadImage('assets/Callibration.png');
   shadow = loadImage('assets/shadow.png');
@@ -430,8 +434,9 @@ function changeScene(num) { //these only get called once, based on a sensor or k
     scene6 = true;
     $('.class6').show();
     $(document.body).addClass('pressbg');
-    newspaperImage.addClass('rotate');
-    capture.addClass('rotate');
+    // newspaperImage.addClass('rotate');
+    rotateDiv.addClass('rotate');
+    // capture.addClass('rotate');
   }
   if (num == 7) {
     playcc();
@@ -619,10 +624,23 @@ function draw() {
     }
 
   } else if (scene6 == true) {
-    newspaperImage.position(windowWidth * .13, windowHeight * .12);
-    capture.position(450, 500);
+    // capture.position(465, 440);
+    // newspaperImage.position(windowWidth * .13, windowHeight * .12);
+    
+    // filter('INVERT');
     Scene6counter++;
-    if (Scene6counter < 50) {
+    for (var i = 0; i < arrayOfBalls.length; i++) {
+      arrayOfBalls[i].display(); //display them all
+      arrayOfBalls[i].explode(); //explode them all
+    }
+
+    for (var i = 0; i < arrayOfBalls.length; i++) {
+
+      if (arrayOfBalls[i].size === 0) {
+        arrayOfBalls.splice(i, 1);
+      }
+    }
+    if (Scene6counter < 10) {
       for (var i = 0; i < totalParticles; i++) {
 
         arrayOfBalls.push(new flapWin1(width / 3, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
@@ -652,7 +670,7 @@ function draw() {
       calimgY = calimgY - 5;
       textSize(100);
 
-      text('YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 160);
+      text('YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 360);
 
       calcountdown = window.setInterval(function() { //
         calibrationOver(); //once over call this
