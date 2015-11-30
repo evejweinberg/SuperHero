@@ -21,7 +21,8 @@ var t = 0;
 var text1;
 var text2;
 var stars;
-var numStars=10;
+var numStars = 10;
+var cloud;
 
 function setup() {
   noCanvas();
@@ -41,6 +42,7 @@ $(document).ready(function() {
   // sphere = new THREE.Mesh(new THREE.SphereGeometry(12, 12, 12), material);
 
   window.onload = function() {
+      //------------------------------------------------//
       var stats = initStats();
       r = 100;
       g = 200;
@@ -112,6 +114,7 @@ $(document).ready(function() {
         return plane;
       }
       //----------------TEXT OVER----------------///
+      //------------RAINBOW BEGINS-----------------
       function helper(o, x, y, z, w, h, d, c) {
         var material = new THREE.MeshLambertMaterial({
           color: c
@@ -142,7 +145,7 @@ $(document).ready(function() {
       rainbow.rotation.y = 30;
 
       //--------------RAINBOW LINES END------------------------//
-        //-------------STARS BEGIN--------------------//
+      //-------------STARS BEGIN--------------------//
       stars = new Array();
       for (var state = 0; state < 6; state++) {
         stars.push(new Array());
@@ -150,69 +153,110 @@ $(document).ready(function() {
           var star = new THREE.Object3D();
           star.position.x = Math.random() * 200 - 100;
           star.position.y = Math.random() * 700;
-          star.position.z = random(27500,28500);
+          star.position.z = random(27500, 28500);
           buildStar(star, state);
           scene.add(star);
           stars[state].push(star);
         }
       }
-      function buildStar(star, state) {
-				switch(state){
-					case 0:
-						helper( star, 0, 0, 0, 1, 1, 1, 0xffffff);
-						break;
-					case 1:
-						helper( star, 1, 0, 0, 1, 1, 1, 0xffffff);
-						helper( star,-1, 0, 0, 1, 1, 1, 0xffffff);
-						helper( star, 0, 1, 0, 1, 1, 1, 0xffffff);
-						helper( star, 0,-1, 0, 1, 1, 1, 0xffffff);
-						break;
-					case 2:
-						helper( star, 1, 0, 0, 2, 1, 1, 0xffffff);
-						helper( star,-2, 0, 0, 2, 1, 1, 0xffffff);
-						helper( star, 0, 2, 0, 1, 2, 1, 0xffffff);
-						helper( star, 0,-1, 0, 1, 2, 1, 0xffffff);
-						break;
-					case 3:
-						helper( star, 0, 0, 0, 1, 1, 1, 0xffffff);
-						helper( star, 2, 0, 0, 2, 1, 1, 0xffffff);
-						helper( star,-3, 0, 0, 2, 1, 1, 0xffffff);
-						helper( star, 0, 3, 0, 1, 2, 1, 0xffffff);
-						helper( star, 0,-2, 0, 1, 2, 1, 0xffffff);
-						break;
-					case 4:
-						helper( star, 0, 3, 0, 1, 1, 1, 0xffffff);
-						helper( star, 2, 2, 0, 1, 1, 1, 0xffffff);
-						helper( star, 3, 0, 0, 1, 1, 1, 0xffffff);
-						helper( star, 2,-2, 0, 1, 1, 1, 0xffffff);
-						helper( star, 0,-3, 0, 1, 1, 1, 0xffffff);
-						helper( star,-2,-2, 0, 1, 1, 1, 0xffffff);
-						helper( star,-3, 0, 0, 1, 1, 1, 0xffffff);
-						helper( star,-2, 2, 0, 1, 1, 1, 0xffffff);
-						break;
-					case 5:
-						helper( star, 2, 0, 0, 1, 1, 1, 0xffffff);
-						helper( star,-2, 0, 0, 1, 1, 1, 0xffffff);
-						helper( star, 0, 2, 0, 1, 1, 1, 0xffffff);
-						helper( star, 0,-2, 0, 1, 1, 1, 0xffffff);
-						break;
-				}
-			}
-			
-//-------------STARS END--------------------//
 
-      // create the ground plane
-      var planeGeometry = new THREE.PlaneGeometry(100, 400, 10);
-      var planeMaterial = new THREE.MeshLambertMaterial({
-        color: "rgb(255,0,0)"
-      });
-      var plane = new THREE.Mesh(planeGeometry, planeMaterial);
-      plane.receiveShadow = true;
-      plane.rotation.x = -99;
-      plane.position.x = 0;
-      plane.position.y = -10;
-      plane.position.z = 29700;
-      scene.add(plane);
+      function buildStar(star, state) {
+        switch (state) {
+          case 0:
+            helper(star, 0, 0, 0, 1, 1, 1, 0xffffff);
+            break;
+          case 1:
+            helper(star, 1, 0, 0, 1, 1, 1, 0xffffff);
+            helper(star, -1, 0, 0, 1, 1, 1, 0xffffff);
+            helper(star, 0, 1, 0, 1, 1, 1, 0xffffff);
+            helper(star, 0, -1, 0, 1, 1, 1, 0xffffff);
+            break;
+          case 2:
+            helper(star, 1, 0, 0, 2, 1, 1, 0xffffff);
+            helper(star, -2, 0, 0, 2, 1, 1, 0xffffff);
+            helper(star, 0, 2, 0, 1, 2, 1, 0xffffff);
+            helper(star, 0, -1, 0, 1, 2, 1, 0xffffff);
+            break;
+          case 3:
+            helper(star, 0, 0, 0, 1, 1, 1, 0xffffff);
+            helper(star, 2, 0, 0, 2, 1, 1, 0xffffff);
+            helper(star, -3, 0, 0, 2, 1, 1, 0xffffff);
+            helper(star, 0, 3, 0, 1, 2, 1, 0xffffff);
+            helper(star, 0, -2, 0, 1, 2, 1, 0xffffff);
+            break;
+          case 4:
+            helper(star, 0, 3, 0, 1, 1, 1, 0xffffff);
+            helper(star, 2, 2, 0, 1, 1, 1, 0xffffff);
+            helper(star, 3, 0, 0, 1, 1, 1, 0xffffff);
+            helper(star, 2, -2, 0, 1, 1, 1, 0xffffff);
+            helper(star, 0, -3, 0, 1, 1, 1, 0xffffff);
+            helper(star, -2, -2, 0, 1, 1, 1, 0xffffff);
+            helper(star, -3, 0, 0, 1, 1, 1, 0xffffff);
+            helper(star, -2, 2, 0, 1, 1, 1, 0xffffff);
+            break;
+          case 5:
+            helper(star, 2, 0, 0, 1, 1, 1, 0xffffff);
+            helper(star, -2, 0, 0, 1, 1, 1, 0xffffff);
+            helper(star, 0, 2, 0, 1, 1, 1, 0xffffff);
+            helper(star, 0, -2, 0, 1, 1, 1, 0xffffff);
+            break;
+        }
+      }
+
+      //-------------STARS END--------------------//
+      //----------particle system begins---------------//
+      var controls = new function() {
+        this.size = 4;
+        this.transparent = true;
+        this.opacity = 0.6;
+        this.vertexColors = true;
+        this.color = 0xffffff;
+        this.sizeAttenuation = true;
+        this.rotateSystem = true;
+
+        this.redraw = function() {
+          if (scene.getObjectByName("particles")) {
+            scene.remove(scene.getObjectByName("particles"));
+          }
+          createParticles(controls.size, controls.transparent, controls.opacity, controls.vertexColors, controls.sizeAttenuation, controls.color);
+        };
+      };
+      controls.redraw();
+
+      function createParticles(size, transparent, opacity, vertexColors, sizeAttenuation, color) {
+
+
+        var geom = new THREE.Geometry();
+        var material = new THREE.PointCloudMaterial({
+          size: size,
+          transparent: transparent,
+          opacity: opacity,
+          vertexColors: vertexColors,
+
+          sizeAttenuation: sizeAttenuation,
+          color: color
+        });
+
+
+        var range = 1200;
+        var rangeZ = 10200;
+        var minY = 200;
+        for (var i = 0; i < 16000; i++) {
+          var particle = new THREE.Vector3(Math.random() * range - range / 2, Math.random() * range + minY, Math.random() * rangeZ + 18000);
+          geom.vertices.push(particle);
+          var color = new THREE.Color(0x000000);
+          color.setHSL(color.getHSL().h, color.getHSL().s, Math.random() * color.getHSL().l);
+          geom.colors.push(new THREE.Color(Math.random() * 0x00ffff));
+          // geom.colors.push(color);
+
+        }
+
+        cloud = new THREE.PointCloud(geom, material);
+        cloud.name = "particles";
+        scene.add(cloud);
+      }
+
+      //----------partucle system ends---------------//
 
 
 
@@ -226,9 +270,6 @@ $(document).ready(function() {
         color: 0xb0af00 //mustard
       });
 
-      // var cubeB = createMesh(new THREE.BoxGeometry(10, 10, 10, 1, 1, 1));
-      // scene.add(cubeB);
-      // cubeB.position.z = 29900;
 
       for (var j = 0; j < 70; j++) {
         for (var i = 0; i < 5; i++) {
@@ -255,20 +296,13 @@ $(document).ready(function() {
             blending: THREE.MultiplyBlending
           })
           var cubey = new THREE.SceneUtils.createMultiMaterialObject(cubeGeometryB, [cubeMaterial, depthMat]);
-          //or this one simpler:
-          // var cubey = new THREE.Mesh(cubeGeometryB, materialBlue);
-          cubey.castShadow = true;
-          cubey.position.z = 30000 - (j * 30);
-          cubeB.position.z = 31000 - (j * 40);
-          cubeB.position.x = 90 - (40 * i);
+          cubeB.castShadow = true;
+          cubeB.position.set(90 - (40 * i), 1, 31000 - (j * 40));
           planeRep.position.z = 31000 - (j * 40);
           planeRep.position.x = 100 - (i * 90);
           planeRep.position.y = -4;
           planeRep.rotation.x = 30;
-          cubey.position.x = 9 - (i * 5);
-          cubey.position.y = -3;
           scene.add(planeRep);
-          // scene.add(cubey);
           scene.add(cubeB);
         }
       }
@@ -453,19 +487,19 @@ $(document).ready(function() {
         gmapped = round(map(camZ, 29000, 30000, 0, 255));
         rmapped = round(map(camZ, 27000, 30000, 0, 150));
         bmapped = round(map(camZ, 25000, 29000, 0, 250));
-        if (rmapped<0){
-          rmapped=0;
+        if (rmapped < 0) {
+          rmapped = 0;
         }
-         if (gmapped<0){
-          gmapped=0;
+        if (gmapped < 0) {
+          gmapped = 0;
         }
 
         renderer.setClearColor(bgcolor, 1);
         bgcolor = "rgb(" + rmapped + "," + gmapped + "," + bmapped + ")";
-console.log(bgcolor)
+        console.log(bgcolor)
 
         if (sliderTemp.value() < (UserArmNum - 300) || sliderTemp.value() > (UserArmNum + 300)) {
-          range1 = 10;
+          range1 = 8;
           // console.log('range1 = 4')
         } else if (sliderTemp.value() < (UserArmNum - 250) || sliderTemp.value() > (UserArmNum + 250)) {
           range1 = 3;
@@ -520,28 +554,28 @@ console.log(bgcolor)
         cubeColorful.rotation.y = cubeColorful.rotation.y + .05;
         cubeColorful.rotation.x = cubeColorful.rotation.x + .05;
 
-//------------stars------------------//
-// for(var c=0;c<numStars;c++){
-// 						var tempX=stars[5][c].position.x,
-// 							tempY=stars[5][c].position.y,
-// 							tempZ=stars[5][c].position.z;
-// 						for(var state=5;state>0;state--){
-// 							var star=stars[state][c];
-// 							var star2=stars[state-1][c];
-// 							star.position.x=star2.position.x-8;
-// 							star.position.y=star2.position.y;
-// 							star.position.z=star2.position.z;
-							
-// 						// 	if(star.position.x<-100){
-// 								// star.position.x+=200;
-// 								// star.position.y = Math.random() * 200 - 100;
-// 								// star.position.z = Math.random() * 200 - 100;
-// 						// 	}
-// 						}
-// 						stars[0][c].position.x=tempX;
-// 						stars[0][c].position.y=tempY;
-// 						stars[0][c].position.z=tempZ;
-// 					}
+        //------------stars------------------//
+        // for(var c=0;c<numStars;c++){
+        // 						var tempX=stars[5][c].position.x,
+        // 							tempY=stars[5][c].position.y,
+        // 							tempZ=stars[5][c].position.z;
+        // 						for(var state=5;state>0;state--){
+        // 							var star=stars[state][c];
+        // 							var star2=stars[state-1][c];
+        // 							star.position.x=star2.position.x-8;
+        // 							star.position.y=star2.position.y;
+        // 							star.position.z=star2.position.z;
+
+        // 						// 	if(star.position.x<-100){
+        // 								// star.position.x+=200;
+        // 								// star.position.y = Math.random() * 200 - 100;
+        // 								// star.position.z = Math.random() * 200 - 100;
+        // 						// 	}
+        // 						}
+        // 						stars[0][c].position.x=tempX;
+        // 						stars[0][c].position.y=tempY;
+        // 						stars[0][c].position.z=tempZ;
+        // 					}
 
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
