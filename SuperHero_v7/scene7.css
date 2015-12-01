@@ -1,12 +1,19 @@
 #calibrateHoldSteady {
   position:absolute;
   text-Align: CENTER;
-  font-size: 200px;
+  font-size: 170px;
   font-family: "brandon-grotesque";
   font-weight: bold;
   left:50%;
+  top:80%;
+  margin-left:-200px;
   color: white;
   z-index:30px;
+}
+
+.yellowbg{
+  background-image: url('assets/papertxtyellow.png');
+  background-repeat: repeat;
 }
 
 .calibrateHoldSteady {

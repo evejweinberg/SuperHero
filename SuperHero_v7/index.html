@@ -56,15 +56,18 @@
 
 <body>
 
-  <div id='everything'></div>
+  <!--<div id='everything'></div>-->
+  <div id="scene3bg" class="class3"></div>
   <div id="container" class="class5" style="margin: 0;">
     <div id="userSpeedDiv" class="class5">
       <p id="user-speed"><strong>Your Speed<br><span id="update-speed">000</span><br>MPH</strong></p>
     </div>
   </div>
   <div id='gametimerAll' class='class5'>
+    
+    <p id =secondMarkerGame class="class5"></p>
     <span id="timerStopWatch" class="gametimer class5"></span>
-    <span id="sec" class="class5">sec</span>
+    <span id="sec" class="class5"></span>
   </div>
   <div class="class4 forcefieldDiv">
   </div>
@@ -97,10 +100,10 @@
 <!--    </div>-->
 
   <div id="loading" class="class1">
-    <video id="loadingvideo" width='100%' height='100%' autoplay loop>
+    <video id="loadingvideo" autostart="false" width='100%' height='100%' autoplay loop>
       <source src="assets/Intro5A.mp4" type="video/mp4" /> Your browser does not support the video tag.
     </video>
-    <video id="loadingOver" width='100%' height='100%' autoplay>
+    <video id="loadingOver" autostart="false" width='100%' height='100%'>
       <source src="assets/Intro6A.mp4" type="video/mp4" /> Your browser does not support the video tag.
     </video>
   </div>

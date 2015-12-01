@@ -1,9 +1,21 @@
 //all scenes
+var AllScenesMPH = 0;
 var shadow;
 var centerH = 0;
 var spacebg;
 var earthspin;
 var earthspin_frames = [];
+var NumstoCallibrateDuringFlight = [];
+var SensorVal;
+var distanceofvalues = 0;
+var MovingAverage = 0;
+var CamSpeed = 0;
+// var inDataGloveL = 0;
+var range1 = 0,
+  range2 = 0,
+  range3 = 0,
+  range4 = 0,
+  range5 = 0;
 var scene1 = true;
 var scene2 = false;
 var scene3 = false;
@@ -36,6 +48,8 @@ var cloud;
 var Allclouds = [];
 var cloudMovex = 0;
 var Scn3_frmct = 0;
+var scene3A = true;
+var scene3B = false;
 
 
 //scene4
@@ -139,6 +153,7 @@ var isCallibrationReady = [];
 var NumstoCallibrate = [];
 var SensorVal, gd;
 var distanceofvalues = 0;
+var distanceofvaluesFlying = 0;
 var averageValpreCal = 0;
 var sum = 0;
 var callibrationPreStage = true;
@@ -148,12 +163,15 @@ var calibrationHeader;
 var sceneNextScene = false;
 var timer;
 var CallibratedRestingNum = 0;
-var callibrationCountdown = 5;
+var callibrationCountdown = 3;
 var calcountdown;
 var UserArmOutNum = 0;
+
+//serial
 var serial; // variable to hold an instance of the serialport library
-var portName = '/dev/cu.usbmodemfa131'; // fill in your serial port name here
-var inData0, inData1, inData2; // for incoming serial data
+var portName = '/dev/cu.usbmodemfd121'; // fill in your serial port name here
+var inData0, inDataGloveL, newDataZ; // for incoming serial data
+var newDataZ, newDataY, newDataX; //alt names for incoming data
 var xPos = 0;
 var loadingOvervid;
 var CapeCalibrationSign;
@@ -297,11 +315,11 @@ function setup() {
       color(0, 166, 155) //blue
     ]
     //scene6
-    rotateDiv = createDiv('');
+  rotateDiv = createDiv('');
   back1Button = createButton('FlightSchool');
   back2Button = createButton('Calibration');
   back3Button = createButton('Hear The Mission');
-  back4Button = createButton('PlayAgain');
+  back4Button = createButton('Play Again');
   scene6buttons = createDiv('');
   scene6buttons.class('class6').id('scene6buttonholder')
   back1Button.parent(scene6buttons).class('class6').class('scene6buttons');
@@ -323,9 +341,9 @@ function setup() {
   back4Button.mousePressed(function() {
     changeScene(5)
   });
-  
+
   rotateDiv.class('class6').class('newspaperDiv');
-    capture = createCapture(VIDEO);
+  capture = createCapture(VIDEO);
   capture.size(580, 340).class('class6').parent(rotateDiv).id('scene6capture');
   capture.hide();
   newspaperImage = createImg('assets/newspaper2.png');
@@ -353,7 +371,7 @@ function setup() {
   flapTemp2.class('class3').id('flap2').size(462, 440).position(windowWidth / 2 - 250, 240).class('flyIn3');
   $("#flap2").hide();
   FlightSchoolSign = createImg('assets/FlightSchoolSign.png');
-  FlightSchoolSign.class('class3').class('sign');
+  FlightSchoolSign.class('class3').class('sign').position((windowWidth / 2) - 443, 30);
 
 
   // scene 2 trigger the glove switch fist
@@ -408,8 +426,12 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   scene6 = false;
   scene7 = false;
   $(document.body).removeClass('spacebg');
+  $(document.body).removeClass('yellowbg');
   $(document.body).removeClass('pressbg');
   $(document.body).removeClass('flighttestbg');
+  Scn5_frmct = 0;
+  camZ = 30000;
+  camY = 0;
 
   if (num == 1) {
     $('.class1').show();
@@ -437,10 +459,15 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   }
   if (num == 5) {
     scene5 = true;
+    camZ = 30000;
+    camY = 0;
     $('.class5').show();
     $('#userSpeedDiv').hide();
   }
   if (num == 6) {
+    Scn5_frmct = 0;
+    camZ = 30000;
+    camY = 0;
     scene6 = true;
     $('.class6').show();
     $(document.body).addClass('pressbg');
@@ -451,6 +478,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   if (num == 7) {
     playcc();
     $('.class7').show();
+    $(document.body).addClass('yellowbg');
     scene7 = true;
     timer = setTimeout(function() {
       CalibrationSensorValChangeges();
@@ -467,11 +495,27 @@ function changeScene(num) { //these only get called once, based on a sensor or k
 
 
 function draw() {
+  // windowResized();
   centerH = (windowWidth / 2);
+  AverageAcellerometerNums();
+  getSpeed();
   bgmusic();
   clear();
+  if (scene1 === true) {
+    if (inDataGloveL === 1) {
+      console.log('button is:' + inDataGloveL);
 
-  if (scene2 == true) {
+      $('#loadingvideo').hide();
+      $('#loadingOver').show();
+      loadingOvervid.play();
+      $('video#loadingOver').bind('ended', function() {
+        $('#loading').remove();
+        changeScene(7);
+      });
+
+
+    }
+  } else if (scene2 == true) {
     scene2 = true;
     scene1 = false;
     Scn2frmct++;
@@ -491,10 +535,35 @@ function draw() {
     // }
 
   } else if (scene3 == true) {
+    document.getElementById("yourSpeed").innerHTML = AllScenesMPH;
+    if (scene3A == true) {
+
+      if (AllScenesMPH > 100) {
+        $("#flap1").addClass('FlyAway2');
+        $("#flap2").show();
+        document.getElementById('targetSpeed').innerHTML = '500';
+        $("#flap2").addClass('FlyIn3');
+        scene3A = false;
+        scene3B = true;
+      }
+    }
+    if (scene3B == true) {
+      if (AllScenesMPH > 500) {
+        for (var i = 0; i < totalParticles; i++) {
+
+          arrayOfBalls.push(new flapWin1(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+
+          arrayOfBalls.push(new flapWin2(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+        }
+        readyfortrans = true;
+
+      }
+    }
+
     image(Allclouds[3], round(cloudMovex), 50);
     image(Allclouds[3], round(cloudMovex) + 1600, 350);
     image(Allclouds[0], floor(cloudMovex) + 500, 200);
-    image(Allclouds[1], floor(cloudMovex)+300, 400);
+    image(Allclouds[1], floor(cloudMovex) + 300, 400);
     image(Allclouds[2], round(cloudMovex) + 1000, 100);
 
     image(spacebg, 0, 0, windowWidth, windowHeight);
@@ -503,13 +572,6 @@ function draw() {
       // console.log('move' + cloudMovex);
     }
 
-    textAlign(CENTER);
-    fill(0, 0, 0);
-    textSize(35);
-    // text('Your Speed', windowWidth * .66, windowHeight / 2 - 120);
-    // text('MPH', windowWidth * .66, windowHeight / 2 +45);
-    textSize(70);
-    // text(UserArmOutNum, windowWidth * .66, windowHeight / 2 - 35);
     if (readyfortrans == true) {
       transitionTicker = transitionTicker + .3;
       image(transitionToStory[round(transitionTicker)], 0, 0, windowWidth, windowHeight);
@@ -589,16 +651,11 @@ function draw() {
 
 
   } else if (scene5 == true) {
-    // background(246, 209, 66);
-    dearEarth.stop();
-    // image(game_frames[currentframe], 0, 0, windowWidth, windowWidth / aspect);
-    // image(turbo_frames[turboFrameNum], 0, 0, windowWidth, windowWidth / aspect);
+    document.getElementById("update-speed").innerHTML = AllScenesMPH;
 
+    dearEarth.stop();
     Scn5_frmct++;
 
-    //     if (Scn5_frmct > 3000) {
-    //       changeScene(6);
-    // }
 
     if (Scn5_frmct == 1) {
       cd_3.play();
@@ -613,15 +670,20 @@ function draw() {
       cd_fly.play();
     }
     if (Scn5_frmct > 180) {
-      timerStopwatch();
-    }
-    gameTimeSecInterval = window.setInterval(function() { //
-      secondMarkerGame--;
-    }, 1000); //wait 5 seconds
-    // document.getElementById('secondMarkerGame').innerHTML = round(secondMarkerGame);
-    if (Scn5_frmct > 60 && Scn5_frmct < 120) {
-      // console.log('TWO!')
+      // timerStopwatch();
+      window.setInterval(function() { //
+        if (Scn5_frmct % 60 == 0) {
+          secondMarkerGame--;
+        }
+        document.getElementById('sec').innerHTML = 'sec';
+        document.getElementById('secondMarkerGame').innerHTML = secondMarkerGame;
+      }, 10000); //1 sec
 
+
+
+    }
+
+    if (Scn5_frmct > 60 && Scn5_frmct < 120) {
       document.getElementById('countdowntofly').innerHTML = '2';
     } else if (Scn5_frmct > 120 && Scn5_frmct < 180) {
       // console.log('ONE!')
@@ -635,9 +697,10 @@ function draw() {
     }
 
   } else if (scene6 == true) {
+
     // capture.position(465, 440);
     // newspaperImage.position(windowWidth * .13, windowHeight * .12);
-    
+
     // filter('INVERT');
     Scene6counter++;
     for (var i = 0; i < arrayOfBalls.length; i++) {
@@ -662,26 +725,19 @@ function draw() {
 
 
   } else if (scene7 == true) {
-    background(246, 209, 66);
     image(spacebg, 0, 0, windowWidth, windowHeight);
-
     image(callibrationImage, calimgX, calimgY, 400, 400);
-    image(shadow, windowWidth, windowHeight);
+    image(shadow, windowWidth / 2, windowHeight * .8);
 
-    textSize(20);
-    textAlign(CENTER);
-    text('raw value     ' + inData2, 80, 60);
-    // text('fluctuation     ' + distanceofvalues, 40, 80);
-    gd.display();
-    SensorVal = inData2;
+    SensorVal = newDataZ;
 
 
     if (calibrateFinal == true) {
-      calimgX = calimgX + 5;
-      calimgY = calimgY - 5;
+      calimgX = calimgX + 6;
+      calimgY = calimgY - 6;
       textSize(100);
 
-      text('YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, (windowHeight / 2) - 360);
+      text('YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, windowHeight / 2);
 
       calcountdown = window.setInterval(function() { //
         calibrationOver(); //once over call this
@@ -692,7 +748,7 @@ function draw() {
 
     if (callibrationStage === true) {
       textSize(80);
-      text('HOLD STEADY FOR:  ' + callibrationCountdown, windowWidth / 2, 710);
+      text('HOLD STEADY FOR:  ' + callibrationCountdown, windowWidth / 2, 730);
       calimgX = (windowWidth / 2) - 200;
       calimgY = (windowHeight / 2) - 160;
 
@@ -701,7 +757,7 @@ function draw() {
         window.clearInterval(calcountdown);
       }
       textSize(20);
-      text('resting value    ' + CallibratedRestingNum, 40, 150);
+      // text('resting value    ' + CallibratedRestingNum, 40, 150);
       NumstoCallibrate.push(SensorVal); //now that we're steady, lets gather the actual number
       if (NumstoCallibrate.length > 100) { // write over the 100 numbers in the array
         NumstoCallibrate.splice(0, 1);
@@ -729,10 +785,10 @@ function draw() {
 
         t.innerHTML = 'NOT STEADY';
       } else if (distanceofvalues < 6) {
-        t.innerHTML = 'STEADY';
+        t.innerHTML = 'HOLD STEADY FOR ' + callibrationCountdown;
       }
-      textSize(20);
-      text('average fluctuation     ' + averageValpreCal, 40, 100);
+      // textSize(20);
+      // text('average fluctuation     ' + averageValpreCal, 40, 100);
       isCallibrationReady.push(distanceofvalues);
       if (isCallibrationReady.length > 10) { // write over the 10 numbers in the array
         isCallibrationReady.splice(0, 1);
@@ -789,7 +845,7 @@ function keyPressed() {
     if (keyCode === 65 || keyCode === 97) { //A KEY // 'speed == 100mph'
       $("#flap1").addClass('FlyAway2');
       $("#flap2").show();
-      document.getElementById('targetSpeed').innerHTML = '600';
+      document.getElementById('targetSpeed').innerHTML = '500';
       $("#flap2").addClass('FlyIn3');
 
 
@@ -830,9 +886,6 @@ function keyPressed() {
         $('#loading').remove();
         changeScene(7);
       });
-      // EndIntro();
-      // // scene7 = true;
-      // // changeScene(7);
 
     }
   } else if (scene7 === true) {
@@ -914,20 +967,20 @@ function asteroidHitandBounce() {
   var targetastx2 = 300;
   var targetasty2 = 1200;
   // console.log('dist:' + dist(ast_x, ast_y, targetastx, targetasty))
-  if (dist(ast_x, ast_y, targetastx, targetasty) < 15) {
+  if (dist(ast_x, ast_y, targetastx, targetasty) < 19) {
     switchAstMove = true;
   }
   if (switchAstMove == false) {
-    var targetsize = 100;
+    var targetsize = 120;
 
-    ast_x += (targetastx - ast_x) * .013;
-    ast_y += (targetasty - ast_y) * .013;
+    ast_x += (targetastx - ast_x) * .015;
+    ast_y += (targetasty - ast_y) * .015;
     ast_size -= (ast_size - targetsize) * .05;
     image(asteroid, ast_x, ast_y, ast_size, ast_size);
   }
   if (switchAstMove == true) {
-    ast_x += (targetastx2 - ast_x) * .015;
-    ast_y += (targetasty2 - ast_y) * .015;
+    ast_x += (targetastx2 - ast_x) * .018;
+    ast_y += (targetasty2 - ast_y) * .018;
 
     image(asteroid, ast_x, ast_y, ast_size, ast_size);
   }
@@ -1042,12 +1095,83 @@ function Begincountdown() {
   }, 1000);
 }
 
+function AverageAcellerometerNums() {
+  NumstoCallibrateDuringFlight.push(newDataZ);
+  if (NumstoCallibrateDuringFlight.length > 100) { // write over the 100 numbers in the array
+    NumstoCallibrateDuringFlight.splice(0, 1);
+  }
+  sum = 0;
+  for (var i = 0; i < NumstoCallibrateDuringFlight.length; i++) { //100 times
+    var num = Number(NumstoCallibrateDuringFlight[i]); //raw sensor numbers
+    sum = sum + num; //add them all up
+  }
+  MovingAverage = sum / NumstoCallibrateDuringFlight.length;
+  distanceofvaluesFlying = round(abs(MovingAverage - newDataZ));
+}
+
+function getSpeed() {
+  // console.log(range1+ range2+range3+range4+range5)
+  if (distanceofvaluesFlying < 15) {
+    range1 = 0;
+    // console.log('range1 is:   ' + range1);
+  } else if (distanceofvaluesFlying >= 15 && distanceofvaluesFlying < 70) {
+    //max
+    range2 = range2 + 0.5;
+    if (range2 > 1) {
+      range2 = 1;
+    }
+    console.log('range2 is:   ' + range2);
+  } else if (distanceofvaluesFlying >= 70 && distanceofvaluesFlying < 210) {
+    range3 = range3 + 0.55;
+    if (range3 > 4) {
+      range3 = 4;
+      console.log('range3 is:   ' + range3);
+    }
+  } else if (distanceofvaluesFlying >= 210 && distanceofvaluesFlying < 300) {
+    range4 = range4 + 0.72;
+    if (range4 > 6) {
+      range4 = 6;
+    }
+  } else if (distanceofvaluesFlying >= 300 && distanceofvaluesFlying < 400) {
+    range5 = range5 + 0.82;
+    if (range5 > 9) {
+      range5 = 9;
+    }
+  }
+  range2 = range2 - 0.06;
+  range3 = range3 - 0.04;
+  range4 = range4 - 0.03;
+  range5 = range5 - 0.01;
+  if (range2 < 0) {
+    range2 = 0;
+  }
+  if (range3 < 0) {
+    range3 = 0;
+  }
+  if (range4 < 0) {
+    range4 = 0;
+  }
+  if (range5 < 0) {
+    range5 = 0;
+  }
+
+  CamSpeed = range1 + range2 + range3 + range4 + range5;
+  if (frameCount % 30 == 0) {
+    AllScenesMPH = round(map(CamSpeed, 0, 20, 0, 650));
+    console.log('MPH = ' + AllScenesMPH)
+  }
+  //max CamSpeed = 20 0+2+4+5+8;
+}
+
 function calibrationOver() {
   if (calibrateFinal == true) {
     calibrateFinal = false;
     changeScene(3); //switch to flight school
   }
 }
+
+////////////////ARE YOU SERIAL?///////////////////
+/////////////////////////////////////////////////
 
 function serverConnected() {
   println('connected to server.');
@@ -1057,10 +1181,6 @@ function portOpen() {
   println('the serial port opened.')
 }
 
-// function serialEvent() {
-//   inData = Number(serial.read());
-// }
-
 function serialError(err) {
   println('Something went wrong with the serial port. ' + err);
 }
@@ -1069,7 +1189,8 @@ function serialEvent() {
   var inString = serial.readStringUntil('\r\n');
   if (inString.length > 0) {
     var sensors = split(inString, ',');
-    inData2 = int(sensors[0]);
-    console.log(inData2);
+    inDataGloveL = int(sensors[0]);
+    newDataZ = int(sensors[1]);
+
   }
 }

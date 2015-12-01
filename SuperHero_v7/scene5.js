@@ -1,8 +1,8 @@
-function setup() {
-  noCanvas();
-  sliderTemp = createSlider(0, 1000, 500);
-  sliderTemp.position(0, 0).class('class7');
-}
+// function setup() {
+//   noCanvas();
+//   sliderTemp = createSlider(0, 1000, 500);
+//   sliderTemp.position(0, 0).class('class7');
+// }
 
 $(document).ready(function() {
 
@@ -455,15 +455,14 @@ $(document).ready(function() {
       function animate() { //looping function
         stats.update();
         if (scene5 == true) {
-          console.log('ready')
-          range1 = 6;
+          if (Scn5_frmct > 180 && Scn5_frmct < 350) {
+
+            camZ = camZ - (CamSpeed * .3);
+          } else if (Scn5_frmct >= 350){
+            camZ = camZ - (CamSpeed * .8);
+          }
         }
-        // if (document.getElementById('countdowntofly').innerHTML = ''){
-        //   console.log('ready')
-        // range1 = 6;
-        // }
-        range2 = 0;
-        range3 = 0;
+
 
         gmapped = round(map(camZ, 29000, 30000, 0, 255));
         rmapped = round(map(camZ, 27000, 30000, 0, 150));
@@ -479,53 +478,7 @@ $(document).ready(function() {
         }
         renderer.setClearColor(bgcolor, 1);
         bgcolor = "rgb(" + rmapped + "," + gmapped + "," + bmapped + ")";
-        // console.log(bgcolor)
 
-        // if (sliderTemp.value() < (UserArmNum - 300) || sliderTemp.value() > (UserArmNum + 300)) {
-        //   range1 = 8;
-        //   // console.log('range1 = 4')
-        // } else if (sliderTemp.value() < (UserArmNum - 250) || sliderTemp.value() > (UserArmNum + 250)) {
-        //   range1 = 3;
-        // } else if (sliderTemp.value() < (UserArmNum - 90) || sliderTemp.value() > (UserArmNum + 90)) {
-        //   range1 = .5;
-        // }
-        // else {
-        //   range1 = 0;
-        //   range2 = 0;
-        //   range3 = 0;
-        // }
-
-        // document.addEventListener('keypress', function(e) {
-
-        //   console.log('down arrow');
-        //   for (var l = 0; l < 12; l++) {
-        //     torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
-        //     torus.position.z = 29000;
-        //     torus.position.x = 0;
-        //     torus.position.y = 10;
-        //     scene.add(torus);
-        //   }
-        // }, false);
-
-        // t++;
-        // // if (t == 12) {
-        // //   return;
-        // // } // stop
-        //         // torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
-
-        // torus.position.z = 29500 + (t * 30);
-        // // torus.position.x = 0;
-        // torus.position.y = camY;
-        // scene.add(torus);
-
-        // render();
-        // requestAnimationFrame(simulate);
-        // }
-
-        // torus.position.y = torusY;
-        // torusY = camY;
-        moveforwardRate = range1 + range2 + range3;
-        camZ = camZ - moveforwardRate;
         spotLight3.position.set(0, 120, camZ);
         if (camZ > 28000) {
           // camY=camY+.5;

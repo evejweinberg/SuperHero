@@ -1,7 +1,12 @@
 var scene, camera, renderer;
+var turbo = false;
 var camZ = 30000;
 var camY = 0;
-var torusY = 40;
+var torusY = 40,
+  torusMesh = [];
+var cubeBs = [];
+var allRainbows=[];
+var Allclouds=[];
 var moveforwardRate = 0; //if 16...it will go 28,800 px is 30 sec
 var sun, earth, building;
 var bgcolor;
@@ -30,6 +35,36 @@ function setup() {
   sliderTemp.position(0, 0).class('class7');
 }
 
+function draw() {
+
+}
+
+function keyPressed() {
+  console.log('key was pressed');
+  // if (!turbo){
+  for (var l = 0; l < 12; l++) {
+    torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
+    torus.position.z = (camZ - 500) + (l * 30);
+    torus.position.x = 0;
+    torus.position.y = camY;
+    scene.add(torus);
+    torusMesh.push(torus);
+  }
+
+  // turbo = true;
+  // }
+}
+
+function createMesh(geom) {
+  // assign two materials
+  var meshMaterial = new THREE.MeshNormalMaterial();
+  meshMaterial.side = THREE.DoubleSide;
+  var wireFrameMat = new THREE.MeshBasicMaterial();
+  wireFrameMat.wireframe = true;
+  // create a multimaterial
+  var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial, wireFrameMat]);
+  return mesh;
+} ////CREATE MESH OVER
 $(document).ready(function() {
 
   materialPlatGreen = new THREE.MeshLambertMaterial({
@@ -86,14 +121,14 @@ $(document).ready(function() {
             // steps: 1
           };
           text1 = createTextMesh(new THREE.TextGeometry("Keep", options));
-          text1.position.z = 28500;
-          text1.position.y = 150;
+          text1.position.z = 26500;
+          text1.position.y = camY-100;
           text1.position.x = -3;
 
           scene.add(text1);
           text2 = createTextMesh(new THREE.TextGeometry("Going", options));
-          text2.position.z = 28500;
-          text2.position.y = 100;
+          text2.position.z = 26500;
+          text2.position.y = camY-180;
           scene.add(text2);
         };
 
@@ -127,6 +162,7 @@ $(document).ready(function() {
         o.add(mesh);
       }
       rainbow = new THREE.Object3D();
+      // rainbowL = new THREE.Object3D();
       for (var c = 0; c < 30 - 1; c++) {
         var yOffset = 8;
         if (c % 2 == 1) yOffset = 7;
@@ -139,10 +175,16 @@ $(document).ready(function() {
         helper(rainbow, xOffset, yOffset - 15, 0, 8, 3, 1, 0x6633ff);
       }
       scene.add(rainbow);
+      
       rainbow.position.z = 29000;
-      rainbow.position.y = 230;
+      rainbow.position.y = camY;
       rainbow.position.x = 40;
       rainbow.rotation.y = 30;
+      allRainbows.push(rainbow);
+      // scene.add(rainbow);
+      // rainbow.position.x = -40;
+      // allRainbows.push(rainbow);
+    
 
       //--------------RAINBOW LINES END------------------------//
       //-------------STARS BEGIN--------------------//
@@ -298,25 +340,19 @@ $(document).ready(function() {
           var cubey = new THREE.SceneUtils.createMultiMaterialObject(cubeGeometryB, [cubeMaterial, depthMat]);
           cubeB.castShadow = true;
           cubeB.position.set(90 - (40 * i), 1, 31000 - (j * 40));
+          cubeB.rotation.x = 0;
           planeRep.position.z = 31000 - (j * 40);
           planeRep.position.x = 100 - (i * 90);
           planeRep.position.y = -4;
           planeRep.rotation.x = 30;
           scene.add(planeRep);
           scene.add(cubeB);
+          cubeBs.push(cubeB.name);
+
         }
       }
 
-      function createMesh(geom) {
-        // assign two materials
-        var meshMaterial = new THREE.MeshNormalMaterial();
-        meshMaterial.side = THREE.DoubleSide;
-        var wireFrameMat = new THREE.MeshBasicMaterial();
-        wireFrameMat.wireframe = true;
-        // create a multimaterial
-        var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [meshMaterial, wireFrameMat]);
-        return mesh;
-      } ////CREATE MESH OVER
+
 
       // function drawShape() {
       //   var svgString = document.querySelector("#cloudId").
@@ -385,6 +421,7 @@ $(document).ready(function() {
         cubeColorful.position.x = randomX + (k * 10);
         cubeColorful.position.y = randomY + 60;
         scene.add(cubeColorful);
+        Allclouds.push(cubeColorful);
       }
 
 
@@ -398,43 +435,21 @@ $(document).ready(function() {
         color: 0x00ff00
       });
 
-      // function simulate() {
-      //   t++;
-      //   if (t == 12) {
-      //     return;
-      //   } // stop
-      //           torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
-
-      //   torus.position.z = 29500 + (t * 30);
-      //   torus.position.x = 0;
-      //   torus.position.y = camY;
-      //   scene.add(torus);
-
-      //   render();
-      //   requestAnimationFrame(simulate);
-      // }
 
 
-      for (var l = 0; l < 12; l++) {
-        torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
-        // torus2 = createMesh(new THREE.TorusGeometry(37, 6, 10, 6, Math.PI * 2));
-        // TorusGeometry(radius, tube, radialSegments, tubularSegments, arc)
-        torus.position.z = 29300 + (l * 30);
-        torus.position.x = 0;
-        torus.position.y = 70;
-        scene.add(torus);
-      }
+
+
 
       camera.position.z = camZ;
       camera.position.y = camY;
 
 
-
+      //---------------lights-------------------//
       var pointColor = "#ffffff";
       var spotLight = new THREE.SpotLight(pointColor);
       spotLight.position.set(-40, 60, 29900);
       spotLight.castShadow = true;
-      spotLight.target = cubey;
+      spotLight.target = cubeB;
       scene.add(spotLight);
       var spotLight2 = new THREE.SpotLight(pointColor);
       spotLight2.position.set(-40, 60, 33000);
@@ -447,8 +462,8 @@ $(document).ready(function() {
       // spotLight3.target = cubey;
       scene.add(spotLight3);
 
-      var directionalLight = new THREE.DirectionalLight(pointColor);
-      directionalLight.position.set(-40, 60, 32000);
+      var directionalLight = new THREE.DirectionalLight(pointColor); //default point to center
+      directionalLight.position.set(-40, 400, 32000);
       directionalLight.castShadow = true;
       directionalLight.shadowCameraNear = 2;
       directionalLight.shadowCameraFar = 400;
@@ -458,14 +473,14 @@ $(document).ready(function() {
       directionalLight.shadowCameraBottom = -50;
 
       directionalLight.distance = 0;
-      directionalLight.intensity = 0.5;
+      directionalLight.intensity = 0.7;
       directionalLight.shadowMapHeight = 1024;
       directionalLight.shadowMapWidth = 1024;
 
 
       scene.add(directionalLight);
 
-      requestAnimationFrame(animate);
+      requestAnimationFrame(animate); //
 
 
       function initStats() {
@@ -478,6 +493,9 @@ $(document).ready(function() {
         return stats;
       }
 
+      ////////////////////////////////////////////////////////////////////
+      /////////////////animation ////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////
       function animate() { //looping function
         stats.update();
         range1 = 0;
@@ -506,41 +524,8 @@ $(document).ready(function() {
         } else if (sliderTemp.value() < (UserArmNum - 90) || sliderTemp.value() > (UserArmNum + 90)) {
           range1 = .5;
         }
-        // else {
-        //   range1 = 0;
-        //   range2 = 0;
-        //   range3 = 0;
-        // }
 
-        // document.addEventListener('keypress', function(e) {
-
-        //   console.log('down arrow');
-        //   for (var l = 0; l < 12; l++) {
-        //     torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
-        //     torus.position.z = 29000;
-        //     torus.position.x = 0;
-        //     torus.position.y = 10;
-        //     scene.add(torus);
-        //   }
-        // }, false);
-
-        // t++;
-        // // if (t == 12) {
-        // //   return;
-        // // } // stop
-        //         // torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
-
-        // torus.position.z = 29500 + (t * 30);
-        // // torus.position.x = 0;
-        // torus.position.y = camY;
-        // scene.add(torus);
-
-        // render();
-        // requestAnimationFrame(simulate);
-        // }
-
-        // torus.position.y = torusY;
-        // torusY = camY;
+        rainbow.position.y = camY;
         moveforwardRate = range1 + range2 + range3;
         camZ = camZ - moveforwardRate;
         spotLight3.position.set(0, 120, camZ);
@@ -554,7 +539,7 @@ $(document).ready(function() {
         cubeColorful.rotation.y = cubeColorful.rotation.y + .05;
         cubeColorful.rotation.x = cubeColorful.rotation.x + .05;
 
-        //------------stars------------------//
+        //------------stars--update----------------//
         // for(var c=0;c<numStars;c++){
         // 						var tempX=stars[5][c].position.x,
         // 							tempY=stars[5][c].position.y,
@@ -576,6 +561,16 @@ $(document).ready(function() {
         // 						stars[0][c].position.y=tempY;
         // 						stars[0][c].position.z=tempZ;
         // 					}
+
+
+        for (var i = 0; i < torusMesh.length; i++) {
+          torusMesh[i].position.y = camY;
+        }
+         text1.position.y = camY-100;
+          text2.position.y = camY-200;
+        for (var j=0; j<Allclouds.length; j++){
+          Allclouds[j].rotation.x= Allclouds[j].rotation.x+.2;
+        }
 
         renderer.render(scene, camera);
         requestAnimationFrame(animate);

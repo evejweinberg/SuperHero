@@ -1,6 +1,7 @@
 /*//story scene*/
+
 .voiceover{
-  background-color:white;
+  /*background-color:white;*/
   font-family: "brandon-grotesque";
   color:black;
   margin:30px;
@@ -8,6 +9,8 @@
   font-size: 40px;
   overflow-wrap: 1 normal;
   padding: 10px 10px 20px 50px;
+  background-image: url('assets/papertxtwhite.png');
+  background-repeat: repeat;
   
 }
 
