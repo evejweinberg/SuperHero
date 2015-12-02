@@ -97,6 +97,7 @@ var switchAstMove = false;
 
 
 // scene5
+var readGameOver = false;
 var fuckthis = false;
 var clockB = 30;
 var countdownIdB = 0;
@@ -325,10 +326,10 @@ function setup() {
     loadingOvervid.play();
   }
 
-  for (var i = 0; i < turboTotalFrames; i++) { //load all the image names
-    turbo = "assets/TurboA_" + nf(i, 3) + ".png";
-    turbo_frames.push(loadImage(turbo)); //push them all into an array
-  }
+  // for (var i = 0; i < turboTotalFrames; i++) { //load all the image names
+  //   turbo = "assets/TurboA_" + nf(i, 3) + ".png";
+  //   turbo_frames.push(loadImage(turbo)); //push them all into an array
+  // }
   colors = [
       color(57, 42, 48), //brown
       color(246, 209, 68), //yellow
@@ -570,14 +571,14 @@ function draw() {
       if (AllScenesMPH > 100) {
         $("#flap1").addClass('FlyAway2');
         $("#flap2").show();
-        document.getElementById('targetSpeed').innerHTML = '500';
+        document.getElementById('targetSpeed').innerHTML = '450';
         $("#flap2").addClass('FlyIn3');
         scene3A = false;
         scene3B = true;
       }
     }
     if (scene3B == true) {
-      if (AllScenesMPH > 500) {
+      if (AllScenesMPH > 450) {
         for (var i = 0; i < totalParticles; i++) {
 
           arrayOfBalls.push(new flapWin1(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
@@ -686,42 +687,11 @@ function draw() {
       if (fuckthis == true) {
         CountDownTry4();
       }
-      // fuckthis = true;
-      // CountDownTry4();
-
-      //       var target_date = new Date("Aug 15, 2019").getTime();
-      // // variables for time units
-      //       var days, hours, minutes, seconds;
-      // // get tag element
-      //       var countdown = document.getElementById("timerStopWatch");
-
-      //       // update the tag with id "countdown" every 1 second
-      //       setInterval(function() {
-
-      //         var CountDownTicking = round(parseInt(Countfrom30 - (1 / 60)));
-
-      //         // find the amount of "seconds" between now and target
-      //         var current_date = new Date().getTime();
-      //         var seconds_left = (target_date - current_date) / 1000;
-
-      //         // do some time calculations
-      //         days = parseInt(seconds_left / 86400);
-      //         seconds_left = seconds_left % 86400;
-
-      //         hours = parseInt(seconds_left / 3600);
-      //         seconds_left = seconds_left % 3600;
-
-      //         minutes = parseInt(seconds_left / 60);
-      //         seconds = parseInt(seconds_left % 60);
-
-
-      //         countdown.innerHTML = seconds + "s" + CountDownTicking;
-      //         Countfrom30 = CountDownTicking;
-
-
-      //       }, 1000);
+     
+    
+    
     }
-    if (AllScenesMPH > 550) {
+    if (AllScenesMPH > 480) {
       for (var l = 0; l < 12; l++) {
         torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
         torus.position.z = (camZ - 500) + (l * 30);
@@ -990,7 +960,7 @@ function keyPressed() {
       // currentframe++; //this will be a sensor later
     }
     if (keyCode === 65 || keyCode === 97) { //a
-      runTurbo(); //this will be a sensor later
+      // runTurbo(); //this will be a sensor later
 
     }
     // return false;
@@ -1124,37 +1094,39 @@ function countdownTry3() {
   } else {
     //Stop clock
     clearInterval(countdownIdB);
+    document.getElementById('countdowntofly').innerHTML = 'GAME OVER';
+    readGameOver = true;
   }
 }
 
-function timerStopwatch() {
-  count = count - .03333;
-  var adjustedTimer = String(Math.round(count * 100) / 100);
-  console.log(count + "//" + adjustedTimer);
-  document.getElementById("timerStopWatch").innerHTML = adjustedTimer.replace('.', ':'); // watch for spelling
-  if (count <= 0) {
-    // console.log('setting GAME OVER');
-    document.getElementById('countdowntofly').innerHTML = 'GAME OVER';
-    clearInterval(counter);
-  }
+// function timerStopwatch() {
+//   count = count - .03333;
+//   var adjustedTimer = String(Math.round(count * 100) / 100);
+//   console.log(count + "//" + adjustedTimer);
+//   document.getElementById("timerStopWatch").innerHTML = adjustedTimer.replace('.', ':'); // watch for spelling
+//   if (count <= 0) {
+//     // console.log('setting GAME OVER');
+//     document.getElementById('countdowntofly').innerHTML = 'GAME OVER';
+//     clearInterval(counter);
+//   }
 
 
-} ////TIMER ENDS
+// } ////TIMER ENDS
 
 //scene6
 function savePicture() {
   save(canvas);
 }
 
-function runTurbo() {
-  if (turboFrameNum < turboTotalFrames - 1) {
-    turboFrameNum++;
-  }
-  if (turboFrameNum = turboTotalFrames - 1) {
-    turboFrameNum = 0;
-  }
+// function runTurbo() {
+//   if (turboFrameNum < turboTotalFrames - 1) {
+//     turboFrameNum++;
+//   }
+//   if (turboFrameNum = turboTotalFrames - 1) {
+//     turboFrameNum = 0;
+//   }
 
-}
+// }
 
 //scene7
 function CalibrationSensorValChangeges() {

@@ -653,6 +653,14 @@ $(document).ready(function() {
       /////////////////animation ////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////
       function animate() { //looping function
+        if (scene5 == true) {
+          if (Scn5_frmct > 180 && Scn5_frmct < 350) {
+
+            camZ = camZ - (CamSpeed * .3);
+          } else if (Scn5_frmct >= 350){
+            camZ = camZ - (CamSpeed * .8);
+          }
+        }
         stats.update();
         range1 = 0;
         range2 = 0;
@@ -673,16 +681,7 @@ $(document).ready(function() {
 
         webGLRenderer.setClearColor(bgcolor, 1);
         bgcolor = "rgb(" + rmapped + "," + gmapped + "," + bmapped + ")";
-        // console.log(bgcolor)
-
-        // if (sliderTemp.value() < (UserArmNum - 300) || sliderTemp.value() > (UserArmNum + 300)) {
-        //   range1 = 8;
-        //   // console.log('range1 = 4')
-        // } else if (sliderTemp.value() < (UserArmNum - 250) || sliderTemp.value() > (UserArmNum + 250)) {
-        //   range1 = 3;
-        // } else if (sliderTemp.value() < (UserArmNum - 90) || sliderTemp.value() > (UserArmNum + 90)) {
-        //   range1 = .5;
-        // }
+      
 
         rainbow.position.y = camY;
         rainbowR.position.y = camY;
