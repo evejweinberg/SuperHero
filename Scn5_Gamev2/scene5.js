@@ -86,19 +86,23 @@ $(document).ready(function() {
       // bgcolor = 0xffffff;
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, .1, 1000);
-      renderer = new THREE.WebGLRenderer({
-        alpha: true
-      }); //have an alpha channel
+      // renderer = new THREE.WebGLRenderer({
+      //   alpha: true
+      // }); //have an alpha channel
       var x = 0;
       var y = 0;
       var z = 0;
-      camera.lookAt(new THREE.Vector3(x, y, z));
-      renderer.setClearColor(bgcolor, 1);
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.shadowMap.enabled = true;
+      var webGLRenderer = new THREE.WebGLRenderer();
+        webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
+        webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+        
+      // renderer.setClearColor(bgcolor, 1);
+      // renderer.setSize(window.innerWidth, window.innerHeight);
+      // renderer.shadowMap.enabled = true;
       scene.fog = new THREE.Fog("rgb(100,0,100)", 50, 1000); // fog
       // scene.fog=new THREE.FogExp2( 0xffffff, 0.01 );
-      document.getElementById("container").appendChild(renderer.domElement);
+      document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
+      // document.getElementById("container").appendChild(renderer.domElement);
 
       //----------------TEXT begin----------------///
       var textDetails = new function() {
@@ -281,10 +285,10 @@ $(document).ready(function() {
 
 
         var range = 1200;
-        var rangeZ = 10200;
+        var rangeZ = 24200;
         var minY = 200;
-        for (var i = 0; i < 16000; i++) {
-          var particle = new THREE.Vector3(Math.random() * range - range / 2, Math.random() * range + minY, Math.random() * rangeZ + 18000);
+        for (var i = 0; i < 39000; i++) {
+          var particle = new THREE.Vector3(Math.random() * range - range / 2, Math.random() * range + minY, Math.random() * rangeZ + 5000);
           geom.vertices.push(particle);
           var color = new THREE.Color(0x000000);
           color.setHSL(color.getHSL().h, color.getHSL().s, Math.random() * color.getHSL().l);
@@ -586,7 +590,8 @@ $(document).ready(function() {
   function onResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+  // webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
+        webGLRenderer.setSize(window.innerWidth, window.innerHeight);
   }
 
   window.addEventListener('resize', onResize, false);

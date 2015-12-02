@@ -120,6 +120,7 @@ var light2;
 var r;
 var g;
 var b;
+var keepgoing01;
 // var sliderTemp;
 var UserArmNum = 500;
 var range1 = 0;
@@ -387,7 +388,7 @@ function setup() {
     singlestar.push(new starfield1());
   }
 
-  // scene 4
+  // scene4
   scene4Script = createP('');
   scene4Script.class('class4').class('voiceover');
   currentText = scene4Script.html();
@@ -403,6 +404,7 @@ function setup() {
   //scene5
   // sliderTempCamMove = createSlider(0, 1000, 500);
   // sliderTempCamMove.position(0, 0).class('class5');
+  keepgoing01 = loadImage('assets/keepgoing01.png');
   scene5countdown = createP('3');
   scene5countdown.class('countdown').class('class5').id('countdowntofly'); //subtract element width/2 and hright
 
@@ -651,6 +653,9 @@ function draw() {
 
 
   } else if (scene5 == true) {
+    if (Scn5_frmct>980 && Scn5_frmct<1280){
+    image(keepgoing01,0,500);
+    }
     document.getElementById("update-speed").innerHTML = AllScenesMPH;
 
     dearEarth.stop();

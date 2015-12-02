@@ -25,19 +25,19 @@ $(document).ready(function() {
       // bgcolor = 0xffffff;
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, .1, 1000);
-      renderer = new THREE.WebGLRenderer({
+      webGLRenderer = new THREE.WebGLRenderer({
         alpha: true
       }); //have an alpha channel
       var x = 0;
       var y = 0;
       var z = 0;
       camera.lookAt(new THREE.Vector3(x, y, z));
-      renderer.setClearColor(bgcolor, 1);
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.shadowMap.enabled = true;
+      webGLRenderer.setClearColor(bgcolor, 1);
+      webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+      webGLRenderer.shadowMap.enabled = true;
       scene.fog = new THREE.Fog("rgb(100,0,100)", 50, 1000); // fog
       // scene.fog=new THREE.FogExp2( 0xffffff, 0.01 );
-      document.getElementById("container").appendChild(renderer.domElement);
+      document.getElementById("container").appendChild(webGLRenderer.domElement);
 
       //----------------TEXT begin----------------///
       var textDetails = new function() {
@@ -476,7 +476,7 @@ $(document).ready(function() {
         if (bmapped < 0) {
           bmapped = 0;
         }
-        renderer.setClearColor(bgcolor, 1);
+        webGLRenderer.setClearColor(bgcolor, 1);
         bgcolor = "rgb(" + rmapped + "," + gmapped + "," + bmapped + ")";
 
         spotLight3.position.set(0, 120, camZ);
@@ -513,7 +513,7 @@ $(document).ready(function() {
         // 						stars[0][c].position.z=tempZ;
         // 					}
 
-        renderer.render(scene, camera);
+        webGLRenderer.render(scene, camera);
         requestAnimationFrame(animate);
       }
 
@@ -527,7 +527,7 @@ $(document).ready(function() {
   function onResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    webGLRenderer.setSize(window.innerWidth, window.innerHeight);
   }
 
   window.addEventListener('resize', onResize, false);
