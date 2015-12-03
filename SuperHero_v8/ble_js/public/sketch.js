@@ -97,9 +97,11 @@ var switchAstMove = false;
 
 
 // scene5
+var webGLRenderer;
+var gameoverclock = 0;
 var readGameOver = false;
 var fuckthis = false;
-var clockB = 30;
+var clockB = 30; //###
 var countdownIdB = 0;
 var Countfrom30 = parseInt(30);
 var seaofMonsters;
@@ -111,7 +113,7 @@ var currentframe = 0;
 var Scn5_frmct = 0;
 var transitionCounter = 0;
 var gameTimeSecInterval;
-var secondMarkerGame = 30;
+var secondMarkerGame = 30; //change this to 30 $$$$
 var sliderTempCamMove;
 var scene, camera, renderer;
 var camZ = 30000;
@@ -143,6 +145,7 @@ var numStars = 10;
 var cloud;
 
 //scene6 //photobooth
+var randomScene6bg = 1;
 var canvas, capture, mycam, button, img;
 var newspaperImage;
 var rotateDiv;
@@ -293,7 +296,7 @@ function bgmusic() {
 
 function update(response) {
   // timeDiv.innerHTML = response;
-   console.log(response);
+  console.log(response);
   var inString = response;
   if (inString.length > 4) {
     var sensors = split(inString, ',');
@@ -310,6 +313,8 @@ function update(response) {
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
   centerH = (windowWidth / 2);
+  calimgX = (windowWidth / 2) - 200;
+  calimgY = (windowHeight / 2) - 160;
   timeDiv = document.getElementById('sensors');
   httpGet('/data', update);
   //scene7, calibration
@@ -354,7 +359,7 @@ function setup() {
   back2Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
   back3Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
   back4Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
-  savePhotoButton = createButton('Save This Photo!').parent(rotateDiv);
+  savePhotoButton = createButton('Save This Photo!').class('class6').class('scene6buttons').id('playbutton');
   savePhotoButton.position(700, 209).class('class6');
   savePhotoButton.mousePressed(savePicture);
   back1Button.mousePressed(function() {
@@ -447,6 +452,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   $('.class5').hide();
   $('.class6').hide();
   $('.class7').hide(); //callibration
+  $('.gamveoverDiv').hide();
   scene1 = false;
   scene2 = false;
   scene3 = false;
@@ -457,6 +463,8 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   $(document.body).removeClass('spacebg');
   $(document.body).removeClass('yellowbg');
   $(document.body).removeClass('pressbg');
+  $(document.body).removeClass('pressbg2');
+  $(document.body).removeClass('pressbg3');
   $(document.body).removeClass('flighttestbg');
   Scn5_frmct = 0;
   camZ = 30000;
@@ -493,17 +501,25 @@ function changeScene(num) { //these only get called once, based on a sensor or k
     camY = 0;
     $('.class5').show();
     $('#userSpeedDiv').hide();
+    $('.gamveoverDiv').hide();
   }
   if (num == 6) {
+    randomScene6bg = round(random(1, 3));
     Scn5_frmct = 0;
     camZ = 30000;
     camY = 0;
     scene6 = true;
     $('.class6').show();
-    $(document.body).addClass('pressbg');
-    // newspaperImage.addClass('rotate');
+    // $(document.body).addClass('pressbg');
+    if (randomScene6bg == 1) {
+      $(document.body).addClass('pressbg');
+    } else if (randomScene6bg == 2) {
+      $(document.body).addClass('pressbg2');
+    } else if (randomScene6bg == 3) {
+      $(document.body).addClass('pressbg3');
+    }
     rotateDiv.addClass('rotate');
-    // capture.addClass('rotate');
+
   }
   if (num == 7) {
     playcc();
@@ -527,7 +543,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
 function draw() {
   // windowResized();
   httpGet('/data', update);
-  
+
 
   centerH = (windowWidth / 2);
   AverageAcellerometerNums();
@@ -535,19 +551,19 @@ function draw() {
   bgmusic();
   clear();
   if (scene1 === true) {
-    if (inDataGloveL === 1) {
-      console.log('button is:' + inDataGloveL);
+    // if (inDataGloveL === 1) {
+    //   console.log('button is:' + inDataGloveL);
 
-      $('#loadingvideo').hide();
-      $('#loadingOver').show();
-      loadingOvervid.play();
-      $('video#loadingOver').bind('ended', function() {
-        $('#loading').remove();
-        changeScene(7);
-      });
+    //   $('#loadingvideo').hide();
+    //   $('#loadingOver').show();
+    //   loadingOvervid.play();
+    //   $('video#loadingOver').bind('ended', function() {
+    //     $('#loading').remove();
+    //     changeScene(7);
+    //   });
 
 
-    }
+    // }
   } else if (scene2 == true) {
     scene2 = true;
     scene1 = false;
@@ -684,15 +700,23 @@ function draw() {
 
 
   } else if (scene5 == true) {
+    if (readGameOver == true) {
+      gameoverclock++;
+      if (gameoverclock > 240) {
+        changeScene(6);
+      }
+
+    }
+
 
 
     if (Scn5_frmct > 180) {
       if (fuckthis == true) {
         CountDownTry4();
       }
-     
-    
-    
+
+
+
     }
     if (AllScenesMPH > 480) {
       for (var l = 0; l < 12; l++) {
@@ -1097,7 +1121,9 @@ function countdownTry3() {
   } else {
     //Stop clock
     clearInterval(countdownIdB);
-    document.getElementById('countdowntofly').innerHTML = 'GAME OVER';
+    $('.gamveoverDiv').show();
+
+    document.getElementById('gameoverStat').innerHTML = 'You Flew  ' + floor((30000 - camZ)) + '  Miles';
     readGameOver = true;
   }
 }
