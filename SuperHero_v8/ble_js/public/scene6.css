@@ -28,8 +28,18 @@
   background-image: url('assets/papertxtorange.png');
   /*padding: 40em;*/
   background-repeat: repeat;
-  /*background-position: right 20px bottom 10px;*/
-  /*box-shadow: 0.1em 0.1em 0 #42bab2, 0.1em 0.2em 0 #42bab2, 0.1em 0.3em 0 #55c1b9, 0.4em 0.4em 0 #8ad6d0, 0.5em 0.5em 0 #96dbd5;*/
+}
+.pressbg2 {
+  position: absolute;
+  background-image: url('assets/papertxtpink1.png');
+  /*padding: 40em;*/
+  background-repeat: repeat;
+}
+.pressbg3 {
+  position: absolute;
+  background-image: url('assets/papertxtorange.png');
+  /*padding: 40em;*/
+  background-repeat: repeat;
 }
 
 .rotate{
