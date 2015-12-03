@@ -180,7 +180,7 @@ var UserArmOutNum = 0;
 //serial
 var serial; // variable to hold an instance of the serialport library
 var portName = '/dev/cu.usbmodemfd121'; // fill in your serial port name here
-var inData0, inDataGloveL, newDataZ; // for incoming serial data
+var inData0, inDataGloveL; // for incoming serial data
 var newDataZ, newDataY, newDataX; //alt names for incoming data
 var xPos = 0;
 var loadingOvervid;
@@ -293,12 +293,14 @@ function bgmusic() {
 
 function update(response) {
   // timeDiv.innerHTML = response;
-  // console.log(response);
+   console.log(response);
   var inString = response;
-  if (inString.length > 0) {
+  if (inString.length > 4) {
     var sensors = split(inString, ',');
     inDataGloveL = int(sensors[0]);
     newDataZ = int(sensors[1]);
+    newDataY = int(sensors[2]);
+    newDataX = int(sensors[3]);
 
   }
   //httpGet('/data', update);
@@ -525,6 +527,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
 function draw() {
   // windowResized();
   httpGet('/data', update);
+  
 
   centerH = (windowWidth / 2);
   AverageAcellerometerNums();
@@ -1262,12 +1265,12 @@ function calibrationOver() {
 //   println('Something went wrong with the serial port. ' + err);
 // }
 
-function serialEvent() {
-  var inString = serial.readStringUntil('\r\n');
-  if (inString.length > 0) {
-    var sensors = split(inString, ',');
-    inDataGloveL = int(sensors[0]);
-    newDataZ = int(sensors[1]);
+// function serialEvent() {
+//   var inString = serial.readStringUntil('\r\n');
+//   if (inString.length > 0) {
+//     var sensors = split(inString, ',');
+//     inDataGloveL = int(sensors[0]);
+//     newDataZ = int(sensors[1]);
 
-  }
-}
+//   }
+// }
