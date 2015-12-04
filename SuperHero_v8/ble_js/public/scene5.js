@@ -47,8 +47,8 @@ $(document).ready(function() {
       var textDetails = new function() {
         this.asGeom = function() {
           // remove the old plane
-          scene.remove(text1a);
-          scene.remove(text1b);
+          // scene.remove(text1a);
+          // scene.remove(text1b);
           // create a new one
 
           var options = {
@@ -151,11 +151,11 @@ $(document).ready(function() {
       rainbow.position.z = 28500;
       rainbow.position.y = camY;
       rainbow.position.x = 30;
-      rainbow.rotation.y = PI*.6;
+      rainbow.rotation.y = Math.PI*.6;
        rainbowR.position.z = 28700;
       rainbowR.position.y = camY;
       rainbowR.position.x = -100;
-      rainbowR.rotation.y = -PI*.6;
+      rainbowR.rotation.y = Math.PI*-.6;
       RainbowGroup = new THREE.Group();
 				RainbowGroup.position.z = 500;
 				scene.add( RainbowGroup );

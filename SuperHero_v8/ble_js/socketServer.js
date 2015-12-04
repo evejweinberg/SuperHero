@@ -18,15 +18,34 @@ app.get('/data', function(request, response){
 // this function gets called when new data is received from
 // the Bluetooth LE serial service:
 bleSerial.on('data', function(data){
-  bleData = data;
-  console.log("Got new data: " + data);
+	var data = String(data)
+	data = data.trim();
+	if(data.length == 5){
+		bleData = data
+  		console.log("got valid data")
+  		console.log(bleData);
+	// } else {
+	// 	console.log("Don't send");
+	}
+  
+
+  // if(bleData.length == 5){
+  // 		console.log(bleData.length);
+  // 		var a = bleData.split(",")
+  // 		console.log("Button press: " + a[0])
+  // 		console.log("Acc Z: "+ a[1])
+
+  // }
+  	
+  
+  
 });
 
 // this function gets called when the program
 // establishes a connection with the remote BLE radio:
 bleSerial.on('connected', function(data){
   console.log("Connected to BLE. Sending a hello message");
-  bleSerial.write("Hello BLE!");
+  //bleSerial.write("Hello BLE!");
 });
 
 // thus function gets called if the radio successfully starts scanning:

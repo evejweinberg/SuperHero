@@ -97,6 +97,7 @@ var switchAstMove = false;
 
 
 // scene5
+var camY = 0;
 var webGLRenderer;
 var gameoverclock = 0;
 var readGameOver = false;
@@ -117,7 +118,7 @@ var secondMarkerGame = 30; //change this to 30 $$$$
 var sliderTempCamMove;
 var scene, camera, renderer;
 var camZ = 30000;
-var camY = 0;
+
 var torusY = 40;
 torusMesh = [];
 var cubeBs = [];
@@ -195,10 +196,6 @@ var transitionToStory = [];
 var trans;
 var readyfortrans;
 var transitionTicker = 0;
-
-
-
-
 
 //scene 2
 function starfield1() {
@@ -296,16 +293,24 @@ function bgmusic() {
 
 function update(response) {
   // timeDiv.innerHTML = response;
-  console.log(response);
+  // console.log(response);
   var inString = response;
   if (inString.length > 4) {
     var sensors = split(inString, ',');
     inDataGloveL = int(sensors[0]);
     newDataZ = int(sensors[1]);
-    newDataY = int(sensors[2]);
-    newDataX = int(sensors[3]);
+    // newDataY = int(sensors[2]);
+    // newDataX = int(sensors[3]);
 
   }
+  
+  // var values = inString.split(",")
+  // if(values.length == 2){
+  //   inDataGloveL = int(values[0]);
+  //   newDataZ = int(values[1]);
+  //   console.log(values);
+  // }
+  
   //httpGet('/data', update);
   // graphData(response, response, response);
 }
@@ -317,14 +322,9 @@ function setup() {
   calimgY = (windowHeight / 2) - 160;
   timeDiv = document.getElementById('sensors');
   httpGet('/data', update);
+  
   //scene7, calibration
   gd = new getCalibrationSensorValChange();
-  // serial = new p5.SerialPort(); // make a new instance of the serialport library
-  // serial.on('connected', serverConnected); // callback for connecting to the server
-  // serial.on('open', portOpen); // callback for the port opening
-  // serial.on('data', serialEvent); // callback for when new data arrives
-  // serial.on('error', serialError); // callback for errors
-  // serial.open(portName); // open a serial port
   loadingOvervid = document.getElementById("loadingOver");
   loadingOvervid.pause();
   spacebg = loadImage('assets/spaceEdges2.png');
@@ -541,6 +541,11 @@ function changeScene(num) { //these only get called once, based on a sensor or k
 
 
 function draw() {
+  
+  console.log('distancePlayingGame   ' + distanceofvaluesFlying);
+  console.log ('array length sc7   ' +NumstoCallibrate.length)
+  console.log(CallibratedRestingNum)
+  console.log('moving average' +MovingAverage);
   // windowResized();
   httpGet('/data', update);
 
@@ -551,19 +556,19 @@ function draw() {
   bgmusic();
   clear();
   if (scene1 === true) {
-    // if (inDataGloveL === 1) {
-    //   console.log('button is:' + inDataGloveL);
+    if (inDataGloveL === 1) {
+      // console.log('button is:' + inDataGloveL);
 
-    //   $('#loadingvideo').hide();
-    //   $('#loadingOver').show();
-    //   loadingOvervid.play();
-    //   $('video#loadingOver').bind('ended', function() {
-    //     $('#loading').remove();
-    //     changeScene(7);
-    //   });
+      $('#loadingvideo').hide();
+      $('#loadingOver').show();
+      loadingOvervid.play();
+      $('video#loadingOver').bind('ended', function() {
+        $('#loading').remove();
+        changeScene(7);
+      });
 
 
-    // }
+    }
   } else if (scene2 == true) {
     scene2 = true;
     scene1 = false;
@@ -810,6 +815,7 @@ function draw() {
     image(spacebg, 0, 0, windowWidth, windowHeight);
     image(callibrationImage, calimgX, calimgY, 400, 400);
     image(shadow, (windowWidth / 2) - 72, windowHeight * .73);
+    console.log('distanceScn7  ' + distanceofvalues);
 
     SensorVal = newDataZ;
 
@@ -841,7 +847,7 @@ function draw() {
       }
       textSize(20);
       // text('resting value    ' + CallibratedRestingNum, 40, 150);
-      NumstoCallibrate.push(SensorVal); //now that we're steady, lets gather the actual number
+      NumstoCallibrate.push(newDataZ); //now that we're steady, lets gather the actual number
       if (NumstoCallibrate.length > 100) { // write over the 100 numbers in the array
         NumstoCallibrate.splice(0, 1);
       }
@@ -870,8 +876,7 @@ function draw() {
       } else if (distanceofvalues < 6) {
         t.innerHTML = 'HOLD STEADY FOR ' + callibrationCountdown;
       }
-      // textSize(20);
-      // text('average fluctuation     ' + averageValpreCal, 40, 100);
+  
       isCallibrationReady.push(distanceofvalues);
       if (isCallibrationReady.length > 10) { // write over the 10 numbers in the array
         isCallibrationReady.splice(0, 1);
@@ -1211,36 +1216,38 @@ function AverageAcellerometerNums() {
     sum = sum + num; //add them all up
   }
   MovingAverage = sum / NumstoCallibrateDuringFlight.length;
-  distanceofvaluesFlying = round(abs(MovingAverage - newDataZ));
+  // distanceofvaluesFlying = round(abs(MovingAverage - newDataZ));
+   distanceofvaluesFlying = round(abs(CallibratedRestingNum - newDataZ));
+  
 }
 
 function getSpeed() {
   // console.log(range1+ range2+range3+range4+range5)
-  if (distanceofvaluesFlying < 15) {
-    range1 = 0;
+  if (distanceofvaluesFlying < 10) {
+     range1 = 0;
     // console.log('range1 is:   ' + range1);
-  } else if (distanceofvaluesFlying >= 15 && distanceofvaluesFlying < 70) {
+  } else if (distanceofvaluesFlying >= 30 && distanceofvaluesFlying < 90) {
     //max
     range2 = range2 + 0.5;
     if (range2 > 1) {
       range2 = 1;
     }
-    console.log('range2 is:   ' + range2);
-  } else if (distanceofvaluesFlying >= 70 && distanceofvaluesFlying < 210) {
+    //console.log('range2 is:   ' + range2);
+  } else if (distanceofvaluesFlying >= 150 && distanceofvaluesFlying < 210) {
     range3 = range3 + 0.55;
     if (range3 > 4) {
-      range3 = 4;
-      console.log('range3 is:   ' + range3);
+      //range3 = 4;
+      // console.log('range3 is:   ' + range3);
     }
-  } else if (distanceofvaluesFlying >= 210 && distanceofvaluesFlying < 300) {
+  } else if (distanceofvaluesFlying >= 270 && distanceofvaluesFlying < 330) {
     range4 = range4 + 0.72;
     if (range4 > 6) {
-      range4 = 6;
+      //range4 = 6;
     }
-  } else if (distanceofvaluesFlying >= 300 && distanceofvaluesFlying < 400) {
+  } else if (distanceofvaluesFlying >= 330 && distanceofvaluesFlying < 490) {
     range5 = range5 + 0.82;
     if (range5 > 9) {
-      range5 = 9;
+      //range5 = 9;
     }
   }
   range2 = range2 - 0.06;
@@ -1264,7 +1271,7 @@ function getSpeed() {
   if (frameCount % 30 == 0) {
     AllScenesMPH = round(map(CamSpeed, 0, 20, 0, 650));
     // console.log('MPH = ' + response)
-    console.log('MPH = ' + AllScenesMPH)
+    // console.log('MPH = ' + AllScenesMPH)
   }
   //max CamSpeed = 20 0+2+4+5+8;
 }
