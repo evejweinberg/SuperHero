@@ -53,8 +53,11 @@ var scene3A = true;
 var scene3B = false;
 
 
-//scene4
+//scene4var
+var squeezeFistGifX=200, squeezeFistGifY=500;
 var asteroidHit;
+var flythroughX = -100,
+  flythroughY = 500;
 var scene4Script;
 var Scn4_textcounter = -30;
 var index = 0;
@@ -253,11 +256,6 @@ function preload() {
     transitionToStory.push(loadImage(trans)); //push them all into an array
   }
 
-  for (var i = 0; i < totalgameframes; i++) { //load all the image names
-    game = "assets/GAME_" + nf(i, 3) + ".png";
-    game_frames.push(loadImage(game)); //push them all into an array
-  }
-
   for (var i = 0; i < 4; i++) { //load all the image names
     cloud = "assets/cloud_" + nf(i, 2) + ".png";
     Allclouds.push(loadImage(cloud)); //push them all into an array
@@ -303,14 +301,14 @@ function update(response) {
     // newDataX = int(sensors[3]);
 
   }
-  
+
   // var values = inString.split(",")
   // if(values.length == 2){
   //   inDataGloveL = int(values[0]);
   //   newDataZ = int(values[1]);
   //   console.log(values);
   // }
-  
+
   //httpGet('/data', update);
   // graphData(response, response, response);
 }
@@ -322,7 +320,7 @@ function setup() {
   calimgY = (windowHeight / 2) - 160;
   timeDiv = document.getElementById('sensors');
   httpGet('/data', update);
-  
+
   //scene7, calibration
   gd = new getCalibrationSensorValChange();
   loadingOvervid = document.getElementById("loadingOver");
@@ -333,10 +331,6 @@ function setup() {
     loadingOvervid.play();
   }
 
-  // for (var i = 0; i < turboTotalFrames; i++) { //load all the image names
-  //   turbo = "assets/TurboA_" + nf(i, 3) + ".png";
-  //   turbo_frames.push(loadImage(turbo)); //push them all into an array
-  // }
   colors = [
       color(57, 42, 48), //brown
       color(246, 209, 68), //yellow
@@ -352,13 +346,13 @@ function setup() {
   back1Button = createButton('FlightSchool');
   back2Button = createButton('Calibration');
   back3Button = createButton('Hear The Mission');
-  back4Button = createButton('Play Again');
+  back5Button = createButton('Play Again');
   scene6buttons = createDiv('');
   scene6buttons.class('class6').id('scene6buttonholder')
   back1Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
   back2Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
   back3Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
-  back4Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
+  back5Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
   savePhotoButton = createButton('Save This Photo!').class('class6').class('scene6buttons').id('playbutton');
   savePhotoButton.position(700, 209).class('class6');
   savePhotoButton.mousePressed(savePicture);
@@ -371,7 +365,7 @@ function setup() {
   back3Button.mousePressed(function() {
     changeScene(4)
   });
-  back4Button.mousePressed(function() {
+  back5Button.mousePressed(function() {
     changeScene(5)
   });
 
@@ -408,14 +402,14 @@ function setup() {
 
 
   // scene 2 trigger the glove switch fist
-  fist = createImg('assets/fist.png');
-  fist.id('fist').class('class2').position(fistx, fisty);
-  fistinst = createP('close right fist' + '\n' + 'like this to begin').id('fistinst');
-  fistinst.position(fistx + 300, fisty + 400).class('class2').class('header');
-  scene2header = createP('MISSION: ASTEROID');
-  scene2header.class('header').class('class2').id('scene2header');
-  $('#fist').hide();
-  $('#fistinst').hide();
+  // fist = createImg('assets/fist.png');
+  // fist.id('fist').class('class2').position(fistx, fisty);
+  // fistinst = createP('close right fist' + '\n' + 'like this to begin').id('fistinst');
+  // fistinst.position(fistx + 300, fisty + 400).class('class2').class('header');
+  // scene2header = createP('MISSION: ASTEROID');
+  // scene2header.class('header').class('class2').id('scene2header');
+  // $('#fist').hide();
+  // $('#fistinst').hide();
   for (var m = 0; m < totalstars; m++) {
     singlestar.push(new starfield1());
   }
@@ -425,17 +419,22 @@ function setup() {
   scene4Script.class('class4').class('voiceover');
   currentText = scene4Script.html();
   words = split(transcript[0], '#');
-  scene4button = createButton('SQUEEZE FIST TO BEGIN');
-  scene4button.position(300, 700).class('class4').class('header2').id('playbutton');
-  scene4button.mouseClicked(function() {
-    changeScene(5)
-  });
+  // scene4button = createButton('SQUEEZE FIST TO BEGIN');
+  // scene4button.position(300, 700).class('class4').class('header2').id('playbutton');
+  // scene4button.mouseClicked(function() {
+    // changeScene(7)
+  // });
   flysmall = createImg('assets/flying.gif');
   flysmall.class('class4');
+  // flyingOverhead = createImg('assets/flyingOverhead.png');
+  flyingOverhead2 = createImg('assets/flyingOverhead.png');
+  // flyingOverhead.class('flyingoverhead').position(flythroughX, flythroughY).class('huerotate').size(1400,1250);
+  flyingOverhead2.class('flyingoverhead').position(flythroughX, flythroughY).size(1400,1250);
+  $('.flyingoverhead').hide();
+  squeezeFistGif = createImg('assets/fist2.gif').class('class4').id('squeezeFistGif');
+  squeezeFistGif.position(squeezeFistGifX,squeezeFistGifY);
 
   //scene5
-  // sliderTempCamMove = createSlider(0, 1000, 500);
-  // sliderTempCamMove.position(0, 0).class('class5');
   keepgoing01 = loadImage('assets/keepgoing01.png');
   scene5countdown = createP('3');
   scene5countdown.class('countdown').class('class5').id('countdowntofly'); //subtract element width/2 and hright
@@ -453,6 +452,8 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   $('.class6').hide();
   $('.class7').hide(); //callibration
   $('.gamveoverDiv').hide();
+  $('.flyingoverhead').hide();
+  $('#squeezeFistGif').hide();
   scene1 = false;
   scene2 = false;
   scene3 = false;
@@ -479,8 +480,8 @@ function changeScene(num) { //these only get called once, based on a sensor or k
     scene1 = false;
     scene2 = true;
     $('.class2').show();
-    $('#fist').hide();
-    $('#fistinst').hide();
+    // $('#fist').hide();
+    // $('#fistinst').hide();
   }
   if (num == 3) {
     scene3 = true;
@@ -492,7 +493,9 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   if (num == 4) {
     scene4 = true;
     $(document.body).addClass('spacebg');
+    $('.flyingoverhead').show();
     $('.class4').show();
+    $('#squeezeFistGif').hide();
   }
   if (num == 5) {
     scene5 = true;
@@ -541,11 +544,11 @@ function changeScene(num) { //these only get called once, based on a sensor or k
 
 
 function draw() {
-  
-  console.log('distancePlayingGame   ' + distanceofvaluesFlying);
-  console.log ('array length sc7   ' +NumstoCallibrate.length)
-  console.log(CallibratedRestingNum)
-  console.log('moving average' +MovingAverage);
+
+  // console.log('distancePlayingGame   ' + distanceofvaluesFlying);
+  // console.log('array length sc7   ' + NumstoCallibrate.length)
+  // console.log(CallibratedRestingNum)
+  // console.log('moving average' + MovingAverage);
   // windowResized();
   httpGet('/data', update);
 
@@ -557,36 +560,20 @@ function draw() {
   clear();
   if (scene1 === true) {
     if (inDataGloveL === 1) {
-      // console.log('button is:' + inDataGloveL);
 
       $('#loadingvideo').hide();
       $('#loadingOver').show();
       loadingOvervid.play();
       $('video#loadingOver').bind('ended', function() {
         $('#loading').remove();
-        changeScene(7);
+        changeScene(4);
       });
 
-
+      $('.flyingoverhead').show();
+      flyingOverhead.addClass('FlyBy1');
     }
   } else if (scene2 == true) {
-    scene2 = true;
-    scene1 = false;
-    Scn2frmct++;
-    for (var o = 0; o < totalstars; o++) {
-      singlestar[o].display();
-      singlestar[o].twinkle();
-    }
-    if (Scn2frmct == 57) {
-      playSaveMe();
-    } else if (Scn2frmct > 87) {
-      asteroidBounceandHit();
-    }
-    //     if (Scn2frmct == 107) {
-    //       $('#fist').show();
-    //       $('#fistinst').show();
-    //       $("#fist").addClass('fistMove'); //why doesn't this work
-    // }
+   
 
   } else if (scene3 == true) {
     document.getElementById("yourSpeed").innerHTML = AllScenesMPH;
@@ -603,12 +590,20 @@ function draw() {
     }
     if (scene3B == true) {
       if (AllScenesMPH > 450) {
-        for (var i = 0; i < totalParticles; i++) {
+         for (var l = 0; l < 12; l++) {
+        torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
+        torus.position.z = (camZ - 500) + (l * 30);
+        torus.position.x = 0;
+        torus.position.y = camY;
+        scene.add(torus);
+        torusMesh.push(torus);
+      }
+        // for (var i = 0; i < totalParticles; i++) {
 
-          arrayOfBalls.push(new flapWin1(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+        //   arrayOfBalls.push(new flapWin1(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
 
-          arrayOfBalls.push(new flapWin2(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
-        }
+        //   arrayOfBalls.push(new flapWin2(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+        // }
         readyfortrans = true;
 
       }
@@ -630,9 +625,9 @@ function draw() {
       transitionTicker = transitionTicker + .3;
       image(transitionToStory[round(transitionTicker)], 0, 0, windowWidth, windowHeight);
       if (transitionTicker > 12) {
-        scene3 = false;
-        scene4 = true;
-        changeScene(4);
+        // scene3 = false;
+        // scene4 = true;
+        changeScene(5);
       }
     }
 
@@ -649,6 +644,15 @@ function draw() {
     }
 
   } else if (scene4 === true) {
+    fill(255, 0, 0);
+    // flyingOverhead.position(flythroughX - 40, flythroughY + 40);
+    flyingOverhead2.position(flythroughX, flythroughY);
+
+    flythroughX = flythroughX + 20;
+    flythroughY = flythroughY - 20;
+    if (flythroughX > windowWidth + 400) {
+      $('.flyingoverhead').hide();
+    }
 
 
     Scn4_textcounter++;
@@ -666,6 +670,15 @@ function draw() {
     if (angle > 360) {
       angle = 0;
       firstround = false;
+    }
+    
+    squeezeFistGif.position(squeezeFistGifX,squeezeFistGifY);
+    if (Scn4_textcounter>500){
+      $('#squeezeFistGif').show();
+      squeezeFistGifY=squeezeFistGifY-20;
+      if (squeezeFistGifY<400){
+        squeezeFistGifY=400;
+      }
     }
 
 
@@ -705,6 +718,7 @@ function draw() {
 
 
   } else if (scene5 == true) {
+    Scn5_frmct++;
     if (readGameOver == true) {
       gameoverclock++;
       if (gameoverclock > 240) {
@@ -741,7 +755,7 @@ function draw() {
     document.getElementById("update-speed").innerHTML = AllScenesMPH;
 
     dearEarth.stop();
-    Scn5_frmct++;
+
 
 
     if (Scn5_frmct == 1) {
@@ -814,7 +828,7 @@ function draw() {
   } else if (scene7 == true) {
     image(spacebg, 0, 0, windowWidth, windowHeight);
     image(callibrationImage, calimgX, calimgY, 400, 400);
-    image(shadow, (windowWidth / 2) - 72, windowHeight * .73);
+    image(shadow, (windowWidth / 2) - 92, windowHeight * .73);
     console.log('distanceScn7  ' + distanceofvalues);
 
     SensorVal = newDataZ;
@@ -829,7 +843,7 @@ function draw() {
 
       calcountdown = window.setInterval(function() { //
         calibrationOver(); //once over call this
-      }, 5000); //wait 5 seconds
+      }, 4000); //wait 5 seconds
     }
 
 
@@ -876,7 +890,7 @@ function draw() {
       } else if (distanceofvalues < 6) {
         t.innerHTML = 'HOLD STEADY FOR ' + callibrationCountdown;
       }
-  
+
       isCallibrationReady.push(distanceofvalues);
       if (isCallibrationReady.length > 10) { // write over the 10 numbers in the array
         isCallibrationReady.splice(0, 1);
@@ -914,19 +928,18 @@ function draw() {
 // soon to be replaced with sensor detection
 function keyPressed() {
 
-  if (scene2 === true) { //do we go here anymore?
-    if (keyCode === ENTER) {
-      scene3 = true; //Backstory
-      changeScene(3);
-      $("#flap2").hide();
-      scene2 = false;
+  // if (scene2 === true) { //do we go here anymore?
+  //   if (keyCode === ENTER) {
+  //     scene3 = true; //Backstory
+  //     changeScene(3);
+  //     $("#flap2").hide();
+  //     scene2 = false;
 
-    }
-
-  } else if (scene3 === true) { //flightschool
+  //   }
+  if (scene3 === true) { //flightschool
     if (keyCode === ENTER) {
       scene3 = false;
-      changeScene(4); //backstory
+      changeScene(5); //backstory
       scene4 = true;
 
     }
@@ -972,7 +985,7 @@ function keyPressed() {
       loadingOvervid.play();
       $('video#loadingOver').bind('ended', function() {
         $('#loading').remove();
-        changeScene(7);
+        changeScene(4);
       });
 
     }
@@ -982,24 +995,16 @@ function keyPressed() {
     }
   } else if (scene4 === true) {
     if (keyCode === ENTER) {
-      changeScene(5);
+      changeScene(7);
     }
   } else if (scene5 === true) { //game
     if (keyCode === ENTER) {
       changeScene(6);
     }
-    if (key === ' ') {
-      // currentframe++; //this will be a sensor later
-    }
-    if (keyCode === 65 || keyCode === 97) { //a
-      // runTurbo(); //this will be a sensor later
-
-    }
-    // return false;
   } else if (scene6 === true) {
-    if (keyCode === ENTER) {
-      changeScene(2);
-    }
+    // if (keyCode === ENTER) {
+    //   changeScene(2);
+    // }
   } else if (scene7 === true) {
     if (keyCode === ENTER) {
       changeScene(3);
@@ -1048,7 +1053,7 @@ function EndIntro() {
 }
 
 
-//scene4
+//scene4 
 function asteroidHitandBounce() {
   var targetastx = ffcenterX - 150;
   var targetasty = ffcenterY;
@@ -1152,15 +1157,7 @@ function savePicture() {
   save(canvas);
 }
 
-// function runTurbo() {
-//   if (turboFrameNum < turboTotalFrames - 1) {
-//     turboFrameNum++;
-//   }
-//   if (turboFrameNum = turboTotalFrames - 1) {
-//     turboFrameNum = 0;
-//   }
 
-// }
 
 //scene7
 function CalibrationSensorValChangeges() {
@@ -1217,14 +1214,14 @@ function AverageAcellerometerNums() {
   }
   MovingAverage = sum / NumstoCallibrateDuringFlight.length;
   // distanceofvaluesFlying = round(abs(MovingAverage - newDataZ));
-   distanceofvaluesFlying = round(abs(CallibratedRestingNum - newDataZ));
-  
+  distanceofvaluesFlying = round(abs(CallibratedRestingNum - newDataZ));
+
 }
 
 function getSpeed() {
   // console.log(range1+ range2+range3+range4+range5)
   if (distanceofvaluesFlying < 10) {
-     range1 = 0;
+    range1 = 0;
     // console.log('range1 is:   ' + range1);
   } else if (distanceofvaluesFlying >= 30 && distanceofvaluesFlying < 90) {
     //max
