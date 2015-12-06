@@ -1,5 +1,5 @@
 //all scenes
-var timeDiv;
+var timeDiv,swoosh;
 var AllScenesMPH = 0;
 var shadow;
 var centerH = 0;
@@ -262,6 +262,7 @@ function preload() {
   }
 
   cc = loadSound('assets/cc.wav');
+  swoosh = loadSound('assets/swoosh.wav');
   bg01 = loadSound('assets/bg01.mp3');
   dearEarth = loadSound('assets/DearEarthlings_01.m4a');
   cd_3 = loadSound('assets/three.m4a');
@@ -401,15 +402,6 @@ function setup() {
   FlightSchoolSign.class('class3').class('sign').position((windowWidth / 2) - 443, 30);
 
 
-  // scene 2 trigger the glove switch fist
-  // fist = createImg('assets/fist.png');
-  // fist.id('fist').class('class2').position(fistx, fisty);
-  // fistinst = createP('close right fist' + '\n' + 'like this to begin').id('fistinst');
-  // fistinst.position(fistx + 300, fisty + 400).class('class2').class('header');
-  // scene2header = createP('MISSION: ASTEROID');
-  // scene2header.class('header').class('class2').id('scene2header');
-  // $('#fist').hide();
-  // $('#fistinst').hide();
   for (var m = 0; m < totalstars; m++) {
     singlestar.push(new starfield1());
   }
@@ -468,6 +460,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   $(document.body).removeClass('pressbg3');
   $(document.body).removeClass('flighttestbg');
   Scn5_frmct = 0;
+  Scn4_frmct = 0;
   camZ = 30000;
   camY = 0;
 
@@ -480,18 +473,19 @@ function changeScene(num) { //these only get called once, based on a sensor or k
     scene1 = false;
     scene2 = true;
     $('.class2').show();
-    // $('#fist').hide();
-    // $('#fistinst').hide();
   }
   if (num == 3) {
     scene3 = true;
     $(document.body).addClass('flighttestbg');
     $('.class3').show();
     $("#flap2").hide();
+    dearEarth.stop();
 
   }
   if (num == 4) {
     scene4 = true;
+     Scn4_textcounter = 0;
+     Scn4_frmct = 0;
     $(document.body).addClass('spacebg');
     $('.flyingoverhead').show();
     $('.class4').show();
@@ -673,7 +667,7 @@ function draw() {
     }
     
     squeezeFistGif.position(squeezeFistGifX,squeezeFistGifY);
-    if (Scn4_textcounter>500){
+    if (Scn4_textcounter>950){
       $('#squeezeFistGif').show();
       squeezeFistGifY=squeezeFistGifY-20;
       if (squeezeFistGifY<400){

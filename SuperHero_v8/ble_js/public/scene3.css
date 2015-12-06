@@ -2,6 +2,12 @@
 #scene3bg{
   width:100%;
   height:100%;
+  background-image: url('assets/papertxtblue.png');
+  
+}
+#scene3bggreen{
+  width:100%;
+  height:100%;
   background-image: url('assets/papertxtgreen.png');
   
 }
