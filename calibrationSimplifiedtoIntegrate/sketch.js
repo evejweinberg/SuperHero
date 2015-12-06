@@ -1,5 +1,5 @@
 var serial; // variable to hold an instance of the serialport library
-var portName = '/dev/cu.usbmodemfd121'; // fill in your serial port name here
+var portName = '/dev/cu.usbmodem1411'; // fill in your serial port name here
 var newDataZ, newDataY, newDataX; // for incoming serial data
 
 var NumstoCallibrate = [];
@@ -48,7 +48,7 @@ function draw() {
   textSize(20);
   fill(0);
   text('average    ' + MovingAverage, 40, 150);
-  text('deviation    ' + distanceofvalues, 40, 180);
+  text('distOfValues    ' + distanceofvalues, 40, 180);
   text('yourCamSpeed   ' + CamSpeed, 40, 210);
   text('GamePlayMPH   ' + AllScenesMPH, 40, 240);
 AverageAcellerometerNums();
@@ -69,7 +69,7 @@ AverageAcellerometerNums();
     sum = sum + num; //add them all up
   }
   MovingAverage = sum / NumstoCallibrate.length;
-  distanceofvalues = round(abs(MovingAverage - newDataZ));
+  distanceofvalues = round(abs(610 - newDataZ));
   }
 
 function getCamSpeed() {

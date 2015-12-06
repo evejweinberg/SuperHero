@@ -11,7 +11,7 @@ app.use('/',express.static('public'));
 
 // if a client requests /data, return the data:
 app.get('/data', function(request, response){
-  console.log("Someone asked for the data");
+  //console.log("Someone asked for the data");
   response.end(bleData);
 });
 

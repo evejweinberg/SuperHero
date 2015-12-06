@@ -23,11 +23,11 @@ function setup() {
 }
 
 function serverConnected() {
-  println('connected to server.');
+  // println('connected to server.');
 }
 
 function portOpen() {
-  println('the serial port opened.')
+  // println('the serial port opened.')
 }
 
 // function serialEvent() {
@@ -35,7 +35,7 @@ function portOpen() {
 // }
 
 function serialError(err) {
-  println('Something went wrong with the serial port. ' + err);
+  // println('Something went wrong with the serial port. ' + err);
 }
 
 function draw() {
@@ -63,14 +63,16 @@ function serialEvent() {
 }
 
 function graphData(newDataZ, newDataY, newDataX) {
-    console.log(abs(restingNum-yPosZ))
+  
   // map the range of the input to the window height:
   var yPosZ = map(newDataZ, 610-500, 610+500, height, 0);
-  var yPosY = map(newDataY, 511-500, 511+500, height, 0);
-  var yPosX = map(newDataX, 507-500, 507+500, height, 0);
+  // var yPosY = map(newDataY, 511-500, 511+500, height, 0);
+  // var yPosX = map(newDataX, 507-500, 507+500, height, 0);
 
   stroke(255, 0, 0);
   line(xPos, restingNum, xPos, yPosZ);
+  
+  
   if (abs(restingNum-yPosZ)>100){
   
     stroke(200, 100, 0);

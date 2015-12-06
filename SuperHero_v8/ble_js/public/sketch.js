@@ -100,6 +100,7 @@ var switchAstMove = false;
 
 
 // scene5
+var camspeedmax = 25;
 var camY = 0;
 var webGLRenderer;
 var gameoverclock = 0;
@@ -542,7 +543,7 @@ function draw() {
 
   // console.log('distancePlayingGame   ' + distanceofvaluesFlying);
   // console.log('array length sc7   ' + NumstoCallibrate.length)
-  // console.log(CallibratedRestingNum)
+    console.log(CallibratedRestingNum)
   // console.log('moving average' + MovingAverage);
   // windowResized();
   httpGet('/data', update);
@@ -555,17 +556,15 @@ function draw() {
   clear();
   if (scene1 === true) {
     if (inDataGloveL === 1) {
-
-      $('#loadingvideo').hide();
+        $('#loadingvideo').hide();
       $('#loadingOver').show();
       loadingOvervid.play();
       $('video#loadingOver').bind('ended', function() {
         $('#loading').remove();
         changeScene(4);
       });
+      
 
-      $('.flyingoverhead').show();
-      flyingOverhead.addClass('FlyBy1');
     }
   } else if (scene2 == true) {
    
@@ -638,7 +637,10 @@ function draw() {
       }
     }
 
-  } else if (scene4 === true) {
+  } else if (scene4 === true) {//mission story
+    if (inDataGloveL === 1) {
+      changeScene(7);
+    }
     fill(255, 0, 0);
     // flyingOverhead.position(flythroughX - 40, flythroughY + 40);
     flyingOverhead2.position(flythroughX, flythroughY);
@@ -713,6 +715,7 @@ function draw() {
 
 
   } else if (scene5 == true) {
+    
     Scn5_frmct++;
     if (readGameOver == true) {
       gameoverclock++;
@@ -1190,36 +1193,39 @@ function AverageAcellerometerNums() {
   MovingAverage = sum / NumstoCallibrateDuringFlight.length;
   // distanceofvaluesFlying = round(abs(MovingAverage - newDataZ));
   distanceofvaluesFlying = round(abs(CallibratedRestingNum - newDataZ));
+  console.log("distanceofvaluesFlying " + distanceofvaluesFlying)
+  console.log("newDataZ " + newDataZ)
 
 }
 
 function getSpeed() {
-  // console.log(range1+ range2+range3+range4+range5)
-  if (distanceofvaluesFlying < 10) {
-    range1 = 0;
+   console.log("range" + range1+ range2+range3+range4+range5)
+  
+  if (distanceofvaluesFlying < 15) {
+     range1 = 0;
     // console.log('range1 is:   ' + range1);
-  } else if (distanceofvaluesFlying >= 30 && distanceofvaluesFlying < 90) {
+  } else if (distanceofvaluesFlying > 16 && distanceofvaluesFlying < 60) {
     //max
     range2 = range2 + 0.5;
     if (range2 > 1) {
       range2 = 1;
     }
     //console.log('range2 is:   ' + range2);
-  } else if (distanceofvaluesFlying >= 150 && distanceofvaluesFlying < 210) {
-    range3 = range3 + 0.55;
+  } else if (distanceofvaluesFlying > 60 && distanceofvaluesFlying < 130) {
+    range3 = range3 + 1;
     if (range3 > 4) {
-      //range3 = 4;
+      range3 = 4;
       // console.log('range3 is:   ' + range3);
     }
-  } else if (distanceofvaluesFlying >= 270 && distanceofvaluesFlying < 330) {
-    range4 = range4 + 0.72;
-    if (range4 > 6) {
-      //range4 = 6;
+  } else if (distanceofvaluesFlying > 130 && distanceofvaluesFlying < 180) {
+    range4 = range4 + 1.25 ;
+    if (range4 > 8) {
+      range4 = 8;
     }
-  } else if (distanceofvaluesFlying >= 330 && distanceofvaluesFlying < 490) {
-    range5 = range5 + 0.82;
-    if (range5 > 9) {
-      //range5 = 9;
+  } else if (distanceofvaluesFlying > 240 && distanceofvaluesFlying < 300) {
+    range5 = range5 + 1.5;
+    if (range5 > 12) {
+      range5 = 12;
     }
   }
   range2 = range2 - 0.06;
@@ -1240,12 +1246,14 @@ function getSpeed() {
   }
 
   CamSpeed = range1 + range2 + range3 + range4 + range5;
-  if (frameCount % 30 == 0) {
-    AllScenesMPH = round(map(CamSpeed, 0, 20, 0, 650));
+  if (frameCount % 15 == 0) {
+    AllScenesMPH = round(map(CamSpeed, 0, camspeedmax, 0, 650));
     // console.log('MPH = ' + response)
     // console.log('MPH = ' + AllScenesMPH)
   }
-  //max CamSpeed = 20 0+2+4+5+8;
+  console.log("##")
+  console.log("AllScenesMPH:" + AllScenesMPH + " CamSpeed:" + CamSpeed)
+  console.log("distanceofvaluesFlying:" + distanceofvaluesFlying + " CallibratedRestingNum:" + CallibratedRestingNum +" newDataZ:" + newDataZ )
 }
 
 function calibrationOver() {
