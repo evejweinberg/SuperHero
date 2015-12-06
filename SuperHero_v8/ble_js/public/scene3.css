@@ -437,7 +437,7 @@
 
 .flighttestbg {
   position: absolute;
-  background-image: url('assets/papertxtgreen.png');
+  background-image: url('assets/papertxtblue.png');
   /*padding: 40em;*/
   background-repeat: repeat;
   /*background-position: right 20px bottom 10px;*/
@@ -449,7 +449,9 @@
   display: block;
   text-align: center;
   font-size: 5em;
-  font-family: "brandon-grotesque";
+  /*font-family: "brandon-grotesque";*/
+  font-family: "chauncy-pro";
+  text-transform: uppercase;
   background: white;
   /*width: 800px;*/
   left: 50%;

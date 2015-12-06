@@ -6,7 +6,9 @@
 
 .voiceover{
   /*background-color:white;*/
-  font-family: "brandon-grotesque";
+  /*font-family: "brandon-grotesque";*/
+  font-family: "chauncy-pro";
+  text-transform: uppercase;
   color:black;
   margin:30px;
   width:800px;

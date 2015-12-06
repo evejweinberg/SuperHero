@@ -27,7 +27,9 @@ img.center {
   text-align: center;
   font-size: 3em;
   left: 50%;
-  font-family: "brandon-grotesque";
+  /*font-family: "brandon-grotesque";*/
+  font-family: "chauncy-pro";
+  text-transform: uppercase;
 }
 
 .header3 {
@@ -36,13 +38,17 @@ img.center {
   font-size: 2.4em;
   left: 50%;
   /*text-align: CENTER;*/
-  font-family: "brandon-grotesque";
+  /*font-family: "brandon-grotesque";*/
+  font-family: "chauncy-pro";
+  text-transform: uppercase;
 }
 
 
 
 p{
  font-family: "brandon-grotesque"; 
+ /*font-family: "chauncy-pro";*/
+ /*text-transform: uppercase;*/
 }
 
 #press{

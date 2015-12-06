@@ -64,7 +64,7 @@ var index = 0;
 var lastCue = 0;
 var Scn4_frmct = 0;
 var words = [];
-var timings = [90, 120, 160, 200, 220, 230, 240, 250, 270];
+var timings = [90, 120, 160, 200, 220, 230, 235, 240, 260];
 var transcript, currentText;
 var earthSpinFrames = 26;
 var flysmall;
@@ -386,7 +386,7 @@ function setup() {
   calibrateSteadyType.class('class7').id('calibrateHoldSteady');
   callibrationImage = loadImage('assets/Callibration.png');
   shadow = loadImage('assets/shadow.png');
-  CapeCalibrationSign = createImg('assets/CapeCalibrationSign.png');
+  CapeCalibrationSign = createImg('assets/CapeCalibrationSign2.png');
   CapeCalibrationSign.class('class7').position((windowWidth / 2) - 443, 30);
 
 
@@ -436,6 +436,7 @@ function setup() {
 } ///SETUP ENDS
 
 function changeScene(num) { //these only get called once, based on a sensor or keypress
+dearEarth.stop();
   $('.class1').hide();
   $('.class2').hide();
   $('.class3').hide();
@@ -872,11 +873,12 @@ function draw() {
     if (callibrationPreStage === true) {
       var t = document.getElementById('calibrateHoldSteady');
       t.innerHTML = '';
+      // t.position(100,100)
       textSize(30);
       textAlign(CENTER);
       calimgX = (windowWidth / 2) - 200;
       calimgY = (windowHeight / 2) - 160;
-      text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 120);
+      // text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 120);
       textSize(60);
       if (distanceofvalues > 6) {
 
@@ -919,24 +921,11 @@ function draw() {
 
 
 
-// soon to be replaced with sensor detection
+// in addition to sensor detection
 function keyPressed() {
 
-  // if (scene2 === true) { //do we go here anymore?
-  //   if (keyCode === ENTER) {
-  //     scene3 = true; //Backstory
-  //     changeScene(3);
-  //     $("#flap2").hide();
-  //     scene2 = false;
-
-  //   }
   if (scene3 === true) { //flightschool
-    if (keyCode === ENTER) {
-      scene3 = false;
-      changeScene(5); //backstory
-      scene4 = true;
-
-    }
+    
     if (keyCode === 65 || keyCode === 97) { //A KEY // 'speed == 100mph'
       $("#flap1").addClass('FlyAway2');
       $("#flap2").show();
@@ -952,15 +941,7 @@ function keyPressed() {
       }
 
 
-    } else if (keyCode === 66 || keyCode === 98) { //B KEY
-      for (var i = 0; i < totalParticles; i++) {
-
-        arrayOfBalls.push(new flapWin1(width / 2, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
-
-        arrayOfBalls.push(new flapWin2(width / 2, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
-      }
-
-    } else if (keyCode === 67 || keyCode === 99) { //C KEY
+    } else if (keyCode === 67 || keyCode === 99 || keyCode === ENTER) { //C KEY
 
       for (var i = 0; i < totalParticles; i++) {
 
