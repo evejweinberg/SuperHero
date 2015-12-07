@@ -18,13 +18,16 @@ function setup() {
 
 function draw() {
   console.log('array length  ' + images.length);
+  console.log(images);
+   console.log(images[0]);
   if (frameCount > 335) { //start looping the gif at fr 335
-  for (var i=0; i<images.length; i++){
-    image(images[i]);
-    if (i=images.length){
-      i=0;
-    }
-  }
+  //these lines break everything
+  // for (var i=0; i<images.length-1; i++){
+  //   image(images[i]);
+  //   if (i==images.length-1){
+  //     i=0;
+  //   }
+  // }
   
   }
   

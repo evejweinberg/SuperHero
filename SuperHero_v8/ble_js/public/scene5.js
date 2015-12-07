@@ -10,10 +10,10 @@ function createMesh(geom) {
 $(document).ready(function() {
 
   materialPlatGreen = new THREE.MeshLambertMaterial({
-    map: THREE.ImageUtils.loadTexture("assets/platgreen.png")
+    map: THREE.TextureLoader("assets/platgreen.png")
   });
   materialPlat = new THREE.MeshLambertMaterial({
-    map: THREE.ImageUtils.loadTexture("assets/plat.png")
+    map: THREE.TextureLoader("assets/plat.png")
   });
 
 
@@ -556,10 +556,10 @@ $(document).ready(function() {
 //put that 1 into another and call it 4 times
         function createShroomPointCloudB(size, transparent, opacity, sizeAttenuation, color) {
 
-            var texture1 = THREE.ImageUtils.loadTexture("assets/shroom.png");
-            var texture2 = THREE.ImageUtils.loadTexture("assets/tree.png");
-            var texture3 = THREE.ImageUtils.loadTexture("assets/tree.png");
-            var texture4 = THREE.ImageUtils.loadTexture("assets/shroom.png");
+            var texture1 = THREE.TextureLoader("assets/shroom.png");
+            var texture2 = THREE.TextureLoader("assets/tree.png");
+            var texture3 = THREE.TextureLoader("assets/tree.png");
+            var texture4 = THREE.TextureLoader("assets/shroom.png");
 
             scene.add(create1PointCloud("system1", texture1, 100, transparent, opacity, sizeAttenuation, color));
             scene.add(create1PointCloud("system2", texture2, 120, transparent, opacity, sizeAttenuation, color));

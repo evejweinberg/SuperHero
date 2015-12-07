@@ -1,4 +1,5 @@
 var scene, camera, renderer, webGLRenderer;
+var scene5 = true;
 var seaofMonsters;
 var turbo = false;
 var camZ = 30000;
@@ -31,7 +32,7 @@ var cloud;
 
 function setup() {
   noCanvas();
-  sliderTemp = createSlider(0, 1000, 500);
+  sliderTemp = createSlider(0, 100, 0);
   sliderTemp.position(0, 0).class('class7');
 }
 
@@ -49,6 +50,8 @@ function keyPressed() {
   }
 
 }
+////////
+
 
 function createMesh(geom) {
   // assign two materials
@@ -62,10 +65,10 @@ function createMesh(geom) {
 $(document).ready(function() {
 
   materialPlatGreen = new THREE.MeshLambertMaterial({
-    map: THREE.ImageUtils.loadTexture("assets/platgreen.png")
+    map: THREE.TextureLoader("assets/platgreen.png")
   });
   materialPlat = new THREE.MeshLambertMaterial({
-    map: THREE.ImageUtils.loadTexture("assets/plat.png")
+    map: THREE.TextureLoader("assets/plat.png")
   });
 
 
@@ -88,20 +91,17 @@ $(document).ready(function() {
       var x = 0;
       var y = 0;
       var z = 0;
-      var webGLRenderer = new THREE.WebGLRenderer();
+      webGLRenderer = new THREE.WebGLRenderer();
       webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
       webGLRenderer.setSize(window.innerWidth, window.innerHeight);
-      // scene.fog = new THREE.Fog("rgb(100,0,100)", 50, 1000); // fog
+      scene.fog = new THREE.Fog("rgb(100,0,100)", 50, 1000); // fog
       document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
 
 
       //----------------TEXT begin----------------///
       var textDetails = new function() {
         this.asGeom = function() {
-          // remove the old plane
-          scene.remove(text1a);
-          scene.remove(text1b);
-          // create a new one
+        
 
           var options = {
             size: 70,
@@ -136,12 +136,12 @@ $(document).ready(function() {
 
 
           text3a = createTextMesh(new THREE.TextGeometry("Only You", options));
-          text3a.position.z = 16500;
+          text3a.position.z = 17500;
           text3a.position.x = -200;
           text3a.position.y = camY - 180;
           scene.add(text3a);
           text3b = createTextMesh(new THREE.TextGeometry("Can Save The World", options));
-          text3b.position.z = 16000;
+          text3b.position.z = 17000;
           text3b.position.x = -500;
           text3b.position.y = camY - 180;
           scene.add(text3b);
@@ -165,7 +165,6 @@ $(document).ready(function() {
         return plane;
       }
       //----------------TEXT OVER----------------///
-      // var road = 
       //------------RAINBOW BEGINS-----------------
       function helper(o, x, y, z, w, h, d, c) {
         var material = new THREE.MeshLambertMaterial({
@@ -204,11 +203,11 @@ $(document).ready(function() {
       rainbow.position.z = 28500;
       rainbow.position.y = camY;
       rainbow.position.x = 30;
-      rainbow.rotation.y = PI*.6;
+      rainbow.rotation.y = Math.PI*.6;
        rainbowR.position.z = 28700;
       rainbowR.position.y = camY;
       rainbowR.position.x = -100;
-      rainbowR.rotation.y = -PI*.6;
+      rainbowR.rotation.y = Math.PI*-.6;
       RainbowGroup = new THREE.Group();
 				RainbowGroup.position.z = 500;
 				scene.add( RainbowGroup );
@@ -512,7 +511,7 @@ $(document).ready(function() {
       function createKnotPointCloud(geom) {
         var material = new THREE.PointCloudMaterial({
           color: 0xffffff,
-          size: 20,
+          size: 3,
           transparent: true,
           blending: THREE.AdditiveBlending,
           map: generateKnotSprite()
@@ -534,8 +533,9 @@ $(document).ready(function() {
 
         return mesh;
       }
-      
-      ////road/////////////
+      /////////////////---------KNOT ENDS------------//////
+            
+            ////road/////////////
       var road = new THREE.BoxGeometry(35,2,1290);
       var roadmaterial = new THREE.MeshDepthMaterial({
             color: 0xD3D3D3
@@ -543,8 +543,8 @@ $(document).ready(function() {
           var roadFull = createMesh(road, roadmaterial);
           roadFull.position.set(0,-2,29400);
           scene.add(roadFull)
-      /////////////////---------KNOT ENDS------------//////
-      //////////POINT CLOUD SHROOMS ////////////////
+          
+           //////////POINT CLOUD SHROOMS ////////////////
       var SpriteAcontrols = new function () {
             this.size = 100;
             this.transparent = true;
@@ -611,10 +611,10 @@ $(document).ready(function() {
 //put that 1 into another and call it 4 times
         function createShroomPointCloudB(size, transparent, opacity, sizeAttenuation, color) {
 
-            var texture1 = THREE.ImageUtils.loadTexture("assets/shroom.png");
-            var texture2 = THREE.ImageUtils.loadTexture("assets/tree.png");
-            var texture3 = THREE.ImageUtils.loadTexture("assets/tree.png");
-            var texture4 = THREE.ImageUtils.loadTexture("assets/shroom.png");
+            var texture1 = THREE.TextureLoader("assets/shroom.png");
+            var texture2 = THREE.TextureLoader("assets/tree.png");
+            var texture3 = THREE.TextureLoader("assets/tree.png");
+            var texture4 = THREE.TextureLoader("assets/shroom.png");
 
             scene.add(create1PointCloud("system1", texture1, 100, transparent, opacity, sizeAttenuation, color));
             scene.add(create1PointCloud("system2", texture2, 120, transparent, opacity, sizeAttenuation, color));
@@ -794,6 +794,14 @@ $(document).ready(function() {
       /////////////////animation ////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////
       function animate() { //looping function
+        // if (scene5 == true) {
+        //   if (frameCount > 180 && frameCount < 350) {
+
+        //     camZ = camZ - (CamSpeed * .3);
+        //   } else if (Scn5_frmct >= 350){
+        //     camZ = camZ - (CamSpeed * .8);
+        //   }
+        // }
         stats.update();
         range1 = 0;
         range2 = 0;
@@ -814,16 +822,24 @@ $(document).ready(function() {
 
         webGLRenderer.setClearColor(bgcolor, 1);
         bgcolor = "rgb(" + rmapped + "," + gmapped + "," + bmapped + ")";
-        // console.log(bgcolor)
+        
+           //point cloud///////////////////
+        
+            scene.children.forEach(function (child) {
+                if (child instanceof THREE.PointCloud) {//if this is a pointcloud object
+                    var vertices = child.geometry.vertices; 
+                    vertices.forEach(function (v) {
+                        v.y = v.y - (v.velocityY);
+                        v.x = v.x - (v.velocityX);
+                        v.z = v.z - (v.velocityZ);
 
-        if (sliderTemp.value() < (UserArmNum - 300) || sliderTemp.value() > (UserArmNum + 300)) {
-          range1 = 8;
-          // console.log('range1 = 4')
-        } else if (sliderTemp.value() < (UserArmNum - 250) || sliderTemp.value() > (UserArmNum + 250)) {
-          range1 = 3;
-        } else if (sliderTemp.value() < (UserArmNum - 90) || sliderTemp.value() > (UserArmNum + 90)) {
-          range1 = .5;
-        }
+                        if (v.y <= 0) v.y = 60;
+                        if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
+                        if (v.z <= -20 || v.z >= 20) v.velocityZ = v.velocityZ * -1;
+                    });
+                }
+            });//point cloud end
+      
 
         rainbow.position.y = camY;
         rainbowR.position.y = camY;
@@ -832,7 +848,7 @@ $(document).ready(function() {
         knot.position.y = camY;
         knot2.position.y = camY - 200;
         knot3.position.y = camY + 200;
-        moveforwardRate = range1 + range2 + range3;
+        moveforwardRate = sliderTemp.value();
         camZ = camZ - moveforwardRate;
         spotLight3.position.set(0, 120, camZ);
         if (camZ > 28000) {
@@ -877,32 +893,15 @@ $(document).ready(function() {
         text2a.position.y = camY - 180;
         text3a.position.y = camY - 180;
         text3b.position.y = camY - 50;
-        for (var j = 0; j < Allclouds.length; j++) {
-          Allclouds[j].rotation.x = Allclouds[j].rotation.x + .2;
-        }
-        
-        
-        //point cloud///////////////////
-        
-            scene.children.forEach(function (child) {
-                if (child instanceof THREE.PointCloud) {//if this is a pointcloud object
-                    var vertices = child.geometry.vertices; 
-                    vertices.forEach(function (v) {
-                        v.y = v.y - (v.velocityY);
-                        v.x = v.x - (v.velocityX);
-                        v.z = v.z - (v.velocityZ);
-
-                        if (v.y <= 0) v.y = 60;
-                        if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
-                        if (v.z <= -20 || v.z >= 20) v.velocityZ = v.velocityZ * -1;
-                    });
-                }
-            });
+        // for (var j = 0; j < Allclouds.length; j++) {
+        //   Allclouds[j].rotation.x = Allclouds[j].rotation.x + .2;
+        // }
 
         webGLRenderer.render(scene, camera);
         requestAnimationFrame(animate);
-         webGLRenderer.setSize(window.innerWidth, window.innerHeight);
-      }//looping animation function ends
+        // onResize();
+        webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+      }
 
     } ///////ON LOAD ENDS///////////
 
@@ -915,7 +914,7 @@ $(document).ready(function() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     // webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
-    webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+    // webGLRenderer.setSize(window.innerWidth, window.innerHeight);
   }
 
   window.addEventListener('resize', onResize, false);

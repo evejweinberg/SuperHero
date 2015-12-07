@@ -1,6 +1,7 @@
 //all scenes
 var sensorConnected = false;
 var timeDiv, swoosh;
+var swooshplaying = false;
 var AllScenesMPH = 0;
 var shadow;
 var centerH = 0;
@@ -17,7 +18,8 @@ var range1 = 0,
   range2 = 0,
   range3 = 0,
   range4 = 0,
-  range5 = 0;
+  range5 = 0,
+  range6 = 0;
 var scene1 = true;
 var scene2 = false;
 var scene3 = false;
@@ -231,6 +233,14 @@ function playSaveMe() {
   }
 }
 
+function playSwoosh() {
+  if (!swooshplaying) {
+    swoosh.play();
+        swoosh.setVolume(1.7);
+    swooshplaying = true;
+  }
+}
+
 function playcc() {
   if (!isccplaying) {
     cc.play();
@@ -265,7 +275,7 @@ function preload() {
   }
 
   cc = loadSound('assets/cc.wav');
-  swoosh = loadSound('assets/swoosh.wav');
+  swoosh = loadSound('assets/swoosh2.wav');
   bg01 = loadSound('assets/bg01.mp3');
   dearEarth = loadSound('assets/DearEarthlings_01.m4a');
   cd_3 = loadSound('assets/three.m4a');
@@ -401,7 +411,7 @@ function setup() {
   flapTemp1.class('class3').id('flap1').class('flap1').position(windowWidth / 2 - 250, 240);
   flapTemp2.class('class3').id('flap2').size(462, 440).position(windowWidth / 2 - 250, 240).class('flyIn3');
   $("#flap2").hide();
-  FlightSchoolSign = createImg('assets/FlightSchoolSign.png');
+  FlightSchoolSign = createImg('assets/FlightSchoolSign2.png');
   FlightSchoolSign.class('class3').class('sign').position((windowWidth / 2) - 443, 30);
 
 
@@ -639,12 +649,14 @@ function draw() {
     }
 
   } else if (scene4 === true) { //mission story
+    playSwoosh();
     if (inDataGloveL === 1) {
       changeScene(7);
     }
     fill(255, 0, 0);
     // flyingOverhead.position(flythroughX - 40, flythroughY + 40);
     flyingOverhead2.position(flythroughX, flythroughY);
+  
 
     flythroughX = flythroughX + 20;
     flythroughY = flythroughY - 20;
@@ -710,9 +722,6 @@ function draw() {
       particles[i].display();
     }
 
-    if (Math.round(Scn4_frmct) == 3) {
-      playSaveMe();
-    }
 
 
   } else if (scene5 == true) {
@@ -1204,34 +1213,40 @@ function getSpeed() {
   if (distanceofvaluesFlying < 15) {
     range1 = 0;
     // console.log('range1 is:   ' + range1);
-  } else if (distanceofvaluesFlying > 16 && distanceofvaluesFlying < 60) {
+  } else if (distanceofvaluesFlying > 15 && distanceofvaluesFlying < 45) {
     //max
     range2 = range2 + 0.5;
     if (range2 > 1) {
       range2 = 1;
     }
     //console.log('range2 is:   ' + range2);
-  } else if (distanceofvaluesFlying > 60 && distanceofvaluesFlying < 130) {
+  } else if (distanceofvaluesFlying ==45 && distanceofvaluesFlying < 75) {
     range3 = range3 + 1;
     if (range3 > 4) {
       range3 = 4;
       // console.log('range3 is:   ' + range3);
     }
-  } else if (distanceofvaluesFlying > 130 && distanceofvaluesFlying < 180) {
+  } else if (distanceofvaluesFlying = 75 && distanceofvaluesFlying < 135) {
     range4 = range4 + 1.25;
     if (range4 > 8) {
       range4 = 8;
     }
-  } else if (distanceofvaluesFlying > 240 && distanceofvaluesFlying < 300) {
+  } else if (distanceofvaluesFlying = 135 && distanceofvaluesFlying < 165) {
     range5 = range5 + 1.5;
     if (range5 > 12) {
       range5 = 12;
+    }
+  } else if (distanceofvalues >= 165 && distanceofvalues < 195) {
+    range6 = range6 + 0.5;
+    if (range6 > 8) {
+      range6 = 8;
     }
   }
   range2 = range2 - 0.06;
   range3 = range3 - 0.04;
   range4 = range4 - 0.03;
-  range5 = range5 - 0.01;
+  range5 = range5 - 0.02;
+  range6 = range6 - 0.01;
   if (range2 < 0) {
     range2 = 0;
   }
@@ -1244,8 +1259,11 @@ function getSpeed() {
   if (range5 < 0) {
     range5 = 0;
   }
+   if (range6 < 0) {
+    range6 = 0;
+  }
 
-  CamSpeed = range1 + range2 + range3 + range4 + range5;
+  CamSpeed = range1 + range2 + range3 + range4 + range5 + range6;
   if (frameCount % 15 == 0) {
     AllScenesMPH = round(map(CamSpeed, 0, camspeedmax, 0, 650));
   }
