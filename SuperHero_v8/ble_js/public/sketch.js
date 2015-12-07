@@ -400,7 +400,7 @@ function setup() {
   callibrationImage = loadImage('assets/Callibration.png');
   shadow = loadImage('assets/shadow.png');
   CapeCalibrationSign = createImg('assets/CapeCalibrationSign2.png');
-  CapeCalibrationSign.class('class7').position((windowWidth / 2) - 443, 30);
+  CapeCalibrationSign.class('class7').position((windowWidth / 2) - 443, -60);
 
 
   // scene 3 flight test
@@ -411,8 +411,8 @@ function setup() {
   flapTemp1.class('class3').id('flap1').class('flap1').position(windowWidth / 2 - 250, 240);
   flapTemp2.class('class3').id('flap2').size(462, 440).position(windowWidth / 2 - 250, 240).class('flyIn3');
   $("#flap2").hide();
-  FlightSchoolSign = createImg('assets/FlightSchoolSign2.png');
-  FlightSchoolSign.class('class3').class('sign').position((windowWidth / 2) - 443, 30);
+  FlightSchoolSign = createImg('assets/FlightSchoolSign3.png');
+  FlightSchoolSign.class('class3').class('sign').position((windowWidth / 2) - 443, -30);
 
 
   for (var m = 0; m < totalstars; m++) {
