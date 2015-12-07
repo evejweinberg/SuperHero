@@ -1,5 +1,6 @@
 //all scenes
-var timeDiv,swoosh;
+var sensorConnected = false;
+var timeDiv, swoosh;
 var AllScenesMPH = 0;
 var shadow;
 var centerH = 0;
@@ -38,11 +39,11 @@ var Scn2_frames = [];
 var Scn2frmct = 0;
 
 //scene3
+var readyforschool = false;
 var totalParticles = 12; //number of total particles
 var arrayOfBalls = []; //empty array to be filled
 var arrayOfLines = [];
 var flightschool1;
-// var flightschoolheader;
 var flap1type, flap2type;
 var FlightSchoolSign;
 var cloud;
@@ -54,7 +55,8 @@ var scene3B = false;
 
 
 //scene4var
-var squeezeFistGifX=200, squeezeFistGifY=500;
+var squeezeFistGifX = 200,
+  squeezeFistGifY = 500;
 var asteroidHit;
 var flythroughX = -100,
   flythroughY = 500;
@@ -118,7 +120,7 @@ var currentframe = 0;
 var Scn5_frmct = 0;
 var transitionCounter = 0;
 var gameTimeSecInterval;
-var secondMarkerGame = 30; //change this to 30 $$$$
+// var secondMarkerGame = 30; //change this to 30 $$$$
 var sliderTempCamMove;
 var scene, camera, renderer;
 var camZ = 30000;
@@ -415,17 +417,17 @@ function setup() {
   // scene4button = createButton('SQUEEZE FIST TO BEGIN');
   // scene4button.position(300, 700).class('class4').class('header2').id('playbutton');
   // scene4button.mouseClicked(function() {
-    // changeScene(7)
+  // changeScene(7)
   // });
   flysmall = createImg('assets/flying.gif');
   flysmall.class('class4');
   // flyingOverhead = createImg('assets/flyingOverhead.png');
   flyingOverhead2 = createImg('assets/flyingOverhead.png');
   // flyingOverhead.class('flyingoverhead').position(flythroughX, flythroughY).class('huerotate').size(1400,1250);
-  flyingOverhead2.class('flyingoverhead').position(flythroughX, flythroughY).size(1400,1250);
+  flyingOverhead2.class('flyingoverhead').position(flythroughX, flythroughY).size(1400, 1250);
   $('.flyingoverhead').hide();
   squeezeFistGif = createImg('assets/fist2.gif').class('class4').id('squeezeFistGif');
-  squeezeFistGif.position(squeezeFistGifX,squeezeFistGifY);
+  squeezeFistGif.position(squeezeFistGifX, squeezeFistGifY);
 
   //scene5
   keepgoing01 = loadImage('assets/keepgoing01.png');
@@ -437,7 +439,7 @@ function setup() {
 } ///SETUP ENDS
 
 function changeScene(num) { //these only get called once, based on a sensor or keypress
-dearEarth.stop();
+  dearEarth.stop();
   $('.class1').hide();
   $('.class2').hide();
   $('.class3').hide();
@@ -478,7 +480,8 @@ dearEarth.stop();
   }
   if (num == 3) {
     scene3 = true;
-    $(document.body).addClass('flighttestbg');
+
+    // $(document.body).addClass('flighttestbg');
     $('.class3').show();
     $("#flap2").hide();
     dearEarth.stop();
@@ -486,8 +489,8 @@ dearEarth.stop();
   }
   if (num == 4) {
     scene4 = true;
-     Scn4_textcounter = 0;
-     Scn4_frmct = 0;
+    Scn4_textcounter = 0;
+    Scn4_frmct = 0;
     $(document.body).addClass('spacebg');
     $('.flyingoverhead').show();
     $('.class4').show();
@@ -543,9 +546,9 @@ function draw() {
 
   // console.log('distancePlayingGame   ' + distanceofvaluesFlying);
   // console.log('array length sc7   ' + NumstoCallibrate.length)
-    console.log(CallibratedRestingNum)
-  // console.log('moving average' + MovingAverage);
-  // windowResized();
+  // console.log(CallibratedRestingNum)
+    // console.log('moving average' + MovingAverage);
+    // windowResized();
   httpGet('/data', update);
 
 
@@ -556,18 +559,18 @@ function draw() {
   clear();
   if (scene1 === true) {
     if (inDataGloveL === 1) {
-        $('#loadingvideo').hide();
+      $('#loadingvideo').hide();
       $('#loadingOver').show();
       loadingOvervid.play();
       $('video#loadingOver').bind('ended', function() {
         $('#loading').remove();
         changeScene(4);
       });
-      
+
 
     }
   } else if (scene2 == true) {
-   
+
 
   } else if (scene3 == true) {
     document.getElementById("yourSpeed").innerHTML = AllScenesMPH;
@@ -584,14 +587,14 @@ function draw() {
     }
     if (scene3B == true) {
       if (AllScenesMPH > 450) {
-         for (var l = 0; l < 12; l++) {
-        torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
-        torus.position.z = (camZ - 500) + (l * 30);
-        torus.position.x = 0;
-        torus.position.y = camY;
-        scene.add(torus);
-        torusMesh.push(torus);
-      }
+        for (var l = 0; l < 12; l++) {
+          torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
+          torus.position.z = (camZ - 500) + (l * 30);
+          torus.position.x = 0;
+          torus.position.y = camY;
+          scene.add(torus);
+          torusMesh.push(torus);
+        }
         // for (var i = 0; i < totalParticles; i++) {
 
         //   arrayOfBalls.push(new flapWin1(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
@@ -619,8 +622,6 @@ function draw() {
       transitionTicker = transitionTicker + .3;
       image(transitionToStory[round(transitionTicker)], 0, 0, windowWidth, windowHeight);
       if (transitionTicker > 12) {
-        // scene3 = false;
-        // scene4 = true;
         changeScene(5);
       }
     }
@@ -637,7 +638,7 @@ function draw() {
       }
     }
 
-  } else if (scene4 === true) {//mission story
+  } else if (scene4 === true) { //mission story
     if (inDataGloveL === 1) {
       changeScene(7);
     }
@@ -668,13 +669,13 @@ function draw() {
       angle = 0;
       firstround = false;
     }
-    
-    squeezeFistGif.position(squeezeFistGifX,squeezeFistGifY);
-    if (Scn4_textcounter>950){
+
+    squeezeFistGif.position(squeezeFistGifX, squeezeFistGifY);
+    if (Scn4_textcounter > 950) {
       $('#squeezeFistGif').show();
-      squeezeFistGifY=squeezeFistGifY-20;
-      if (squeezeFistGifY<400){
-        squeezeFistGifY=400;
+      squeezeFistGifY = squeezeFistGifY - 20;
+      if (squeezeFistGifY < 400) {
+        squeezeFistGifY = 400;
       }
     }
 
@@ -715,7 +716,7 @@ function draw() {
 
 
   } else if (scene5 == true) {
-    
+
     Scn5_frmct++;
     if (readGameOver == true) {
       gameoverclock++;
@@ -724,9 +725,6 @@ function draw() {
       }
 
     }
-
-
-
     if (Scn5_frmct > 180) {
       if (fuckthis == true) {
         CountDownTry4();
@@ -735,7 +733,7 @@ function draw() {
 
 
     }
-    if (AllScenesMPH > 480) {
+    if (AllScenesMPH > 480) {//hitting turbo
       for (var l = 0; l < 12; l++) {
         torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
         torus.position.z = (camZ - 500) + (l * 30);
@@ -768,19 +766,7 @@ function draw() {
     if (Scn5_frmct == 180) {
       cd_fly.play();
     }
-    // if (Scn5_frmct > 180) {
-    //   // timerStopwatch();
-    //   window.setInterval(function() { //
-    //     if (Scn5_frmct % 60 == 0) {
-    //       secondMarkerGame--;
-    //     }
-    //     document.getElementById('sec').innerHTML = 'sec';
-    //     document.getElementById('secondMarkerGame').innerHTML = secondMarkerGame;
-    //   }, 10000); //1 sec
 
-
-
-    // }
 
     if (Scn5_frmct > 60 && Scn5_frmct < 120) {
       document.getElementById('countdowntofly').innerHTML = '2';
@@ -833,15 +819,22 @@ function draw() {
 
 
     if (calibrateFinal == true) {
-      calimgX = calimgX + 6;
-      calimgY = calimgY - 6;
+      calimgX = calimgX + 7;
+      calimgY = calimgY - 7;
       textSize(100);
       textAlign(CENTER);
       text('YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, windowHeight / 2);
+      readyforschool = true;
+
+      $('.bluebgup').animate({
+        height: '900'
+      }, 1200);
+
+
 
       calcountdown = window.setInterval(function() { //
         calibrationOver(); //once over call this
-      }, 4000); //wait 5 seconds
+      }, 3000); //wait 5 seconds
     }
 
 
@@ -874,6 +867,7 @@ function draw() {
     } ///callibration over
 
     if (callibrationPreStage === true) {
+
       var t = document.getElementById('calibrateHoldSteady');
       t.innerHTML = '';
       // t.position(100,100)
@@ -881,13 +875,18 @@ function draw() {
       textAlign(CENTER);
       calimgX = (windowWidth / 2) - 200;
       calimgY = (windowHeight / 2) - 160;
-      // text('PUT ARMS OUT LIKE THIS\r\n(AND HOLD STILL!)', windowWidth / 2, 120);
       textSize(60);
       if (distanceofvalues > 6) {
+        textSize(80);
+        textAlign(CENTER);
+        text('NOT STEADY ENOUGH', windowWidth / 2, 730);
 
-        t.innerHTML = 'NOT STEADY';
+        // t.innerHTML = 'NOT STEADY';
       } else if (distanceofvalues < 6) {
-        t.innerHTML = 'HOLD STEADY FOR ' + callibrationCountdown;
+        // t.innerHTML = 'HOLD STEADY FOR ' + callibrationCountdown;
+        textSize(80);
+        textAlign(CENTER);
+        text('HOLD STEADY', windowWidth / 2, 730);
       }
 
       isCallibrationReady.push(distanceofvalues);
@@ -928,7 +927,7 @@ function draw() {
 function keyPressed() {
 
   if (scene3 === true) { //flightschool
-    
+
     if (keyCode === 65 || keyCode === 97) { //A KEY // 'speed == 100mph'
       $("#flap1").addClass('FlyAway2');
       $("#flap2").show();
@@ -945,6 +944,15 @@ function keyPressed() {
 
 
     } else if (keyCode === 67 || keyCode === 99 || keyCode === ENTER) { //C KEY
+      // for (var l = 0; l < 12; l++) {
+      //   console.log('turbo was hit')
+      //   torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
+      //   torus.position.z = (camZ - 500) + (l * 30);
+      //   torus.position.x = 0;
+      //   torus.position.y = camY;
+      //   scene.add(torus);
+      //   torusMesh.push(torus);
+      // }
 
       for (var i = 0; i < totalParticles; i++) {
 
@@ -1104,7 +1112,7 @@ function CountDownTry4() {
 function countdownTry3() {
   if (clockB > 0) {
     clockB = clockB - 1;
-    document.getElementById('timerStopWatch').innerHTML = clockB;
+    document.getElementById('timerStopWatch').innerHTML = '00:' + clockB;
     // clearInterval(countdownIdB);
   } else {
     //Stop clock
@@ -1116,19 +1124,7 @@ function countdownTry3() {
   }
 }
 
-// function timerStopwatch() {
-//   count = count - .03333;
-//   var adjustedTimer = String(Math.round(count * 100) / 100);
-//   console.log(count + "//" + adjustedTimer);
-//   document.getElementById("timerStopWatch").innerHTML = adjustedTimer.replace('.', ':'); // watch for spelling
-//   if (count <= 0) {
-//     // console.log('setting GAME OVER');
-//     document.getElementById('countdowntofly').innerHTML = 'GAME OVER';
-//     clearInterval(counter);
-//   }
 
-
-// } ////TIMER ENDS
 
 //scene6
 function savePicture() {
@@ -1190,19 +1186,23 @@ function AverageAcellerometerNums() {
     var num = Number(NumstoCallibrateDuringFlight[i]); //raw sensor numbers
     sum = sum + num; //add them all up
   }
-  MovingAverage = sum / NumstoCallibrateDuringFlight.length;
+  // MovingAverage = sum / NumstoCallibrateDuringFlight.length;
   // distanceofvaluesFlying = round(abs(MovingAverage - newDataZ));
-  distanceofvaluesFlying = round(abs(CallibratedRestingNum - newDataZ));
-  console.log("distanceofvaluesFlying " + distanceofvaluesFlying)
-  console.log("newDataZ " + newDataZ)
+  if (sensorConnected == true) {
+    distanceofvaluesFlying = round(abs(CallibratedRestingNum - newDataZ));
+  } else if (sensorConnected == false) {
+    distanceofvaluesFlying = random(8, 35);
+  }
+  // console.log("distanceofvaluesFlying " + distanceofvaluesFlying)
+  // console.log("newDataZ " + newDataZ)
 
 }
 
 function getSpeed() {
-   console.log("range" + range1+ range2+range3+range4+range5)
-  
+  // console.log("range" + range1+ range2+range3+range4+range5)
+
   if (distanceofvaluesFlying < 15) {
-     range1 = 0;
+    range1 = 0;
     // console.log('range1 is:   ' + range1);
   } else if (distanceofvaluesFlying > 16 && distanceofvaluesFlying < 60) {
     //max
@@ -1218,7 +1218,7 @@ function getSpeed() {
       // console.log('range3 is:   ' + range3);
     }
   } else if (distanceofvaluesFlying > 130 && distanceofvaluesFlying < 180) {
-    range4 = range4 + 1.25 ;
+    range4 = range4 + 1.25;
     if (range4 > 8) {
       range4 = 8;
     }
@@ -1248,12 +1248,9 @@ function getSpeed() {
   CamSpeed = range1 + range2 + range3 + range4 + range5;
   if (frameCount % 15 == 0) {
     AllScenesMPH = round(map(CamSpeed, 0, camspeedmax, 0, 650));
-    // console.log('MPH = ' + response)
-    // console.log('MPH = ' + AllScenesMPH)
   }
-  console.log("##")
-  console.log("AllScenesMPH:" + AllScenesMPH + " CamSpeed:" + CamSpeed)
-  console.log("distanceofvaluesFlying:" + distanceofvaluesFlying + " CallibratedRestingNum:" + CallibratedRestingNum +" newDataZ:" + newDataZ )
+  // console.log("AllScenesMPH:" + AllScenesMPH + "  || CamSpeed:" + CamSpeed)
+  // console.log("distanceofvaluesFlying:" + distanceofvaluesFlying + " CallibratedRestingNum:" + CallibratedRestingNum +" newDataZ:" + newDataZ )
 }
 
 function calibrationOver() {
@@ -1262,6 +1259,8 @@ function calibrationOver() {
     changeScene(3); //switch to flight school
   }
 }
+
+
 
 // ////////////////ARE YOU SERIAL?///////////////////
 // /////////////////////////////////////////////////

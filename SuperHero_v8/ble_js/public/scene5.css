@@ -4,8 +4,8 @@
 }
 #timerStopWatch {
   position: absolute;
-  left: 30px;
-  top: 30px;
+  left: -90px;
+  top: -20px;
   z-index: 90;
 }
 
