@@ -11,6 +11,13 @@
   z-index:30px;
 }
 
+.capesign{
+  position:absolute;
+  left:50%;
+  top:-50px;
+  margin-left:-480px;
+}
+
 .yellowbg{
   background-image: url('assets/papertxtyellow.png');
   background-repeat: repeat;

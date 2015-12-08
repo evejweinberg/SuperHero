@@ -1,10 +1,7 @@
-var videoInput, snap;
-var videoBuffer;
-var storedimage;
-var gif, gifFrameRate = 0;
-var count = 0;
-var interval;
-var images = [];
+var videoInput, oneSnap;
+var photoIndex = 0;
+var takePhotoBurst, loopPhotos=0;
+var photoBurst = [];
 
 function setup() {
 
@@ -12,37 +9,31 @@ function setup() {
   videoInput.size(400, 300);
   videoInput.position(0, 0);
   videoInput.hide();
-  var cnv = createCanvas(windowWidth, windowHeight);
-  cnv.position(0, 0);
+  createCanvas(windowWidth, windowHeight);
+  
 }
 
 function draw() {
-  console.log('array length  ' + images.length);
-  console.log(images);
-   console.log(images[0]);
+
   if (frameCount > 335) { //start looping the gif at fr 335
-  //these lines break everything
-  // for (var i=0; i<images.length-1; i++){
-  //   image(images[i]);
-  //   if (i==images.length-1){
-  //     i=0;
-  //   }
-  // }
+  if (photoBurst.length > 0) {
+    image(photoBurst[loopPhotos], 0, 0);
+    loopPhotos = (loopPhotos + 1) % photoBurst.length;
+  }
   
   }
   
   if (frameCount == 120){
-    interval = setInterval(savePhoto, 500);
+    takePhotoBurst = setInterval(photoBooth, 20);
   }
 
 }
 
-function savePhoto() {
-  snap = videoInput.get();
-  images.push(snap);
-  count++;
-  if (count == 5) {
-     // stop
-    clearInterval(interval);
+function photoBooth() {
+  oneSnap = videoInput.get();
+  photoBurst.push(oneSnap);
+  photoIndex++;
+  if (photoIndex == 60) {
+    clearInterval(takePhotoBurst);
   }
 }

@@ -242,12 +242,20 @@
   }
 }
 
+/*.sign {*/
+/*  position: relative;*/
+/*  left: 20%;*/
+/*  float: left;*/
+/*  top: 20px;*/
+/*  z-index: 30px;*/
+/*}*/
 .sign {
-  position: relative;
-  left: 20%;
-  float: left;
-  top: 20px;
-  z-index: 30px;
+  position: absolute;
+  display: block;
+  left: 50%;
+  margin-left: -448px;
+  top: 0px;
+  z-index: 30;
 }
 
 .flyfrombottomclass {

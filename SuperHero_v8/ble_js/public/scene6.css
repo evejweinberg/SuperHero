@@ -7,12 +7,13 @@
   position: absolute;
   left:50%;
   top:50%;
-  margin: -250px 0 0 -540px;
+  margin: 100px 0 0 -540px;
 }
 #scene6newspaper{
   /*position: relative;*/
-  left:50%;
-  top:0px;
+  margin: auto;
+  /*left:50%;*/
+  /*top:0px;*/
 }
 #scene6capture{
   position: relative;

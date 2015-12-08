@@ -1,5 +1,5 @@
 //all scenes
-var sensorConnected = true;
+var sensorConnected = false;
 var timeDiv, swoosh;
 var swooshplaying = false;
 var AllScenesMPH = 0;
@@ -95,7 +95,11 @@ var orbitRadius = 250;
 var switchAstMove = false;
 
 
-// scene5
+// scene5var
+var videoInput, oneSnap;
+var photoIndex = 0;
+var takePhotoBurst, loopPhotos = 0;
+var photoBurst = [];
 var decreasemult = 2.6;
 var camspeedmax = 25;
 var camY = 0;
@@ -155,7 +159,7 @@ var stars;
 var numStars = 10;
 var cloud;
 
-//scene6 //photobooth
+//scene6var //photobooth
 var randomScene6bg = 1;
 var canvas, capture, mycam, button, img;
 var newspaperImage;
@@ -163,6 +167,7 @@ var rotateDiv;
 var Scene6counter = 0;
 var newspaperRotate = 0;
 var newspaperscale = 0;
+retakePhotoRequest = false;
 // var newspapertempheader;
 
 //scene7 callibration
@@ -238,7 +243,7 @@ function playSaveMe() {
 function playSwoosh() {
   if (!swooshplaying) {
     swoosh.play();
-        swoosh.setVolume(1.7);
+    swoosh.setVolume(1.7);
     swooshplaying = true;
   }
 }
@@ -356,13 +361,19 @@ function setup() {
   back5Button = createButton('Play Again');
   scene6buttons = createDiv('');
   scene6buttons.class('class6').id('scene6buttonholder')
-  back1Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
-  back2Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
-  back3Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
-  back5Button.parent(scene6buttons).class('class6').class('scene6buttons').id('playbutton');
-  savePhotoButton = createButton('Save This Photo!').class('class6').class('scene6buttons').id('playbutton');
-  savePhotoButton.position(700, 209).class('class6');
-  savePhotoButton.mousePressed(savePicture);
+  back1Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+  back2Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+  back3Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+  back5Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+  // savePhotoButton = createButton('Save This Photo!').class('class6').addClass('scene6buttons').id('playbutton');
+  // savePhotoButton.position(700, 209).class('class6');
+  // savePhotoButton.mousePressed(savePicture);
+  retakePhotoButton = createButton('Retake Photo').class('class6').addClass('scene6buttons').id('playbutton');
+  retakePhotoButton.position(700, 209).class('class6');
+  retakePhotoButton.mousePressed(function() {
+    setInterval(photoBooth, 20);
+    retakePhotoRequest = true;
+  });
   back1Button.mousePressed(function() {
     changeScene(3)
   });
@@ -376,10 +387,14 @@ function setup() {
     changeScene(5)
   });
 
-  rotateDiv.class('class6').class('newspaperDiv');
-  capture = createCapture(VIDEO);
-  capture.size(580, 340).class('class6').parent(rotateDiv).id('scene6capture');
-  capture.hide();
+  rotateDiv.class('class6').addClass('newspaperDiv');
+  videoInput = createCapture(VIDEO);
+  videoInput.size(575, 340);
+  videoInput.position(575, 340);
+  videoInput.hide();
+  // capture = createCapture(VIDEO);
+  // capture.size(580, 340).class('class6').parent(rotateDiv).id('scene6capture');
+  // capture.hide();
   newspaperImage = createImg('assets/newspaper2.png');
   newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
 
@@ -388,12 +403,12 @@ function setup() {
   //scene 7 callibration
   calibrateSteadyType = createP('');
   calibrationHeader = createP('Put Your Arms Out \r\n Like This');
-  calibrationHeader.class('class7').position((windowWidth / 2) - 240, 170).class('header3');
+  calibrationHeader.class('class7').position((windowWidth / 2) - 240, 170).addClass('header3');
   calibrateSteadyType.class('class7').id('calibrateHoldSteady');
   callibrationImage = loadImage('assets/Callibration.png');
   shadow = loadImage('assets/shadow.png');
   CapeCalibrationSign = createImg('assets/CapeCalibrationSign2.png');
-  CapeCalibrationSign.class('class7').position((windowWidth / 2) - 443, -60);
+  CapeCalibrationSign.class('class7').addClass('capesign');
 
 
   // scene 3 flight test
@@ -401,11 +416,11 @@ function setup() {
   flapTemp2 = createImg('assets/turbo.gif');
   var flapdiv = createDiv('');
   flapdiv.class('flapdiv');
-  flapTemp1.class('class3').id('flap1').class('flap1').position(windowWidth / 2 - 250, 240);
-  flapTemp2.class('class3').id('flap2').size(462, 440).position(windowWidth / 2 - 250, 240).class('flyIn3');
+  flapTemp1.class('class3').addClass('flap1').id('flap1').position(windowWidth / 2 - 250, 240);
+  flapTemp2.class('class3').addClass('flyIn3').id('flap2').size(462, 440).position(windowWidth / 2 - 250, 240);
   $("#flap2").hide();
   FlightSchoolSign = createImg('assets/FlightSchoolSign3.png');
-  FlightSchoolSign.class('class3').class('sign').position((windowWidth / 2) - 443, -30);
+  FlightSchoolSign.class('class3').addClass('sign');
 
 
   for (var m = 0; m < totalstars; m++) {
@@ -414,7 +429,7 @@ function setup() {
 
   // scene4
   scene4Script = createP('');
-  scene4Script.class('class4').class('voiceover');
+  scene4Script.class('class4').addClass('voiceover');
   currentText = scene4Script.html();
   words = split(transcript[0], '#');
   // scene4button = createButton('SQUEEZE FIST TO BEGIN');
@@ -435,7 +450,7 @@ function setup() {
   //scene5
   keepgoing01 = loadImage('assets/keepgoing01.png');
   scene5countdown = createP('3');
-  scene5countdown.class('countdown').class('class5').id('countdowntofly'); //subtract element width/2 and hright
+  scene5countdown.class('countdown').addClass('class5').id('countdowntofly'); //subtract element width/2 and hright
 
 
   changeScene(1);
@@ -551,8 +566,8 @@ function draw() {
   // console.log('distancePlayingGame   ' + distanceofvaluesFlying);
   // console.log('array length sc7   ' + NumstoCallibrate.length)
   // console.log(CallibratedRestingNum)
-    // console.log('moving average' + MovingAverage);
-    // windowResized();
+  // console.log('moving average' + MovingAverage);
+  // windowResized();
   httpGet('/data', update);
 
 
@@ -585,9 +600,11 @@ function draw() {
         $("#flap2").show();
         document.getElementById('targetSpeed').innerHTML = '450';
         $("#flap2").addClass('FlyIn3');
-        var readytoswitch = setInterval(function(){scene3A = false;
-        scene3B = true;}, 2000);
-        
+        var readytoswitch = setInterval(function() {
+          scene3A = false;
+          scene3B = true;
+        }, 2000);
+
       }
     }
     if (scene3B == true) {
@@ -651,7 +668,7 @@ function draw() {
     fill(255, 0, 0);
     // flyingOverhead.position(flythroughX - 40, flythroughY + 40);
     flyingOverhead2.position(flythroughX, flythroughY);
-  
+
 
     flythroughX = flythroughX + 20;
     flythroughY = flythroughY - 20;
@@ -720,6 +737,9 @@ function draw() {
 
 
   } else if (scene5 == true) {
+    if (Scn5_frmct == 120) {
+      takePhotoBurst = setInterval(photoBooth, 20);
+    }
 
     Scn5_frmct++;
     if (readGameOver == true) {
@@ -737,7 +757,7 @@ function draw() {
 
 
     }
-    if (AllScenesMPH > 500) {//hitting turbo
+    if (AllScenesMPH > 500) { //hitting turbo
       for (var l = 0; l < 12; l++) {
         torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
         torus.position.z = (camZ - 500) + (l * 30);
@@ -786,11 +806,14 @@ function draw() {
     }
 
   } else if (scene6 == true) {
-
-    // capture.position(465, 440);
-    // newspaperImage.position(windowWidth * .13, windowHeight * .12);
-
-    // filter('INVERT');
+    // if (retakePhotoRequest == false){
+    if (photoBurst.length > 0) {
+      image(photoBurst[loopPhotos], (width / 2) - 215, (height / 2) + 35);
+      loopPhotos = (loopPhotos + 1) % photoBurst.length;
+    }
+    // } else if (retakePhotoRequest == true){
+    //   photoBooth()
+    // }
     Scene6counter++;
     for (var i = 0; i < arrayOfBalls.length; i++) {
       arrayOfBalls[i].display(); //display them all
@@ -817,7 +840,7 @@ function draw() {
     image(spacebg, 0, 0, windowWidth, windowHeight);
     image(callibrationImage, calimgX, calimgY, 400, 400);
     image(shadow, (windowWidth / 2) - 92, windowHeight * .73);
-    console.log('distanceScn7  ' + distanceofvalues);
+    // console.log('distanceScn7  ' + distanceofvalues);
 
     SensorVal = newDataZ;
 
@@ -1260,7 +1283,7 @@ function getSpeed() {
     }
   }
 
-  console.log(range1 + '||' + range2 + '||' + range3 + '||' + range4 + '||' + range5 + '||' + range6)
+  // console.log(range1 + '||' + range2 + '||' + range3 + '||' + range4 + '||' + range5 + '||' + range6)
   CamSpeed = range1 + range2 + range3 + range4 + range5 + range6;
   if (frameCount % 15 == 0) {
     AllScenesMPH = round(map(CamSpeed, 0, 25, 0, 650));
@@ -1309,6 +1332,20 @@ function calibrationOver() {
   if (calibrateFinal == true) {
     calibrateFinal = false;
     changeScene(3); //switch to flight school
+  }
+}
+
+function photoBooth() {
+  if (retakePhotoRequest == true) {
+    photoIndex = 0;
+    retakePhotoRequest = false;
+
+  }
+  oneSnap = videoInput.get();
+  photoBurst.push(oneSnap);
+  photoIndex++;
+  if (photoIndex == 60) {
+    clearInterval(takePhotoBurst);
   }
 }
 
