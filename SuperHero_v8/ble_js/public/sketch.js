@@ -1,5 +1,5 @@
 //all scenes
-var sensorConnected = false;
+var sensorConnected = true;
 var timeDiv, swoosh;
 var swooshplaying = false;
 var AllScenesMPH = 0;
@@ -10,16 +10,8 @@ var earthspin;
 var earthspin_frames = [];
 var NumstoCallibrateDuringFlight = [];
 var SensorVal;
-var distanceofvalues = 0;
 var MovingAverage = 0;
 var CamSpeed = 0;
-// var inDataGloveL = 0;
-var range1 = 0,
-  range2 = 0,
-  range3 = 0,
-  range4 = 0,
-  range5 = 0,
-  range6 = 0;
 var scene1 = true;
 var scene2 = false;
 var scene3 = false;
@@ -104,6 +96,7 @@ var switchAstMove = false;
 
 
 // scene5
+var decreasemult = 2.6;
 var camspeedmax = 25;
 var camY = 0;
 var webGLRenderer;
@@ -144,9 +137,18 @@ var r, g, b;
 var keepgoing01;
 // var sliderTemp;
 var UserArmNum = 500;
-var range1 = 0;
-var range2 = 0;
-var range3 = 0;
+var range1hit = false;
+range2hit = false,
+  range3hit = false,
+  range4hit = false,
+  range5hit = false,
+  range6hit = false,
+  range1 = 0,
+  range2 = 0,
+  range3 = 0,
+  range4 = 0,
+  range5 = 0;
+range6 = 0;
 var t = 0;
 var text1a, text1b, text2a, text3a, text3b;
 var stars;
@@ -316,15 +318,6 @@ function update(response) {
 
   }
 
-  // var values = inString.split(",")
-  // if(values.length == 2){
-  //   inDataGloveL = int(values[0]);
-  //   newDataZ = int(values[1]);
-  //   console.log(values);
-  // }
-
-  //httpGet('/data', update);
-  // graphData(response, response, response);
 }
 
 function setup() {
@@ -536,6 +529,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   if (num == 7) {
     playcc();
     $('.class7').show();
+    $('#squeezeFistGif').hide();
     $(document.body).addClass('yellowbg');
     scene7 = true;
     timer = setTimeout(function() {
@@ -591,26 +585,27 @@ function draw() {
         $("#flap2").show();
         document.getElementById('targetSpeed').innerHTML = '450';
         $("#flap2").addClass('FlyIn3');
-        scene3A = false;
-        scene3B = true;
+        var readytoswitch = setInterval(function(){scene3A = false;
+        scene3B = true;}, 2000);
+        
       }
     }
     if (scene3B == true) {
-      if (AllScenesMPH > 450) {
-        for (var l = 0; l < 12; l++) {
-          torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
-          torus.position.z = (camZ - 500) + (l * 30);
-          torus.position.x = 0;
-          torus.position.y = camY;
-          scene.add(torus);
-          torusMesh.push(torus);
-        }
-        // for (var i = 0; i < totalParticles; i++) {
-
-        //   arrayOfBalls.push(new flapWin1(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
-
-        //   arrayOfBalls.push(new flapWin2(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+      if (AllScenesMPH > 480) {
+        // for (var l = 0; l < 12; l++) {
+        //   torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
+        //   torus.position.z = (camZ - 500) + (l * 30);
+        //   torus.position.x = 0;
+        //   torus.position.y = camY;
+        //   scene.add(torus);
+        //   torusMesh.push(torus);
         // }
+        for (var i = 0; i < totalParticles; i++) {
+
+          arrayOfBalls.push(new flapWin1(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+
+          arrayOfBalls.push(new flapWin2(width / 1.6, height / 2, width / 2 + random(-width, width), height / 2 + random(-height, height))); //push new particles
+        }
         readyfortrans = true;
 
       }
@@ -742,7 +737,7 @@ function draw() {
 
 
     }
-    if (AllScenesMPH > 480) {//hitting turbo
+    if (AllScenesMPH > 500) {//hitting turbo
       for (var l = 0; l < 12; l++) {
         torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
         torus.position.z = (camZ - 500) + (l * 30);
@@ -1208,45 +1203,84 @@ function AverageAcellerometerNums() {
 }
 
 function getSpeed() {
-  // console.log("range" + range1+ range2+range3+range4+range5)
-
   if (distanceofvaluesFlying < 15) {
+    // fill(255, 0, 0)
+    //   text('range1', 10, 260);
     range1 = 0;
-    // console.log('range1 is:   ' + range1);
-  } else if (distanceofvaluesFlying > 15 && distanceofvaluesFlying < 45) {
-    //max
-    range2 = range2 + 0.5;
+    range1hit = true;
+  }
+  if (distanceofvaluesFlying >= 15) {
+    range2hit = true;
+    // fill(255, 0, 0)
+    //   text('range2', 30, 260);
+    range2 = range2 + 0.2;
     if (range2 > 1) {
       range2 = 1;
     }
-    //console.log('range2 is:   ' + range2);
-  } else if (distanceofvaluesFlying ==45 && distanceofvaluesFlying < 75) {
-    range3 = range3 + 1;
-    if (range3 > 4) {
-      range3 = 4;
-      // console.log('range3 is:   ' + range3);
+  }
+  if (distanceofvaluesFlying >= 45) {
+    range3hit = true;
+    // fill(255, 0, 0)
+    //   text('range3', 60, 260);
+    range3 = range3 + 0.5;
+    if (range3 > 2.5) {
+      range3 = 2.5;
     }
-  } else if (distanceofvaluesFlying = 75 && distanceofvaluesFlying < 135) {
-    range4 = range4 + 1.25;
-    if (range4 > 8) {
-      range4 = 8;
-    }
-  } else if (distanceofvaluesFlying = 135 && distanceofvaluesFlying < 165) {
-    range5 = range5 + 1.5;
-    if (range5 > 12) {
-      range5 = 12;
-    }
-  } else if (distanceofvalues >= 165 && distanceofvalues < 195) {
-    range6 = range6 + 0.5;
-    if (range6 > 8) {
-      range6 = 8;
+
+  }
+  if (distanceofvaluesFlying >= 105) {
+    range4 = range4 + 0.5;
+    range4hit = true;
+    // fill(255, 0, 0)
+    //   text('range4', 100, 260);
+    if (range4 > 3) {
+      range4 = 3;
     }
   }
-  range2 = range2 - 0.06;
-  range3 = range3 - 0.04;
-  range4 = range4 - 0.03;
-  range5 = range5 - 0.02;
-  range6 = range6 - 0.01;
+  if (distanceofvaluesFlying >= 180) {
+    range5hit = true;
+    if (range5 == true) {
+      // fill(255, 0, 0)
+      // text('range5', 140, 260);
+    }
+    range5 = range5 + 0.5;
+    if (range5 > 6) {
+      range5 = 6;
+    }
+  }
+  if (distanceofvaluesFlying >= 255) {
+
+    // fill(255, 0, 0)
+    // text('range6', 180, 260);
+
+    range6hit = true;
+    range6 = range6 + 0.5;
+    if (range6 > 10) {
+      range6 = 10;
+    }
+  }
+
+  console.log(range1 + '||' + range2 + '||' + range3 + '||' + range4 + '||' + range5 + '||' + range6)
+  CamSpeed = range1 + range2 + range3 + range4 + range5 + range6;
+  if (frameCount % 15 == 0) {
+    AllScenesMPH = round(map(CamSpeed, 0, 25, 0, 650));
+  }
+  if (range2hit == false) {
+    range2 = range2 - 0.06 * decreasemult;
+  }
+  if (range3hit == false) {
+    range3 = range3 - 0.04 * decreasemult;
+  }
+  if (range4hit == false) {
+    range4 = range4 - 0.03 * decreasemult;
+  }
+  if (range5hit == false) {
+    range5 = range5 - 0.02 * decreasemult;
+  }
+  if (range6hit == false) {
+    range6 = range6 - 0.03 * decreasemult;
+  }
+
   if (range2 < 0) {
     range2 = 0;
   }
@@ -1259,16 +1293,16 @@ function getSpeed() {
   if (range5 < 0) {
     range5 = 0;
   }
-   if (range6 < 0) {
+  if (range6 < 0) {
     range6 = 0;
   }
 
-  CamSpeed = range1 + range2 + range3 + range4 + range5 + range6;
-  if (frameCount % 15 == 0) {
-    AllScenesMPH = round(map(CamSpeed, 0, camspeedmax, 0, 650));
-  }
-  // console.log("AllScenesMPH:" + AllScenesMPH + "  || CamSpeed:" + CamSpeed)
-  // console.log("distanceofvaluesFlying:" + distanceofvaluesFlying + " CallibratedRestingNum:" + CallibratedRestingNum +" newDataZ:" + newDataZ )
+  range1hit = false;
+  range2hit = false;
+  range3hit = false;
+  range4hit = false;
+  range5hit = false;
+  range6hit = false;
 }
 
 function calibrationOver() {
