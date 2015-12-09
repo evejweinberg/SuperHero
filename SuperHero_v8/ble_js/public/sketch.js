@@ -311,15 +311,13 @@ function bgmusic() {
 }
 
 function update(response) {
-  // timeDiv.innerHTML = response;
-  console.log(response);
+
   var inString = response;
   if (inString.length > 2) {
     var sensors = split(inString, ',');
     inDataGloveL = int(sensors[0]);
     newDataZ = 16 * (int(sensors[1]));
-    // newDataY = int(sensors[2]);
-    // newDataX = int(sensors[3]);
+
 
   }
 
@@ -372,10 +370,13 @@ function setup() {
   // savePhotoButton.position(700, 209).class('class6');
   // savePhotoButton.mousePressed(savePicture);
   retakePhotoButton = createButton('Retake Photo').class('class6').addClass('scene6buttons').id('playbutton');
-  retakePhotoButton.position(700, 209).class('class6');
+  retakePhotoButton.class('class6').addClass('scene6buttons').parent(scene6buttons);
   retakePhotoButton.mousePressed(function() {
-    setInterval(photoBooth, 20);
-    retakePhotoRequest = true;
+     photoBurst = [];
+     photoIndex = 0;
+     loopPhotos = 0;
+    takePhotoBurst = setInterval(photoBooth, 20);
+    
   });
   back1Button.mousePressed(function() {
     changeScene(3)
@@ -568,10 +569,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
 
 function draw() {
 
-  // console.log('distancePlayingGame   ' + distanceofvaluesFlying);
-  // console.log('array length sc7   ' + NumstoCallibrate.length)
-  // console.log(CallibratedRestingNum)
-  // console.log('moving average' + MovingAverage);
+
   // windowResized();
   httpGet('/data', update);
 
@@ -642,7 +640,7 @@ function draw() {
     image(spacebg, 0, 0, windowWidth, windowHeight);
     if (frameCount % 30 == 0) {
       cloudMovex = cloudMovex + 2;
-      // console.log('move' + cloudMovex);
+
     }
 
     if (readyfortrans == true) {
@@ -748,6 +746,7 @@ function draw() {
 
     Scn5_frmct++;
     if (readGameOver == true) {
+      $('#userSpeedDiv').hide();
       gameoverclock++;
       if (gameoverclock > 240) {
         changeScene(6);
@@ -800,7 +799,7 @@ function draw() {
     if (Scn5_frmct > 60 && Scn5_frmct < 120) {
       document.getElementById('countdowntofly').innerHTML = '2';
     } else if (Scn5_frmct > 120 && Scn5_frmct < 180) {
-      // console.log('ONE!')
+ 
       document.getElementById('countdowntofly').innerHTML = '1';
     } else if (Scn5_frmct > 180 && Scn5_frmct < 240) {
       document.getElementById('countdowntofly').innerHTML = 'FLY!';
@@ -811,14 +810,12 @@ function draw() {
     }
 
   } else if (scene6 == true) {
-    // if (retakePhotoRequest == false){
+   
     if (photoBurst.length > 0) {
       image(photoBurst[loopPhotos], (width / 2) - 215, (height / 2) + 35);
       loopPhotos = (loopPhotos + 1) % photoBurst.length;
     }
-    // } else if (retakePhotoRequest == true){
-    //   photoBooth()
-    // }
+
     Scene6counter++;
     for (var i = 0; i < arrayOfBalls.length; i++) {
       arrayOfBalls[i].display(); //display them all
@@ -845,7 +842,7 @@ function draw() {
     image(spacebg, 0, 0, windowWidth, windowHeight);
     image(callibrationImage, calimgX, calimgY, 400, 400);
     image(shadow, (windowWidth / 2) - 92, windowHeight * .73);
-    // console.log('distanceScn7  ' + distanceofvalues);
+   
 
 
 
@@ -983,7 +980,7 @@ function keyPressed() {
 
     } else if (keyCode === 67 || keyCode === 99 || keyCode === ENTER) { //C KEY
       // for (var l = 0; l < 12; l++) {
-      //   console.log('turbo was hit')
+      
       //   torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
       //   torus.position.z = (camZ - 500) + (l * 30);
       //   torus.position.x = 0;
@@ -1083,7 +1080,6 @@ function asteroidHitandBounce() {
   var targetasty = ffcenterY;
   var targetastx2 = 300;
   var targetasty2 = 1200;
-  // console.log('dist:' + dist(ast_x, ast_y, targetastx, targetasty))
   if (dist(ast_x, ast_y, targetastx, targetasty) < 19) {
     switchAstMove = true;
   }
@@ -1157,7 +1153,7 @@ function countdownTry3() {
     clearInterval(countdownIdB);
     $('.gamveoverDiv').show();
     var randomCongrats = round(random(0, 3.1));
-    console.log('rndm   ' +randomCongrats)
+ 
     if (randomCongrats == 0) {
       document.getElementById('gameoverText').innerHTML = 'HOLEY MOLEY!';
     } else if (randomCongrats == 1) {
@@ -1201,7 +1197,6 @@ function CalibrationSensorValChangeges2() {
 
 function getCalibrationSensorValChange() {
   this.currentVal = newDataZ;
-  // console.log('cv' + this.currentVal);
   this.previousVal = newDataZ;
   this.lastcheck = 0;
 
@@ -1210,7 +1205,7 @@ function getCalibrationSensorValChange() {
 
     if (millis() - this.lastcheck > 120) { //read every 10th of a second
       distanceofvalues = abs(this.currentVal - this.previousVal);
-      // console.log('changeAmount:  ' + distanceofvalues);
+
       this.previousVal = this.currentVal;
       this.lastcheck = millis();
     }
@@ -1219,7 +1214,7 @@ function getCalibrationSensorValChange() {
 
 function Begincountdown() {
   calcountdown = window.setInterval(function() {
-    // console.log(callibrationCountdown);
+ 
     Math.round(callibrationCountdown--); //every second do this.
   }, 1000);
 }
@@ -1241,8 +1236,7 @@ function AverageAcellerometerNums() {
   } else if (sensorConnected == false) {
     distanceofvaluesFlying = random(8, 35);
   }
-  // console.log("distanceofvaluesFlying " + distanceofvaluesFlying)
-  console.log("newDataZ " + newDataZ)
+ 
 
 }
 
@@ -1304,7 +1298,7 @@ function getSpeed() {
     }
   }
 
-  // console.log(range1 + '||' + range2 + '||' + range3 + '||' + range4 + '||' + range5 + '||' + range6)
+  
   CamSpeed = range1 + range2 + range3 + range4 + range5 + range6;
   if (frameCount % 15 == 0) {
     AllScenesMPH = round(map(CamSpeed, 0, 25, 0, 650));
@@ -1357,11 +1351,7 @@ function calibrationOver() {
 }
 
 function photoBooth() {
-  if (retakePhotoRequest == true) {
-    photoIndex = 0;
-    retakePhotoRequest = false;
-
-  }
+  
   oneSnap = videoInput.get();
   photoBurst.push(oneSnap);
   photoIndex++;
