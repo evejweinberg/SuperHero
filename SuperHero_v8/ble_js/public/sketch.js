@@ -1,5 +1,5 @@
 //all scenes
-var sensorConnected = true;
+var sensorConnected = false;
 var timeDiv, swoosh;
 var swooshplaying = false;
 var AllScenesMPH = 0;
@@ -761,7 +761,7 @@ function draw() {
 
 
     }
-    if (AllScenesMPH > 520) { //hitting turbo
+    if (AllScenesMPH > 513) { //hitting turbo
       for (var l = 0; l < 12; l++) {
         torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
         torus.position.z = (camZ - 500) + (l * 30);
@@ -1230,11 +1230,22 @@ function AverageAcellerometerNums() {
     sum = sum + num; //add them all up
   }
   // MovingAverage = sum / NumstoCallibrateDuringFlight.length;
-  // distanceofvaluesFlying = round(abs(MovingAverage - newDataZ));
+  ////////if the sensor breaks!!!!////////
   if (sensorConnected == true) {
     distanceofvaluesFlying = round(abs(CallibratedRestingNum - newDataZ));
   } else if (sensorConnected == false) {
-    distanceofvaluesFlying = random(8, 35);
+    if (scene3 == true && scene3A == true){
+      console.log('3A')
+    distanceofvaluesFlying = random(35, 170);
+    } 
+    else if (scene3B == true && scene3 == true){
+      console.log('3B')
+      distanceofvaluesFlying = random(200, 620);
+    }
+    else if (scene5 == true){
+      console.log('5')
+      distanceofvaluesFlying = random(75, 355);
+    }
   }
  
 
