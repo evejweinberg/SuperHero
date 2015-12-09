@@ -20,7 +20,7 @@ app.get('/data', function(request, response){
 bleSerial.on('data', function(data){
 	var data = String(data)
 	data = data.trim();
-	if(data.length == 5){
+	if(data.length > 3){
 		bleData = data
   		console.log("got valid data")
   		console.log(bleData);

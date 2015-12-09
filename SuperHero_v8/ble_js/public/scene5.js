@@ -22,7 +22,7 @@ $(document).ready(function() {
       //------------------------------------------------//
       var knot;
       var Allknots = [];
-      var stats = initStats();
+      // var stats = initStats();
       r = 100;
       g = 200;
       b = 250;
@@ -747,7 +747,7 @@ $(document).ready(function() {
             camZ = camZ - (CamSpeed * .8);
           }
         }
-        stats.update();
+        // stats.update();
         range1 = 0;
         range2 = 0;
         range3 = 0;

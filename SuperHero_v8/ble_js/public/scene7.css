@@ -1,3 +1,10 @@
+#readyforschool{
+  left:50%;
+  top:50%;
+  margin-left: -190px;
+  margin-top: -190px;
+  position:absolute;
+}
 #calibrateHoldSteady {
   position:absolute;
   text-Align: CENTER;
@@ -14,7 +21,7 @@
 .capesign{
   position:absolute;
   left:50%;
-  top:-50px;
+  top:-60px;
   margin-left:-480px;
 }
 

@@ -1,5 +1,5 @@
 //all scenes
-var sensorConnected = false;
+var sensorConnected = true;
 var timeDiv, swoosh;
 var swooshplaying = false;
 var AllScenesMPH = 0;
@@ -9,7 +9,6 @@ var spacebg;
 var earthspin;
 var earthspin_frames = [];
 var NumstoCallibrateDuringFlight = [];
-var SensorVal;
 var MovingAverage = 0;
 var CamSpeed = 0;
 var scene1 = true;
@@ -170,7 +169,8 @@ var newspaperscale = 0;
 retakePhotoRequest = false;
 // var newspapertempheader;
 
-//scene7 callibration
+//scene7var callibration
+var readyforschool;
 var calimgX, calimgY;
 var calibrationStillGoing = true;
 var calibrateSteadyType;
@@ -180,7 +180,7 @@ var sliderTemp; //the sensor will replace this later
 var restingNumbers = [];
 var isCallibrationReady = [];
 var NumstoCallibrate = [];
-var SensorVal, gd;
+var gd;
 var distanceofvalues = 0;
 var distanceofvaluesFlying = 0;
 var averageValpreCal = 0;
@@ -312,12 +312,12 @@ function bgmusic() {
 
 function update(response) {
   // timeDiv.innerHTML = response;
-  // console.log(response);
+  console.log(response);
   var inString = response;
-  if (inString.length > 4) {
+  if (inString.length > 2) {
     var sensors = split(inString, ',');
     inDataGloveL = int(sensors[0]);
-    newDataZ = int(sensors[1]);
+    newDataZ = 16 * (int(sensors[1]));
     // newDataY = int(sensors[2]);
     // newDataX = int(sensors[3]);
 
@@ -334,6 +334,9 @@ function setup() {
   httpGet('/data', update);
 
   //scene7, calibration
+  readyforschool = createImg('assets/readyforschool.png');
+  // readyforschool.position(0,0)
+  readyforschool.class('class7').id('readyforschool');
   gd = new getCalibrationSensorValChange();
   loadingOvervid = document.getElementById("loadingOver");
   loadingOvervid.pause();
@@ -403,7 +406,7 @@ function setup() {
   //scene 7 callibration
   calibrateSteadyType = createP('');
   calibrationHeader = createP('Put Your Arms Out \r\n Like This');
-  calibrationHeader.class('class7').position((windowWidth / 2) - 240, 170).addClass('header3');
+  calibrationHeader.class('class7').position((windowWidth / 2) - 240, 170).addClass('header3').id('calibrationHeaderid');
   calibrateSteadyType.class('class7').id('calibrateHoldSteady');
   callibrationImage = loadImage('assets/Callibration.png');
   shadow = loadImage('assets/shadow.png');
@@ -468,6 +471,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
   $('.gamveoverDiv').hide();
   $('.flyingoverhead').hide();
   $('#squeezeFistGif').hide();
+  $('#readyforschool').hide();
   scene1 = false;
   scene2 = false;
   scene3 = false;
@@ -545,6 +549,7 @@ function changeScene(num) { //these only get called once, based on a sensor or k
     playcc();
     $('.class7').show();
     $('#squeezeFistGif').hide();
+    $('#readyforschool').hide();
     $(document.body).addClass('yellowbg');
     scene7 = true;
     timer = setTimeout(function() {
@@ -695,11 +700,11 @@ function draw() {
     }
 
     squeezeFistGif.position(squeezeFistGifX, squeezeFistGifY);
-    if (Scn4_textcounter > 950) {
+    if (Scn4_textcounter > 1250) {
       $('#squeezeFistGif').show();
       squeezeFistGifY = squeezeFistGifY - 20;
-      if (squeezeFistGifY < 400) {
-        squeezeFistGifY = 400;
+      if (squeezeFistGifY < 300) {
+        squeezeFistGifY = 300;
       }
     }
 
@@ -757,7 +762,7 @@ function draw() {
 
 
     }
-    if (AllScenesMPH > 500) { //hitting turbo
+    if (AllScenesMPH > 520) { //hitting turbo
       for (var l = 0; l < 12; l++) {
         torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
         torus.position.z = (camZ - 500) + (l * 30);
@@ -842,7 +847,7 @@ function draw() {
     image(shadow, (windowWidth / 2) - 92, windowHeight * .73);
     // console.log('distanceScn7  ' + distanceofvalues);
 
-    SensorVal = newDataZ;
+
 
 
     if (calibrateFinal == true) {
@@ -850,7 +855,11 @@ function draw() {
       calimgY = calimgY - 7;
       textSize(100);
       textAlign(CENTER);
-      text('YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, windowHeight / 2);
+      $('#readyforschool').show();
+      var up = -1;
+      document.getElementById('calibrationHeaderid').innerHTML = '';
+      // calibrationHeader.position((windowWidth / 2) - 240, 170+ up);
+      // text('YOU ARE READY \r\n FOR FLIGHT SCHOOL', windowWidth / 2, windowHeight / 2);
       readyforschool = true;
 
       $('.bluebgup').animate({
@@ -867,6 +876,7 @@ function draw() {
 
 
     if (callibrationStage === true) {
+      $('#readyforschool').hide();
       textSize(80);
       textAlign(CENTER);
       text('HOLD STEADY FOR:  ' + callibrationCountdown, windowWidth / 2, 730);
@@ -894,6 +904,7 @@ function draw() {
     } ///callibration over
 
     if (callibrationPreStage === true) {
+
 
       var t = document.getElementById('calibrateHoldSteady');
       t.innerHTML = '';
@@ -1145,7 +1156,17 @@ function countdownTry3() {
     //Stop clock
     clearInterval(countdownIdB);
     $('.gamveoverDiv').show();
-
+    var randomCongrats = round(random(0, 3.1));
+    console.log('rndm   ' +randomCongrats)
+    if (randomCongrats == 0) {
+      document.getElementById('gameoverText').innerHTML = 'HOLEY MOLEY!';
+    } else if (randomCongrats == 1) {
+document.getElementById('gameoverText').innerHTML = 'YOU DID IT';
+    } else if (randomCongrats == 2) {
+document.getElementById('gameoverText').innerHTML = 'WOAHHHH';
+}else if (randomCongrats == 3) {
+document.getElementById('gameoverText').innerHTML = 'SUPER STAR';
+}
     document.getElementById('gameoverStat').innerHTML = 'You Flew  ' + floor((30000 - camZ)) + '  Miles';
     readGameOver = true;
   }
@@ -1179,13 +1200,13 @@ function CalibrationSensorValChangeges2() {
 }
 
 function getCalibrationSensorValChange() {
-  this.currentVal = SensorVal;
+  this.currentVal = newDataZ;
   // console.log('cv' + this.currentVal);
-  this.previousVal = SensorVal;
+  this.previousVal = newDataZ;
   this.lastcheck = 0;
 
   this.display = function() {
-    this.currentVal = SensorVal;
+    this.currentVal = newDataZ;
 
     if (millis() - this.lastcheck > 120) { //read every 10th of a second
       distanceofvalues = abs(this.currentVal - this.previousVal);
@@ -1221,7 +1242,7 @@ function AverageAcellerometerNums() {
     distanceofvaluesFlying = random(8, 35);
   }
   // console.log("distanceofvaluesFlying " + distanceofvaluesFlying)
-  // console.log("newDataZ " + newDataZ)
+  console.log("newDataZ " + newDataZ)
 
 }
 

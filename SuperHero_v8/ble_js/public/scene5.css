@@ -64,6 +64,11 @@
   background-color: black;
 }
 #gameoverStat{
+  -webkit-animation: color-change 1s infinite;
+    -moz-animation: color-change 1s infinite;
+    -o-animation: color-change 1s infinite;
+    -ms-animation: color-change 1s infinite;
+    animation: color-change 1s infinite;
   text-align: center;
   font-size: 80px;
   /*font-weight: bold;*/
@@ -73,6 +78,11 @@
   
 }
 #gameoverText{
+    -webkit-animation: color-change 1s infinite;
+    -moz-animation: color-change 1s infinite;
+    -o-animation: color-change 1s infinite;
+    -ms-animation: color-change 1s infinite;
+    animation: color-change 1s infinite;
  
   text-align: center;
   font-size: 400px;
@@ -101,5 +111,35 @@
 
 #countdowntofly {
   z-index: 10;
+  margin-left:100px;
   text-align: center;
+}
+
+
+
+
+@-webkit-keyframes color-change {
+    0% { color: rgb(246, 209, 68); }
+    25% { color: rgb(236, 115, 105); }
+    25.1%{ color: rgb(231, 82, 68); }
+     75% { color: rgb(231, 82, 68); }
+     75.1%{ color: rgb(0, 166, 155); }
+    100% { color: rgb(0, 166, 155); }
+}
+@-moz-keyframes color-change {
+    0% { color: red; }
+    50% { color: blue; }
+    100% { color: red; }
+}
+@-ms-keyframes color-change {
+    0% { color: red; }
+    50% { color: blue; }
+    100% { color: red; }
+}
+
+@keyframes color-change {
+  0% { color: rgb(246, 209, 68); }
+    25% { color: rgb(236, 115, 105); }
+     75% { color: rgb(231, 82, 68); }
+    100% { color: rgb(0, 166, 155); }
 }
