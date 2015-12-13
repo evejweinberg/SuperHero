@@ -15,31 +15,34 @@ app.get('/data', function(request, response){
   response.end(bleData);
 });
 
+
+//max's test on Thursday morning
+bleSerial.on('data', function(data){
+var data = String(data)
+data = data.trim().split("\r\n");
+  if(data.length > 1 && data[1].length > 2){
+    bleData = data[1];
+    console.log("got valid data")
+    console.log(bleData);
+    console.log("#######");
+  }
+
+});
+
 // this function gets called when new data is received from
 // the Bluetooth LE serial service:
-bleSerial.on('data', function(data){
-	var data = String(data)
-	data = data.trim();
-	// if(data.length > 2){
-		bleData = data
-  		console.log("got valid data")
-  		console.log(bleData);
-	// } else {
-	// 	console.log("Don't send");
-	// }
-  
-
-  // if(bleData.length == 5){
-  // 		console.log(bleData.length);
-  // 		var a = bleData.split(",")
-  // 		console.log("Button press: " + a[0])
-  // 		console.log("Acc Z: "+ a[1])
-
-  // }
+// bleSerial.on('data', function(data){
+// 	var data = String(data)
+// 	data = data.trim();
+// 	// if(data.length > 2){
+// 		bleData = data
+//   		console.log("got valid data")
+//   		console.log(bleData);
+// 	// } 
   	
   
   
-});
+// });
 
 // this function gets called when the program
 // establishes a connection with the remote BLE radio:

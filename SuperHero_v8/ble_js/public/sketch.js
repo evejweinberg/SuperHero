@@ -11,7 +11,7 @@ var earthspin_frames = [];
 var NumstoCallibrateDuringFlight = [];
 var MovingAverage = 0;
 var CamSpeed = 0;
-var scene1 = true;
+var scene1 = false;
 var scene2 = false;
 var scene3 = false;
 var scene4 = false;
@@ -95,6 +95,8 @@ var switchAstMove = false;
 
 
 // scene5var
+var gameSong1, gameSong2, gameSong3, songpicker;
+var gameSongIsPlaying = false;
 var videoInput, oneSnap;
 var photoIndex = 0;
 var takePhotoBurst, loopPhotos = 0;
@@ -237,15 +239,15 @@ function starfield1() {
 //     alert('Hello world');
 // }, false);
 
-function NoGlovesScene1Done(){
+function NoGlovesScene1Done() {
   console.log('clicked')
-    $('#loadingvideo').hide();
-      $('#loadingOver').show();
-      loadingOvervid.play();
-      $('video#loadingOver').bind('ended', function() {
-        $('#loading').remove();
-        changeScene(4);
-      });
+  $('#loadingvideo').hide();
+  $('#loadingOver').show();
+  loadingOvervid.play();
+  $('video#loadingOver').bind('ended', function() {
+    $('#loading').remove();
+    changeScene(4);
+  });
 }
 
 // $('#noGlovesButtonB').click(function(){
@@ -295,7 +297,7 @@ function dearEarthVO() {
 
 function preload() {
 
-  img = loadImage('assets/newspaper.PNG');
+  img = loadImage('assets/newspaper.png');
 
   for (var i = 0; i < 13; i++) { //load all the image names
     trans = "assets/spaceCompressB_" + nf(i, 2) + ".png";
@@ -307,6 +309,9 @@ function preload() {
     Allclouds.push(loadImage(cloud)); //push them all into an array
   }
 
+  gameSong1 = loadSound('audio/game01.mp3');
+  gameSong2 = loadSound('audio/game01.mp3');
+  gameSong3 = loadSound('audio/game01.mp3');
   cc = loadSound('assets/cc.wav');
   swoosh = loadSound('assets/swoosh2.wav');
   bg01 = loadSound('assets/bg01.mp3');
@@ -318,7 +323,7 @@ function preload() {
 
   //scene4
   saveme = loadSound('assets/saveme.m4a');
-  asteroid = loadImage('assets/asteroid2.png');
+  asteroid = loadImage('assets/asteroid3.png');
   transcript = loadStrings('assets/script.txt');
   for (var i = 0; i < earthSpinFrames; i++) { //load all the image names
     earthspin = "assets/earthSpin03_" + nf(Math.round(i), 3) + ".png";
@@ -336,18 +341,15 @@ function bgmusic() {
   }
 }
 
-function update(response) {
+// function update(response) {
 
-  var inString = response;
-  if (inString.length > 2) {
-    var sensors = split(inString, ',');
-    inDataGloveL = int(sensors[0]);
-    newDataZ = 16 * (int(sensors[1]));
-
-
-  }
-
-}
+//   var inString = response;
+//   if (inString.length > 2) {
+//     var sensors = split(inString, ',');
+//     inDataGloveL = int(sensors[0]);
+//     newDataZ = 16 * (int(sensors[1]));
+// }
+// }
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
@@ -355,7 +357,7 @@ function setup() {
   calimgX = (windowWidth / 2) - 200;
   calimgY = (windowHeight / 2) - 160;
   timeDiv = document.getElementById('sensors');
-  httpGet('/data', update);
+  // httpGet('/data', update);
 
   //scene7, calibration
   readyforschool = createImg('assets/readyforschool.png');
@@ -364,7 +366,7 @@ function setup() {
   gd = new getCalibrationSensorValChange();
   loadingOvervid = document.getElementById("loadingOver");
   loadingOvervid.pause();
-  spacebg = loadImage('assets/spaceEdges2.png');
+  spacebg = loadImage('assets/spaceEdges3.png');
 
   function playVid() {
     loadingOvervid.play();
@@ -450,7 +452,7 @@ function setup() {
   flapTemp2.class('class3').addClass('flyIn3').id('flap2').size(462, 440).position(windowWidth / 2 - 250, 240);
   $("#flap2").hide();
   FlightSchoolSign = createImg('assets/FlightSchoolSign3.png');
-  FlightSchoolSign.class('class3').addClass('sign');
+  FlightSchoolSign.class('class3').addClass('sign').id('flightschoolsign');
 
 
   for (var m = 0; m < totalstars; m++) {
@@ -605,7 +607,7 @@ function draw() {
 
 
   // windowResized();
-  httpGet('/data', update);
+  // httpGet('/data', update);
 
 
   centerH = (windowWidth / 2);
@@ -615,6 +617,8 @@ function draw() {
   clear();
   if (scene1 === true) {
     if (inDataGloveL === 1) {
+      // changeScene(1);
+      $('#defaultCanvas0').show();
       $('#loadingvideo').hide();
       $('#loadingOver').show();
       loadingOvervid.play();
@@ -678,6 +682,9 @@ function draw() {
     }
 
     if (readyfortrans == true) {
+       $('#flightschoolsign').animate({
+        height: '-200'
+      }, 1200);
       transitionTicker = transitionTicker + .3;
       image(transitionToStory[round(transitionTicker)], 0, 0, windowWidth, windowHeight);
       if (transitionTicker > 12) {
@@ -704,11 +711,11 @@ function draw() {
       cloudMovex = cloudMovex + 2;
 
     }
-    image(Allclouds[3], round(cloudMovex)+1000, 600,135,45);//get exact dimensions
-    image(Allclouds[3], round(cloudMovex) + 1100, 320,135,45);
-    image(Allclouds[0], floor(cloudMovex) + 810, 250,135,45);
-    image(Allclouds[1], floor(cloudMovex) + 1200, 400,135,45);
-    image(Allclouds[2], round(cloudMovex) + 850, 500,135,45);
+    image(Allclouds[3], round(cloudMovex) + 1000, 600, 135, 45); //get exact dimensions
+    image(Allclouds[3], round(cloudMovex) + 1100, 320, 135, 45);
+    image(Allclouds[0], floor(cloudMovex) + 810, 250, 135, 45);
+    image(Allclouds[1], floor(cloudMovex) + 1200, 400, 135, 45);
+    image(Allclouds[2], round(cloudMovex) + 850, 500, 135, 45);
     if (inDataGloveL === 1) {
       changeScene(7);
     }
@@ -859,6 +866,7 @@ function draw() {
     } else if (Scn5_frmct == 240) {
       $('#userSpeedDiv').show();
       document.getElementById('countdowntofly').innerHTML = '';
+      gameSongPlaying();
       counter = setInterval(timer, 33); //1000 will  run it every 1 second
     }
 
@@ -1054,6 +1062,7 @@ function keyPressed() {
     }
   } else if (scene1 === true) {
     if (keyCode === ENTER) {
+      $('#defaultCanvas0').show();
       $('#loadingvideo').hide();
       $('#loadingOver').show();
       loadingOvervid.play();
@@ -1423,29 +1432,46 @@ function photoBooth() {
   }
 }
 
+function gameSongPlaying() {
+  if (!gameSongIsPlaying) {
+    gameSongIsPlaying = true;
+    songpicker = round(random(0, 2));
+    if (songpicker == 0) {
+      console.log('songpicker0');
+      gameSong1.play();
+    } else if (songpicker == 1) {
+      console.log('songpicker1');
+      gameSong2.play();
+    } else if (songpicker == 2) {
+      console.log('songpicker2');
+      gameSong3.play();
+    }
+  }
+}
+
 
 
 // ////////////////ARE YOU SERIAL?///////////////////
 // /////////////////////////////////////////////////
 
-// function serverConnected() {
-//   println('connected to server.');
-// }
+function serverConnected() {
+  println('connected to server.');
+}
 
-// function portOpen() {
-//   println('the serial port opened.')
-// }
+function portOpen() {
+  println('the serial port opened.')
+}
 
-// function serialError(err) {
-//   println('Something went wrong with the serial port. ' + err);
-// }
+function serialError(err) {
+  println('Something went wrong with the serial port. ' + err);
+}
 
-// function serialEvent() {
-//   var inString = serial.readStringUntil('\r\n');
-//   if (inString.length > 0) {
-//     var sensors = split(inString, ',');
-//     inDataGloveL = int(sensors[0]);
-//     newDataZ = int(sensors[1]);
+function serialEvent() {
+  var inString = serial.readStringUntil('\r\n');
+  if (inString.length > 0) {
+    var sensors = split(inString, ',');
+    inDataGloveL = int(sensors[0]);
+    newDataZ = int(sensors[1]);
 
-//   }
-// }
+  }
+}
