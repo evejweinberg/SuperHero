@@ -1,3 +1,10 @@
+#calibrationHeaderid{
+  position:absolute;
+  left:50%;
+  top: 180px;
+  margin-left: -260px;
+  text-align: center;
+}
 #readyforschool{
   left:50%;
   top:50%;
