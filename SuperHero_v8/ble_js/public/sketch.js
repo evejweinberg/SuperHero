@@ -1,5 +1,6 @@
 //all scenes
 var sensorConnected = false;
+var noGloves = false;
 var timeDiv, swoosh;
 var swooshplaying = false;
 var AllScenesMPH = 0;
@@ -161,6 +162,11 @@ var numStars = 10;
 var cloud;
 
 //scene6var //photobooth
+var scn6BGsprite = []; //all jitter objects go in here
+var spriteLibrary = []; //png sequence
+var spriteAssets = [];
+var sprite1Total = 58;
+var roveBothax, roveBothay, roveBothbx, roveBothby, wiggleaway, scn6Bgsprites;
 var randomScene6bg = 1;
 var canvas, capture, mycam, button, img;
 var newspaperImage;
@@ -235,11 +241,9 @@ function starfield1() {
   }
 }
 
-// document.getElementById('noGlovesButtonB').addEventListener('click', function() {
-//     alert('Hello world');
-// }, false);
 
 function NoGlovesScene1Done() {
+  noGloves = true;
   console.log('clicked')
   $('#loadingvideo').hide();
   $('#loadingOver').show();
@@ -299,6 +303,17 @@ function preload() {
 
   img = loadImage('assets/newspaper.png');
 
+  for (var i = 0; i < sprite1Total; i++) { //load all the image names
+
+    if (i < 10) { //for 1 digit ones, add the zero
+      scn6Bgsprites = "assets/flash_0" + i + ".png";
+    } else { //for 2 digit ones dont
+      scn6Bgsprites = "assets/flash_" + i + ".png";
+    }
+    spriteLibrary.push(loadImage(scn6Bgsprites)); //push them all into an array
+    //these will be called inside the jitter object
+  }
+
   for (var i = 0; i < 13; i++) { //load all the image names
     trans = "assets/spaceCompressB_" + nf(i, 2) + ".png";
     transitionToStory.push(loadImage(trans)); //push them all into an array
@@ -310,8 +325,8 @@ function preload() {
   }
 
   gameSong1 = loadSound('audio/game01.mp3');
-  gameSong2 = loadSound('audio/game01.mp3');
-  gameSong3 = loadSound('audio/game01.mp3');
+  gameSong2 = loadSound('audio/fuge1.m4a');
+  gameSong3 = loadSound('audio/fuge2.m4a');
   cc = loadSound('assets/cc.wav');
   swoosh = loadSound('assets/swoosh2.wav');
   bg01 = loadSound('assets/bg01.mp3');
@@ -357,7 +372,6 @@ function setup() {
   calimgX = (windowWidth / 2) - 200;
   calimgY = (windowHeight / 2) - 160;
   timeDiv = document.getElementById('sensors');
-  // httpGet('/data', update);
 
   //scene7, calibration
   readyforschool = createImg('assets/readyforschool.png');
@@ -383,6 +397,9 @@ function setup() {
       color(0, 166, 155) //blue
     ]
     //scene6
+  for (var i = 0; i < 200; i++) {
+    scn6BGsprite.push(new Scn6Jitter());
+  }
   rotateDiv = createDiv('');
   back1Button = createButton('FlightSchool');
   back2Button = createButton('Calibration');
@@ -424,9 +441,6 @@ function setup() {
   videoInput.size(575, 340);
   videoInput.position(575, 340);
   videoInput.hide();
-  // capture = createCapture(VIDEO);
-  // capture.size(580, 340).class('class6').parent(rotateDiv).id('scene6capture');
-  // capture.hide();
   newspaperImage = createImg('assets/newspaper2.png');
   newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
 
@@ -493,6 +507,30 @@ function restartAllCounters() {
   Scn5_frmct = 0;
   Scn4_frmct = 0;
   cloudMovex = 0;
+  Scn4_textcounter = 0;
+  var isccplaying = false;
+  var flyingOrbitRate = 0;
+  var playSecondVid = false;
+  var instructionsready = false;
+  var savmeplaying = false;
+  var bgplaying = false;
+  var dearEarthplaying = false;
+  var ast_x = -100;
+  var ast_y = -100;
+  var ast_size = 766;
+  var scene3counter = 0;
+  var switchAstMove = false;
+  var firstround = true;
+  var gameSongIsPlaying = false;
+  var gameoverclock = 0;
+  var turbo = false;
+  var readyforschool = false;
+  var cloudMovex = 0;
+  var Scn3_frmct = 0;
+  var scene3A = true;
+  var scene3B = false;
+  flapTemp1.position(windowWidth / 2 - 250, 240);
+  FlightSchoolSign.position(windowWidth / 2, -40);
 }
 
 function changeScene(num) { //these only get called once, based on a sensor or keypress
@@ -682,7 +720,7 @@ function draw() {
     }
 
     if (readyfortrans == true) {
-       $('#flightschoolsign').animate({
+      $('#flightschoolsign').animate({
         height: '-200'
       }, 1200);
       transitionTicker = transitionTicker + .3;
@@ -871,6 +909,13 @@ function draw() {
     }
 
   } else if (scene6 == true) {
+    roveBothax = cos(millis() / 10) * 7;
+    roveBothay = sin(millis() / 10) * 7;
+    roveBothbx = sin(millis() / 10) * 7;
+    roveBothby = cos(millis() / 10) * 7;
+    for (var i = 0; i < scn6BGsprite.length; i++) {
+      scn6BGsprite[i].display();
+    }
 
     if (photoBurst.length > 0) {
       image(photoBurst[loopPhotos], (width / 2) - 215, (height / 2) + 35);
@@ -1447,6 +1492,39 @@ function gameSongPlaying() {
       gameSong3.play();
     }
   }
+}
+
+function Scn6Jitter() {
+  this.startingFrame = floor(random(sprite1Total));
+  var spriteNumber = scn6BGsprite.length;
+
+
+  this.x = (spriteNumber % 15) * 200;
+
+  this.y = floor(spriteNumber / 15) * 150;
+  this.rh = random(40, 130);
+
+  this.speed = random(-1, 1);
+
+  this.display = function() {
+
+    this.scaleup = cos(millis() / 500) * 20;
+    this.rw = this.rh + this.scaleup;
+    this.rovex = cos(millis() / 500) * this.speed;
+    this.rovey = sin(millis() / 500) * this.speed;
+    this.x = this.x + this.rovex;
+    this.y = this.y + this.rovey;
+
+
+    image(spriteLibrary[floor(this.startingFrame)], this.x, this.y, this.rw, this.rw);
+    this.startingFrame = this.startingFrame + .5;
+
+    if (this.startingFrame == sprite1Total) {
+      this.startingFrame = 0;
+    }
+  }
+
+
 }
 
 
