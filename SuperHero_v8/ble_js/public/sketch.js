@@ -205,8 +205,8 @@ var calcountdown;
 var UserArmOutNum = 0;
 
 //serial
-var serial; // variable to hold an instance of the serialport library
-var portName = '/dev/cu.usbmodemfd121'; // fill in your serial port name here
+var serial2; // variable to hold an instance of the serialport library
+var portName = '/dev/cu.LightBlue-Bean'; // fill in your serial port name here
 var inData0, inDataGloveL; // for incoming serial data
 var newDataZ, newDataY, newDataX; //alt names for incoming data
 var xPos = 0;
@@ -254,16 +254,6 @@ function NoGlovesScene1Done() {
   });
 }
 
-// $('#noGlovesButtonB').click(function(){
-//   console.log('clicked')
-//     $('#loadingvideo').hide();
-//       $('#loadingOver').show();
-//       loadingOvervid.play();
-//       $('video#loadingOver').bind('ended', function() {
-//         $('#loading').remove();
-//         changeScene(4);
-//       });
-// });
 
 function playSaveMe() {
   if (!savmeplaying) {
@@ -302,9 +292,8 @@ function dearEarthVO() {
 function preload() {
 
   img = loadImage('assets/newspaper.png');
-
+//scene6 sprites
   for (var i = 0; i < sprite1Total; i++) { //load all the image names
-
     if (i < 10) { //for 1 digit ones, add the zero
       scn6Bgsprites = "assets/flash_0" + i + ".png";
     } else { //for 2 digit ones dont
@@ -356,22 +345,14 @@ function bgmusic() {
   }
 }
 
-// function update(response) {
-
-//   var inString = response;
-//   if (inString.length > 2) {
-//     var sensors = split(inString, ',');
-//     inDataGloveL = int(sensors[0]);
-//     newDataZ = 16 * (int(sensors[1]));
-// }
-// }
 
 function setup() {
+
   canvas = createCanvas(windowWidth, windowHeight);
   centerH = (windowWidth / 2);
   calimgX = (windowWidth / 2) - 200;
   calimgY = (windowHeight / 2) - 160;
-  timeDiv = document.getElementById('sensors');
+  // timeDiv = document.getElementById('sensors');
 
   //scene7, calibration
   readyforschool = createImg('assets/readyforschool.png');
@@ -500,6 +481,15 @@ function setup() {
 
 
   changeScene(1);
+
+  serial2 = new p5.SerialPort(); // make a new instance of the serialport library
+
+  serial2.on('connected', serverConnected); // callback for connecting to the server
+  serial2.on('open', portOpen); // callback for the port opening
+  serial2.on('data', serialEvent); // callback for when new data arrives
+  serial2.on('error', serialError); // callback for errors
+
+  serial2.open(portName); // open a serial port
 } ///SETUP ENDS
 
 function restartAllCounters() {
@@ -1545,11 +1535,12 @@ function serialError(err) {
 }
 
 function serialEvent() {
-  var inString = serial.readStringUntil('\r\n');
+  var inString = serial2.readStringUntil('\r\n');
   if (inString.length > 0) {
     var sensors = split(inString, ',');
     inDataGloveL = int(sensors[0]);
     newDataZ = int(sensors[1]);
+    console.log(inDataGloveL + "  ,  " + newDataZ)
 
   }
 }

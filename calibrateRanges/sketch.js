@@ -1,5 +1,5 @@
 var serial; // variable to hold an instance of the serialport library
-var portName = '/dev/cu.usbmodem1411'; // fill in your serial port name here
+var portName = '/dev/cu.LightBlue-Bean'; // fill in your serial port name here
 var newDataZ, newDataY, newDataX; // for incoming serial data
 var xPos = 0;
 var restingNum = 0;
@@ -30,9 +30,6 @@ function portOpen() {
   // println('the serial port opened.')
 }
 
-// function serialEvent() {
-//   inData = Number(serial.read());
-// }
 
 function serialError(err) {
   // println('Something went wrong with the serial port. ' + err);

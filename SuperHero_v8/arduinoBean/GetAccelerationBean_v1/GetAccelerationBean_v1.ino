@@ -36,7 +36,7 @@ void loop() {
     buttonVariable = 0;
   }
 
-  Serial.print(0);
+  Serial.print(buttonVariable);
   Serial.print(',');
   String stringToPrint = String();
   //  stringToPrint = acceleration.zAxis;
