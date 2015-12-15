@@ -39,8 +39,10 @@ $(document).ready(function() {
       webGLRenderer = new THREE.WebGLRenderer();
       webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
       webGLRenderer.setSize(window.innerWidth, window.innerHeight);
-      scene.fog = new THREE.Fog("rgb(100,0,100)", 50, 1000); // fog
+      // scene.fog = new THREE.Fog("rgb(100,0,100)", 50, 1000); // fog
       document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
+
+
       //------------trees/////////////
       // Loading External Texture & Model
       var manager = new THREE.LoadingManager(); //Handles and keeps track of loaded and pending data
@@ -57,6 +59,7 @@ $(document).ready(function() {
       // - Import using OBJLoader.js
       // - reference: http://threejs.org/examples/webgl_loader_obj.html
       var onProgress = function(xhr) {
+
         if (xhr.lengthComputable) {
           var percentComplete = xhr.loaded / xhr.total * 100;
           console.log(Math.round(percentComplete, 2) + '% downloaded');
@@ -77,19 +80,13 @@ $(document).ready(function() {
           }
         }
 
-
-
-        // model = object;
-        // 	model.scale.set(7,7,7);
-        // 	scene.add( model );
-
         for (var i = 0; i < 100; i++) {
           var mesh = object.clone();
 
-          mesh.position.x = randomIntFromInterval(-300,300);
+          mesh.position.x = randomIntFromInterval(-300, 300);
           // mesh.position.y = (Math.random() * 301);
-          mesh.position.y = randomIntFromInterval(400,800);
-          mesh.position.z = randomIntFromInterval(12000,17000);
+          mesh.position.y = randomIntFromInterval(400, 800);
+          mesh.position.z = randomIntFromInterval(12000, 15000);
           mesh.rotation.z = (Math.random() - 0.5) * 1000;
           // mesh.updateMatrix();
           // mesh.matrixAutoUpdate = false;
@@ -103,6 +100,65 @@ $(document).ready(function() {
 
       }, onProgress, onError);
       ///////trees end/////////////
+      // model
+      var manager = new THREE.LoadingManager(); //Handles and keeps track of loaded and pending data
+
+      // TEXTURE
+      texture = new THREE.Texture();
+      var loader = new THREE.ImageLoader(manager);
+      loader.load('assets/papertxtgreen.png', function(image) {
+        texture.image = image;
+        texture.needsUpdate = true;
+      });
+
+      // MODLE (MESH)
+      // - Import using OBJLoader.js
+      // - reference: http://threejs.org/examples/webgl_loader_obj.html
+      var onProgress = function(xhr) {
+
+        if (xhr.lengthComputable) {
+          var percentComplete = xhr.loaded / xhr.total * 100;
+          console.log(Math.round(percentComplete, 2) + '% downloaded');
+        }
+      };
+      var onError = function(xhr) {};
+
+      var loader = new THREE.OBJLoader(manager);
+      loader.load('models/mt.obj', function(object) {
+
+        console.log(object);
+
+        // for all the children in the OBJ model
+        //one child one object
+        for (var i = 0; i < object.children.length; i++) {
+          if (object.children[i] instanceof THREE.Mesh) {
+            object.children[i].material.map = texture;
+          }
+        }
+
+        for (var i = 0; i < 20; i++) {
+          var mesh = object.clone();
+
+          mesh.position.x = randomIntFromInterval(-300, -50);
+          // mesh.position.y = (Math.random() * 301);
+          mesh.position.y = randomIntFromInterval(0, 30);
+          mesh.position.z = randomIntFromInterval(28000, 28400);
+          // mesh.rotation.z = (Math.random() - 0.5) * 1000;
+          // mesh.updateMatrix();
+          // mesh.matrixAutoUpdate = false;
+          mesh.scale.set(.2, .2, .2);
+          scene.add(mesh);
+
+          mountains.push(mesh);
+
+        }
+
+
+      }, onProgress, onError);
+
+
+
+
 
       //----------------TEXT begin----------------///
       var textDetails = new function() {
@@ -543,9 +599,17 @@ $(document).ready(function() {
 
       ////road/////////////
       var road = new THREE.BoxGeometry(35, 2, 1290);
-      var roadmaterial = new THREE.MeshDepthMaterial({
-        color: 0xD3D3D3
-      }); //grey
+
+      // function createMesh(geom, imageFile) {
+      //   var texture = THREE.ImageUtils.loadTexture("assets/papertxtpink1.png')
+      //     var mat = new THREE.MeshPhongMaterial(); mat.map = texture;
+      //     var mesh = new THREE.Mesh(geom, mat);
+      //     return mesh;
+      //   }
+
+
+      // var roadmaterial = new THREE.MeshPhongMaterial( { color: 0x000000, specular: 0x666666, emissive: 0xff0000, shininess: 10, shading: THREE.SmoothShading, opacity: 0.9, transparent: true } ) );
+      roadmaterial = THREE.ImageUtils.loadTexture("images/road.jpg");
       var roadFull = createMesh(road, roadmaterial);
       roadFull.position.set(0, -2, 29400);
       scene.add(roadFull)
@@ -828,12 +892,12 @@ $(document).ready(function() {
 
         webGLRenderer.setClearColor(bgcolor, 1);
         bgcolor = "rgb(" + rmapped + "," + gmapped + "," + bmapped + ")";
-if (trees.length == 100){
-        for (var j = 0; j < 100; j++) {
-          trees[j].rotation.y = trees[j].rotation.y + .1;
-          trees[j].position.y = randomIntFromInterval(camY-200,camY+200);
+        if (trees.length == 100) {
+          for (var j = 0; j < 100; j++) {
+            trees[j].rotation.y = trees[j].rotation.y + .1;
+            trees[j].position.y = randomIntFromInterval(camY - 200, camY + 200);
+          }
         }
-}
 
         //point cloud///////////////////
 
@@ -932,7 +996,6 @@ if (trees.length == 100){
   window.addEventListener('resize', onResize, false);
 });
 
-function randomIntFromInterval(min,max)
-{
-    return Math.floor(Math.random()*(max-min+1)+min);
+function randomIntFromInterval(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }

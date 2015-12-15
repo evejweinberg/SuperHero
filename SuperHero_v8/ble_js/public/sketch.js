@@ -96,6 +96,7 @@ var switchAstMove = false;
 
 
 // scene5var
+var mountains = [];
 var texture;
 var trees = [];
 var gameSong1, gameSong2, gameSong3, songpicker;
