@@ -96,6 +96,8 @@ var switchAstMove = false;
 
 
 // scene5var
+var texture;
+var trees = [];
 var gameSong1, gameSong2, gameSong3, songpicker;
 var gameSongIsPlaying = false;
 var videoInput, oneSnap;
@@ -292,7 +294,7 @@ function dearEarthVO() {
 function preload() {
 
   img = loadImage('assets/newspaper.png');
-//scene6 sprites
+  //scene6 sprites
   for (var i = 0; i < sprite1Total; i++) { //load all the image names
     if (i < 10) { //for 1 digit ones, add the zero
       scn6Bgsprites = "assets/flash_0" + i + ".png";
@@ -420,7 +422,7 @@ function setup() {
   rotateDiv.class('class6').addClass('newspaperDiv');
   videoInput = createCapture(VIDEO);
   videoInput.size(575, 340);
-  videoInput.position(575, 340);
+  videoInput.position(575, 330);
   videoInput.hide();
   newspaperImage = createImg('assets/newspaper2.png');
   newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
@@ -482,14 +484,14 @@ function setup() {
 
   changeScene(1);
 
-  serial2 = new p5.SerialPort(); // make a new instance of the serialport library
+  // serial2 = new p5.SerialPort(); // make a new instance of the serialport library
 
-  serial2.on('connected', serverConnected); // callback for connecting to the server
-  serial2.on('open', portOpen); // callback for the port opening
-  serial2.on('data', serialEvent); // callback for when new data arrives
-  serial2.on('error', serialError); // callback for errors
+  // serial2.on('connected', serverConnected); // callback for connecting to the server
+  // serial2.on('open', portOpen); // callback for the port opening
+  // serial2.on('data', serialEvent); // callback for when new data arrives
+  // serial2.on('error', serialError); // callback for errors
 
-  serial2.open(portName); // open a serial port
+  // serial2.open(portName); // open a serial port
 } ///SETUP ENDS
 
 function restartAllCounters() {
@@ -849,7 +851,7 @@ function draw() {
 
 
     }
-    if (AllScenesMPH > 513) { //hitting turbo
+    if (AllScenesMPH > 512) { //hitting turbo
       for (var l = 0; l < 12; l++) {
         torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
         torus.position.z = (camZ - 500) + (l * 30);
@@ -1250,7 +1252,7 @@ function countdownTry3() {
     //Stop clock
     clearInterval(countdownIdB);
     $('.gamveoverDiv').show();
-    var randomCongrats = round(random(0, 3.1));
+    var randomCongrats = round(random(0, 3.4));
 
     if (randomCongrats == 0) {
       document.getElementById('gameoverText').innerHTML = 'HOLEY MOLEY!';

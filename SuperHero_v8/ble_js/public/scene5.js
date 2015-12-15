@@ -41,12 +41,73 @@ $(document).ready(function() {
       webGLRenderer.setSize(window.innerWidth, window.innerHeight);
       scene.fog = new THREE.Fog("rgb(100,0,100)", 50, 1000); // fog
       document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
+      //------------trees/////////////
+      // Loading External Texture & Model
+      var manager = new THREE.LoadingManager(); //Handles and keeps track of loaded and pending data
 
+      // TEXTURE
+      texture = new THREE.Texture();
+      var loader = new THREE.ImageLoader(manager);
+      loader.load('assets/platgreen.png', function(image) {
+        texture.image = image;
+        texture.needsUpdate = true;
+      });
+
+      // MODLE (MESH)
+      // - Import using OBJLoader.js
+      // - reference: http://threejs.org/examples/webgl_loader_obj.html
+      var onProgress = function(xhr) {
+        if (xhr.lengthComputable) {
+          var percentComplete = xhr.loaded / xhr.total * 100;
+          console.log(Math.round(percentComplete, 2) + '% downloaded');
+        }
+      };
+      var onError = function(xhr) {};
+
+      var loader = new THREE.OBJLoader(manager);
+      loader.load('models/lowpolytree_before.obj', function(object) {
+
+        console.log(object);
+
+        // for all the children in the OBJ model
+        //one child one object
+        for (var i = 0; i < object.children.length; i++) {
+          if (object.children[i] instanceof THREE.Mesh) {
+            object.children[i].material.map = texture;
+          }
+        }
+
+
+
+        // model = object;
+        // 	model.scale.set(7,7,7);
+        // 	scene.add( model );
+
+        for (var i = 0; i < 100; i++) {
+          var mesh = object.clone();
+
+          mesh.position.x = randomIntFromInterval(-300,300);
+          // mesh.position.y = (Math.random() * 301);
+          mesh.position.y = randomIntFromInterval(400,800);
+          mesh.position.z = randomIntFromInterval(12000,17000);
+          mesh.rotation.z = (Math.random() - 0.5) * 1000;
+          // mesh.updateMatrix();
+          // mesh.matrixAutoUpdate = false;
+          mesh.scale.set(15, 15, 15);
+          scene.add(mesh);
+
+          trees.push(mesh);
+
+        }
+
+
+      }, onProgress, onError);
+      ///////trees end/////////////
 
       //----------------TEXT begin----------------///
       var textDetails = new function() {
         this.asGeom = function() {
-        
+
 
           var options = {
             size: 70,
@@ -148,17 +209,17 @@ $(document).ready(function() {
       rainbow.position.z = 28500;
       rainbow.position.y = camY;
       rainbow.position.x = 30;
-      rainbow.rotation.y = Math.PI*.6;
-       rainbowR.position.z = 28700;
+      rainbow.rotation.y = Math.PI * .6;
+      rainbowR.position.z = 28700;
       rainbowR.position.y = camY;
       rainbowR.position.x = -100;
-      rainbowR.rotation.y = Math.PI*-.6;
+      rainbowR.rotation.y = Math.PI * -.6;
       RainbowGroup = new THREE.Group();
-				RainbowGroup.position.z = 500;
-				scene.add( RainbowGroup );
-				RainbowGroup.add( rainbow );
-				RainbowGroup.add( rainbowR );
-   
+      RainbowGroup.position.z = 500;
+      scene.add(RainbowGroup);
+      RainbowGroup.add(rainbow);
+      RainbowGroup.add(rainbowR);
+
 
 
       //--------------RAINBOW LINES END------------------------//
@@ -479,93 +540,93 @@ $(document).ready(function() {
         return mesh;
       }
       /////////////////---------KNOT ENDS------------//////
-            
-            ////road/////////////
-      var road = new THREE.BoxGeometry(35,2,1290);
+
+      ////road/////////////
+      var road = new THREE.BoxGeometry(35, 2, 1290);
       var roadmaterial = new THREE.MeshDepthMaterial({
-            color: 0xD3D3D3
-          }); //grey
-          var roadFull = createMesh(road, roadmaterial);
-          roadFull.position.set(0,-2,29400);
-          scene.add(roadFull)
-          
-           //////////POINT CLOUD SHROOMS ////////////////
-      var SpriteAcontrols = new function () {
-            this.size = 100;
-            this.transparent = true;
-            this.opacity = 1.0;
-            this.color = 0xffffff;
+        color: 0xD3D3D3
+      }); //grey
+      var roadFull = createMesh(road, roadmaterial);
+      roadFull.position.set(0, -2, 29400);
+      scene.add(roadFull)
 
-            this.sizeAttenuation = true;
+      //////////POINT CLOUD SHROOMS ////////////////
+      var SpriteAcontrols = new function() {
+        this.size = 100;
+        this.transparent = true;
+        this.opacity = 1.0;
+        this.color = 0xffffff;
 
-            this.redraw = function () {
-                var toRemove = [];
-                scene.children.forEach(function (child) {
-                    if (child instanceof THREE.PointCloud) {
-                        toRemove.push(child);
-                    }
-                });
-                toRemove.forEach(function (child) {
-                    scene.remove(child)
-                });
-                createShroomPointCloudB(12, true, 1, true, 0xffffff);
-            
-            };
-        };
+        this.sizeAttenuation = true;
 
-     
-
-        SpriteAcontrols.redraw();
-
-       
-//make 1 point cloud, inside here we add particles
-        function create1PointCloud(name, texture, size, transparent, opacity, sizeAttenuation, color) {
-            var geom1 = new THREE.Geometry();
-
-            var color1 = new THREE.Color(color);
-      
-
-            var material = new THREE.PointCloudMaterial({
-                size: size,
-                transparent: transparent,
-                opacity: opacity,
-                map: texture,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false,
-                sizeAttenuation: sizeAttenuation,
-                color: color1
-            });
-
-            var range = 900;
-            for (var i = 0; i < 200; i++) {
-                var particle = new THREE.Vector3(
-                        Math.random() * range - range / 2,
-                        Math.random() * (camY+900-(camY-100)) + (camY-100),
-                        Math.random() * (20000-16000) + 16000);
-                particle.velocityY = 0.1 + Math.random() / 5;
-                particle.velocityX = (Math.random() - 0.5) / 3;
-                particle.velocityZ = (Math.random() - 0.5) / 3;
-                geom1.vertices.push(particle);
+        this.redraw = function() {
+          var toRemove = [];
+          scene.children.forEach(function(child) {
+            if (child instanceof THREE.PointCloud) {
+              toRemove.push(child);
             }
+          });
+          toRemove.forEach(function(child) {
+            scene.remove(child)
+          });
+          createShroomPointCloudB(12, true, 1, true, 0xffffff);
 
-            var system = new THREE.PointCloud(geom1, material);
-            system.name = name;
-            system.sortParticles = true;
-            return system;
+        };
+      };
+
+
+
+      SpriteAcontrols.redraw();
+
+
+      //make 1 point cloud, inside here we add particles
+      function create1PointCloud(name, texture, size, transparent, opacity, sizeAttenuation, color) {
+        var geom1 = new THREE.Geometry();
+
+        var color1 = new THREE.Color(color);
+
+
+        var material = new THREE.PointCloudMaterial({
+          size: size,
+          transparent: transparent,
+          opacity: opacity,
+          map: texture,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+          sizeAttenuation: sizeAttenuation,
+          color: color1
+        });
+
+        var range = 900;
+        for (var i = 0; i < 200; i++) {
+          var particle = new THREE.Vector3(
+            Math.random() * range - range / 2,
+            Math.random() * (camY + 900 - (camY - 100)) + (camY - 100),
+            Math.random() * (20000 - 16000) + 16000);
+          particle.velocityY = 0.1 + Math.random() / 5;
+          particle.velocityX = (Math.random() - 0.5) / 3;
+          particle.velocityZ = (Math.random() - 0.5) / 3;
+          geom1.vertices.push(particle);
         }
-//put that 1 into another and call it 4 times
-        function createShroomPointCloudB(size, transparent, opacity, sizeAttenuation, color) {
 
-            var texture1 = THREE.TextureLoader("assets/shroom.png");
-            var texture2 = THREE.TextureLoader("assets/tree.png");
-            var texture3 = THREE.TextureLoader("assets/tree.png");
-            var texture4 = THREE.TextureLoader("assets/shroom.png");
+        var system = new THREE.PointCloud(geom1, material);
+        system.name = name;
+        system.sortParticles = true;
+        return system;
+      }
+      //put that 1 into another and call it 4 times
+      function createShroomPointCloudB(size, transparent, opacity, sizeAttenuation, color) {
 
-            scene.add(create1PointCloud("system1", texture1, 100, transparent, opacity, sizeAttenuation, color));
-            scene.add(create1PointCloud("system2", texture2, 120, transparent, opacity, sizeAttenuation, color));
-            scene.add(create1PointCloud("system3", texture3, 130, transparent, opacity, sizeAttenuation, color));
-            scene.add(create1PointCloud("system4", texture4, 100, transparent, opacity, sizeAttenuation, color));
-        }
+        var texture1 = THREE.TextureLoader("assets/shroom.png");
+        var texture2 = THREE.TextureLoader("assets/tree.png");
+        var texture3 = THREE.TextureLoader("assets/tree.png");
+        var texture4 = THREE.TextureLoader("assets/shroom.png");
+
+        scene.add(create1PointCloud("system1", texture1, 100, transparent, opacity, sizeAttenuation, color));
+        scene.add(create1PointCloud("system2", texture2, 120, transparent, opacity, sizeAttenuation, color));
+        scene.add(create1PointCloud("system3", texture3, 130, transparent, opacity, sizeAttenuation, color));
+        scene.add(create1PointCloud("system4", texture4, 100, transparent, opacity, sizeAttenuation, color));
+      }
 
       /////////////SHROOMS END/////////////////
 
@@ -743,7 +804,7 @@ $(document).ready(function() {
           if (Scn5_frmct > 180 && Scn5_frmct < 350) {
 
             camZ = camZ - (CamSpeed * .3);
-          } else if (Scn5_frmct >= 350){
+          } else if (Scn5_frmct >= 350) {
             camZ = camZ - (CamSpeed * .8);
           }
         }
@@ -767,24 +828,29 @@ $(document).ready(function() {
 
         webGLRenderer.setClearColor(bgcolor, 1);
         bgcolor = "rgb(" + rmapped + "," + gmapped + "," + bmapped + ")";
-        
-           //point cloud///////////////////
-        
-            scene.children.forEach(function (child) {
-                if (child instanceof THREE.PointCloud) {//if this is a pointcloud object
-                    var vertices = child.geometry.vertices; 
-                    vertices.forEach(function (v) {
-                        v.y = v.y - (v.velocityY);
-                        v.x = v.x - (v.velocityX);
-                        v.z = v.z - (v.velocityZ);
 
-                        if (v.y <= 0) v.y = 60;
-                        if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
-                        if (v.z <= -20 || v.z >= 20) v.velocityZ = v.velocityZ * -1;
-                    });
-                }
-            });//point cloud end
-      
+        for (var j = 0; j < 100; j++) {
+          // trees[j].rotation.y = trees[j].rotation.y + .1;
+          // trees[j].position.y = camY;
+        }
+
+        //point cloud///////////////////
+
+        scene.children.forEach(function(child) {
+          if (child instanceof THREE.PointCloud) { //if this is a pointcloud object
+            var vertices = child.geometry.vertices;
+            vertices.forEach(function(v) {
+              v.y = v.y - (v.velocityY);
+              v.x = v.x - (v.velocityX);
+              v.z = v.z - (v.velocityZ);
+
+              if (v.y <= 0) v.y = 60;
+              if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
+              if (v.z <= -20 || v.z >= 20) v.velocityZ = v.velocityZ * -1;
+            });
+          }
+        }); //point cloud end
+
 
         rainbow.position.y = camY;
         rainbowR.position.y = camY;
@@ -864,3 +930,8 @@ $(document).ready(function() {
 
   window.addEventListener('resize', onResize, false);
 });
+
+function randomIntFromInterval(min,max)
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}

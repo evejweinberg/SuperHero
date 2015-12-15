@@ -4,7 +4,7 @@
 }
 #timerStopWatch {
   position: absolute;
-  left: -90px;
+  left: 1650px;
   top: -20px;
   z-index: 90;
 }
@@ -32,7 +32,7 @@
   font-family: "brandon-grotesque";
   color: white;
   border-radius: 500px;
-  opacity: 0.65;
+  opacity: 0.55;
 }
 
 

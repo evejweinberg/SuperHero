@@ -135,7 +135,8 @@ p{
 }
 
 body {
-  background: #92e5c0;
+  /*background: #92e5c0;*/
+    background-image: url('assets/spacebg4.jpg');
   width:100%;
 }
 
