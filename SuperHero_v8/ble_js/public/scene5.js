@@ -828,11 +828,12 @@ $(document).ready(function() {
 
         webGLRenderer.setClearColor(bgcolor, 1);
         bgcolor = "rgb(" + rmapped + "," + gmapped + "," + bmapped + ")";
-
+if (trees.length == 100){
         for (var j = 0; j < 100; j++) {
-          // trees[j].rotation.y = trees[j].rotation.y + .1;
-          // trees[j].position.y = camY;
+          trees[j].rotation.y = trees[j].rotation.y + .1;
+          trees[j].position.y = randomIntFromInterval(camY-200,camY+200);
         }
+}
 
         //point cloud///////////////////
 

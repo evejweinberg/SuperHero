@@ -171,7 +171,7 @@ var sprite1Total = 58;
 var roveBothax, roveBothay, roveBothbx, roveBothby, wiggleaway, scn6Bgsprites;
 var randomScene6bg = 1;
 var canvas, capture, mycam, button, img;
-var newspaperImage;
+var newspaperImage, newspaperImage3;
 var rotateDiv;
 var Scene6counter = 0;
 var newspaperRotate = 0;
@@ -293,7 +293,7 @@ function dearEarthVO() {
 
 function preload() {
 
-  img = loadImage('assets/newspaper.png');
+  // img = loadImage('assets/newspaper.png');
   //scene6 sprites
   for (var i = 0; i < sprite1Total; i++) { //load all the image names
     if (i < 10) { //for 1 digit ones, add the zero
@@ -394,9 +394,6 @@ function setup() {
   back2Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
   back3Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
   back5Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
-  // savePhotoButton = createButton('Save This Photo!').class('class6').addClass('scene6buttons').id('playbutton');
-  // savePhotoButton.position(700, 209).class('class6');
-  // savePhotoButton.mousePressed(savePicture);
   retakePhotoButton = createButton('Retake Photo').class('class6').addClass('scene6buttons').id('playbutton');
   retakePhotoButton.class('class6').addClass('scene6buttons').parent(scene6buttons);
   retakePhotoButton.mousePressed(function() {
@@ -424,8 +421,16 @@ function setup() {
   videoInput.size(575, 340);
   videoInput.position(575, 330);
   videoInput.hide();
+  var newsRandom = floor(random(0,1.9));
+  if (newsRandom == 0){
+    console.log('newspaper is 0')
   newspaperImage = createImg('assets/newspaper2.png');
   newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
+  } else {
+       console.log('newspaper is 1')
+   newspaperImage = createImg('assets/newspaper3.png');
+  newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
+  }
 
 
 
@@ -484,14 +489,14 @@ function setup() {
 
   changeScene(1);
 
-  // serial2 = new p5.SerialPort(); // make a new instance of the serialport library
+  serial2 = new p5.SerialPort(); // make a new instance of the serialport library
 
-  // serial2.on('connected', serverConnected); // callback for connecting to the server
-  // serial2.on('open', portOpen); // callback for the port opening
-  // serial2.on('data', serialEvent); // callback for when new data arrives
-  // serial2.on('error', serialError); // callback for errors
+  serial2.on('connected', serverConnected); // callback for connecting to the server
+  serial2.on('open', portOpen); // callback for the port opening
+  serial2.on('data', serialEvent); // callback for when new data arrives
+  serial2.on('error', serialError); // callback for errors
 
-  // serial2.open(portName); // open a serial port
+  serial2.open(portName); // open a serial port
 } ///SETUP ENDS
 
 function restartAllCounters() {
@@ -851,7 +856,7 @@ function draw() {
 
 
     }
-    if (AllScenesMPH > 512) { //hitting turbo
+    if (AllScenesMPH > 520) { //hitting turbo
       for (var l = 0; l < 12; l++) {
         torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
         torus.position.z = (camZ - 500) + (l * 30);
@@ -901,6 +906,7 @@ function draw() {
     }
 
   } else if (scene6 == true) {
+    videoInput.position(windowWidth/2 - 200, (windowHeight/2) +650);
     roveBothax = cos(millis() / 10) * 7;
     roveBothay = sin(millis() / 10) * 7;
     roveBothbx = sin(millis() / 10) * 7;
@@ -1410,7 +1416,7 @@ function getSpeed() {
 
   CamSpeed = range1 + range2 + range3 + range4 + range5 + range6;
   if (frameCount % 15 == 0) {
-    AllScenesMPH = round(map(CamSpeed, 0, 25, 0, 650));
+    AllScenesMPH = round(map(CamSpeed, 0, 25, 0, 600));
   }
   if (range2hit == false) {
     range2 = range2 - 0.06 * decreasemult;
