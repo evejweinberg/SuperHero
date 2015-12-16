@@ -1,5 +1,5 @@
 //all scenes
-var sensorConnected = false;
+var sensorConnected = true;
 var noGloves = false;
 var timeDiv, swoosh;
 var swooshplaying = false;
@@ -210,7 +210,7 @@ var UserArmOutNum = 0;
 //serial
 var serial2; // variable to hold an instance of the serialport library
 var portName = '/dev/cu.LightBlue-Bean'; // fill in your serial port name here
-var inData0, inDataGloveL; // for incoming serial data
+var inData0, inDataGloveL, batteryVoltage; // for incoming serial data
 var newDataZ, newDataY, newDataX; //alt names for incoming data
 var xPos = 0;
 var loadingOvervid;
@@ -467,11 +467,6 @@ function setup() {
   scene4Script.class('class4').addClass('voiceover');
   currentText = scene4Script.html();
   words = split(transcript[0], '#');
-  // scene4button = createButton('SQUEEZE FIST TO BEGIN');
-  // scene4button.position(300, 700).class('class4').class('header2').id('playbutton');
-  // scene4button.mouseClicked(function() {
-  // changeScene(7)
-  // });
   flysmall = createImg('assets/flying.gif');
   flysmall.class('class4');
   // flyingOverhead = createImg('assets/flyingOverhead.png');
@@ -785,7 +780,7 @@ function draw() {
     }
 
     squeezeFistGif.position(squeezeFistGifX, squeezeFistGifY);
-    if (Scn4_textcounter > 1250) {
+    if (Scn4_textcounter > 1390) {
       $('#squeezeFistGif').show();
       squeezeFistGifY = squeezeFistGifY - 20;
       if (squeezeFistGifY < 300) {
@@ -1357,57 +1352,46 @@ function AverageAcellerometerNums() {
 }
 
 function getSpeed() {
-  if (distanceofvaluesFlying < 15) {
-    // fill(255, 0, 0)
-    //   text('range1', 10, 260);
+  if (distanceofvaluesFlying < 100) {
+   
     range1 = 0;
     range1hit = true;
   }
-  if (distanceofvaluesFlying >= 15) {
+  if (distanceofvaluesFlying >120) {
     range2hit = true;
-    // fill(255, 0, 0)
-    //   text('range2', 30, 260);
     range2 = range2 + 0.2;
     if (range2 > 1) {
       range2 = 1;
     }
   }
-  if (distanceofvaluesFlying >= 45) {
+  if (distanceofvaluesFlying >160) {
     range3hit = true;
-    // fill(255, 0, 0)
-    //   text('range3', 60, 260);
+ 
     range3 = range3 + 0.5;
     if (range3 > 2.5) {
       range3 = 2.5;
     }
 
   }
-  if (distanceofvaluesFlying >= 105) {
+  if (distanceofvaluesFlying >250) {
     range4 = range4 + 0.5;
     range4hit = true;
-    // fill(255, 0, 0)
-    //   text('range4', 100, 260);
     if (range4 > 3) {
       range4 = 3;
     }
   }
-  if (distanceofvaluesFlying >= 180) {
+  if (distanceofvaluesFlying >500) {
     range5hit = true;
     if (range5 == true) {
-      // fill(255, 0, 0)
-      // text('range5', 140, 260);
+ 
     }
     range5 = range5 + 0.5;
     if (range5 > 6) {
       range5 = 6;
     }
   }
-  if (distanceofvaluesFlying >= 255) {
-
-    // fill(255, 0, 0)
-    // text('range6', 180, 260);
-
-    range6hit = true;
+  if (distanceofvaluesFlying >750) {
+range6hit = true;
     range6 = range6 + 0.5;
     if (range6 > 10) {
       range6 = 10;
@@ -1543,13 +1527,16 @@ function serialError(err) {
   println('Something went wrong with the serial port. ' + err);
 }
 
+
 function serialEvent() {
+  // read a string from the serial port:
   var inString = serial2.readStringUntil('\r\n');
-  if (inString.length > 0) {
+  if (inString.length > 2) {
     var sensors = split(inString, ',');
-    inDataGloveL = int(sensors[0]);
     newDataZ = int(sensors[1]);
-    console.log(inDataGloveL + "  ,  " + newDataZ)
+    inDataGloveL = int(sensors[0]);
+    batteryVoltage = (sensors[2]);
+    console.log(inDataGloveL + '||' + newDataZ + '||' + batteryVoltage+ '||'+distanceofvaluesFlying);
 
   }
 }

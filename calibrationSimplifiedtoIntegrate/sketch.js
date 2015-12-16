@@ -13,7 +13,8 @@ var range1 = 0,
   range2 = 0,
   range3 = 0,
   range4 = 0,
-  range5 = 0;
+  range5 = 0,
+  range6 = 0;
 var AllScenesMPH = 0;
 
 
@@ -69,7 +70,7 @@ AverageAcellerometerNums();
     sum = sum + num; //add them all up
   }
   MovingAverage = sum / NumstoCallibrate.length;
-  distanceofvalues = round(abs(610 - newDataZ));
+  distanceofvalues = round(abs(250 - newDataZ));
   }
 
   function getCamSpeed() {
