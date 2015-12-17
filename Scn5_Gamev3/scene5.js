@@ -1,4 +1,7 @@
 var scene, camera, renderer, webGLRenderer;
+var trees = [];
+var Scn5_frmct = 0;
+var mountains = [];
 var scene5 = true;
 var seaofMonsters;
 var turbo = false;
@@ -28,11 +31,11 @@ var t = 0;
 var text1a, text1b, text2a, text3a, text3b;
 var stars;
 var numStars = 10;
-var cloud;
+var cloud, cloudo;
 
 function setup() {
   noCanvas();
-  sliderTemp = createSlider(0, 100, 0);
+  sliderTemp = createSlider(16000, 30000, 30000);
   sliderTemp.position(0, 0).class('class7');
 }
 
@@ -77,7 +80,7 @@ $(document).ready(function() {
       //------------------------------------------------//
       var knot;
       var Allknots = [];
-      var stats = initStats();
+      // var stats = initStats();
       r = 100;
       g = 200;
       b = 250;
@@ -94,14 +97,167 @@ $(document).ready(function() {
       webGLRenderer = new THREE.WebGLRenderer();
       webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
       webGLRenderer.setSize(window.innerWidth, window.innerHeight);
-      scene.fog = new THREE.Fog("rgb(100,0,100)", 50, 1000); // fog
+      // scene.fog = new THREE.Fog("rgb(100,0,100)", 50, 1000); // fog
       document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
+
+
+      //------------trees/////////////
+      // Loading External Texture & Model
+      var manager = new THREE.LoadingManager(); //Handles and keeps track of loaded and pending data
+
+      // TEXTURE
+      texture = new THREE.Texture();
+      var loader = new THREE.ImageLoader(manager);
+      loader.load('assets/platgreen.png', function(image) {
+        texture.image = image;
+        texture.needsUpdate = true;
+      });
+
+      // MODLE (MESH)
+      // - Import using OBJLoader.js
+      // - reference: http://threejs.org/examples/webgl_loader_obj.html
+      var onProgress = function(xhr) {
+
+        if (xhr.lengthComputable) {
+          var percentComplete = xhr.loaded / xhr.total * 100;
+          console.log(Math.round(percentComplete, 2) + '% downloaded');
+        }
+      };
+      var onError = function(xhr) {};
+
+      var loader = new THREE.OBJLoader(manager);
+      loader.load('models/lowpolytree_before.obj', function(object) {
+
+        console.log(object);
+
+        // for all the children in the OBJ model
+        //one child one object
+        for (var i = 0; i < object.children.length; i++) {
+          if (object.children[i] instanceof THREE.Mesh) {
+            object.children[i].material.map = texture;
+          }
+        }
+
+        for (var i = 0; i < 100; i++) {
+          var mesh = object.clone();
+
+          mesh.position.x = randomIntFromInterval(-300, 300);
+          // mesh.position.y = (Math.random() * 301);
+          mesh.position.y = randomIntFromInterval(400, 800);
+          mesh.position.z = randomIntFromInterval(12000, 15000);
+          mesh.rotation.z = (Math.random() - 0.5) * 1000;
+          // mesh.updateMatrix();
+          // mesh.matrixAutoUpdate = false;
+          mesh.scale.set(15, 15, 15);
+          scene.add(mesh);
+
+          trees.push(mesh);
+
+        }
+
+
+      }, onProgress, onError);
+      ///////trees end/////////////
+      //cloud callback function
+      loader.load('models/CloudReduced.obj', function(object) {
+
+        // for all the children in the OBJ model
+        //one child one object
+        for (var i = 0; i < object.children.length; i++) {
+          if (object.children[i] instanceof THREE.Mesh) {
+            // object.children[i].material.color = 0xffffff;
+            //get clud's geometry
+            cloudGeo = object.children[i].geometry;
+          }
+        }
+
+        for (var k = 0; k < 140; k++) {
+          var randomZ = random(-700, 1000);
+          var randomX = random(-400, 100);
+          var randomY = random(-10, 300);
+          var faceMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+          // var cloudGeom = new THREE.BoxGeometry(5, 3, 3);
+          var cloud = new THREE.Mesh(cloudGeo, faceMaterial);
+          cloud.position.z = randomZ + 28900 + (18 * k);
+          cloud.position.x = randomX + (k * 10);
+          cloud.position.y = randomY + 60;
+          cloud.scale.set(0.1,0.1,0.1);
+          scene.add(cloud);
+          Allclouds.push(cloud);
+        }
+
+
+      }, onProgress, onError);
+      
+      
+      // model
+      var manager = new THREE.LoadingManager(); //Handles and keeps track of loaded and pending data
+
+      // TEXTURE
+      texture = new THREE.Texture();
+      var loader = new THREE.ImageLoader(manager);
+      loader.load('assets/mt.jpg', function(image) {
+        texture.image = image;
+        texture.needsUpdate = true;
+      });
+
+      // MODLE (MESH)
+      // - Import using OBJLoader.js
+      // - reference: http://threejs.org/examples/webgl_loader_obj.html
+      var onProgress = function(xhr) {
+
+        if (xhr.lengthComputable) {
+          var percentComplete = xhr.loaded / xhr.total * 100;
+          console.log(Math.round(percentComplete, 2) + '% downloaded');
+        }
+      };
+      var onError = function(xhr) {};
+
+      var loader = new THREE.OBJLoader(manager);
+      loader.load('models/mt.obj', function(object) {
+
+        console.log(object);
+
+        // for all the children in the OBJ model
+        //one child one object
+        for (var i = 0; i < object.children.length; i++) {
+          if (object.children[i] instanceof THREE.Mesh) {
+            object.children[i].material = new THREE.MeshBasicMaterial({color: 0xffffff});
+            object.children[i].material.map = texture;
+          }
+        }
+
+        for (var i = 0; i < 20; i++) {
+          var mesh = object.clone();
+if (i<=10 ){
+          mesh.position.x = -1200+(i*100);
+}else if (i>10){
+  mesh.position.x = 100+(i*100);
+}
+          // mesh.position.y = (Math.random() * 301);
+          mesh.position.y = randomIntFromInterval(0, 30);
+          mesh.position.z = randomIntFromInterval(28300, 28300);
+          // mesh.rotation.z = (Math.random() - 0.5) * 1000;
+          // mesh.updateMatrix();
+          // mesh.matrixAutoUpdate = false;
+          mesh.scale.set(.4, .4, .4);
+          scene.add(mesh);
+
+          mountains.push(mesh);
+
+        }
+
+
+      }, onProgress, onError);
+
+
+
 
 
       //----------------TEXT begin----------------///
       var textDetails = new function() {
         this.asGeom = function() {
-        
+
 
           var options = {
             size: 70,
@@ -203,17 +359,17 @@ $(document).ready(function() {
       rainbow.position.z = 28500;
       rainbow.position.y = camY;
       rainbow.position.x = 30;
-      rainbow.rotation.y = Math.PI*.6;
-       rainbowR.position.z = 28700;
+      rainbow.rotation.y = Math.PI * .6;
+      rainbowR.position.z = 28700;
       rainbowR.position.y = camY;
       rainbowR.position.x = -100;
-      rainbowR.rotation.y = Math.PI*-.6;
+      rainbowR.rotation.y = Math.PI * -.6;
       RainbowGroup = new THREE.Group();
-				RainbowGroup.position.z = 500;
-				scene.add( RainbowGroup );
-				RainbowGroup.add( rainbow );
-				RainbowGroup.add( rainbowR );
-   
+      RainbowGroup.position.z = 500;
+      scene.add(RainbowGroup);
+      RainbowGroup.add(rainbow);
+      RainbowGroup.add(rainbowR);
+
 
 
       //--------------RAINBOW LINES END------------------------//
@@ -534,93 +690,110 @@ $(document).ready(function() {
         return mesh;
       }
       /////////////////---------KNOT ENDS------------//////
-            
-            ////road/////////////
-      var road = new THREE.BoxGeometry(35,2,1290);
-      var roadmaterial = new THREE.MeshDepthMaterial({
-            color: 0xD3D3D3
-          }); //grey
-          var roadFull = createMesh(road, roadmaterial);
-          roadFull.position.set(0,-2,29400);
-          scene.add(roadFull)
-          
-           //////////POINT CLOUD SHROOMS ////////////////
-      var SpriteAcontrols = new function () {
-            this.size = 100;
-            this.transparent = true;
-            this.opacity = 1.0;
-            this.color = 0xffffff;
 
-            this.sizeAttenuation = true;
+      ////road/////////////
+      var road = new THREE.BoxGeometry(35, 2, 1290);
 
-            this.redraw = function () {
-                var toRemove = [];
-                scene.children.forEach(function (child) {
-                    if (child instanceof THREE.PointCloud) {
-                        toRemove.push(child);
-                    }
-                });
-                toRemove.forEach(function (child) {
-                    scene.remove(child)
-                });
-                createShroomPointCloudB(12, true, 1, true, 0xffffff);
-            
-            };
-        };
-
-     
-
-        SpriteAcontrols.redraw();
-
-       
-//make 1 point cloud, inside here we add particles
-        function create1PointCloud(name, texture, size, transparent, opacity, sizeAttenuation, color) {
-            var geom1 = new THREE.Geometry();
-
-            var color1 = new THREE.Color(color);
       
 
-            var material = new THREE.PointCloudMaterial({
-                size: size,
-                transparent: transparent,
-                opacity: opacity,
-                map: texture,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false,
-                sizeAttenuation: sizeAttenuation,
-                color: color1
-            });
+    var roadtexture = THREE.ImageUtils.loadTexture( "assets/road.jpg" );
+          var roadmaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, map: roadtexture } );
+          var roadFull = new THREE.Mesh(road, roadmaterial);
+            roadtexture.wrapS = roadtexture.wrapT = THREE.RepeatWrapping;
+          roadtexture.repeat.set( 100, 100);
+        
+          roadFull.position.set(0, -2, 29400);
+          scene.add(roadFull);
 
-            var range = 900;
-            for (var i = 0; i < 200; i++) {
-                var particle = new THREE.Vector3(
-                        Math.random() * range - range / 2,
-                        Math.random() * (camY+900-(camY-100)) + (camY-100),
-                        Math.random() * (20000-16000) + 16000);
-                particle.velocityY = 0.1 + Math.random() / 5;
-                particle.velocityX = (Math.random() - 0.5) / 3;
-                particle.velocityZ = (Math.random() - 0.5) / 3;
-                geom1.vertices.push(particle);
+      //////////POINT CLOUD SHROOMS ////////////////
+      var SpriteAcontrols = new function() {
+        this.size = 100;
+        this.transparent = true;
+        this.opacity = 1.0;
+        this.color = 0xffffff;
+
+        this.sizeAttenuation = true;
+
+        this.redraw = function() {
+          var toRemove = [];
+          scene.children.forEach(function(child) {
+            if (child instanceof THREE.PointCloud) {
+              toRemove.push(child);
             }
+          });
+          toRemove.forEach(function(child) {
+            scene.remove(child)
+          });
+          createShroomPointCloudB(12, true, 1, true, 0xffffff);
 
-            var system = new THREE.PointCloud(geom1, material);
-            system.name = name;
-            system.sortParticles = true;
-            return system;
+        };
+      };
+
+
+
+      SpriteAcontrols.redraw();
+
+
+      //make 1 point cloud, inside here we add particles
+      function create1PointCloud(name, texture, size, transparent, opacity, sizeAttenuation, color) {
+        var geom1 = new THREE.Geometry();
+
+        var color1 = new THREE.Color(color);
+
+
+        var material = new THREE.PointCloudMaterial({
+          size: size,
+          transparent: transparent,
+          opacity: opacity,
+          map: texture,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+          sizeAttenuation: sizeAttenuation,
+          color: color1
+        });
+
+        var range = 900;
+        for (var i = 0; i < 200; i++) {
+          var particle = new THREE.Vector3(
+            Math.random() * range - range / 2,
+            Math.random() * (camY + 900 - (camY - 100)) + (camY - 100),
+            Math.random() * (20000 - 16000) + 16000);
+          particle.velocityY = 0.1 + Math.random() / 5;
+          particle.velocityX = (Math.random() - 0.5) / 3;
+          particle.velocityZ = (Math.random() - 0.5) / 3;
+          geom1.vertices.push(particle);
         }
-//put that 1 into another and call it 4 times
-        function createShroomPointCloudB(size, transparent, opacity, sizeAttenuation, color) {
 
-            var texture1 = THREE.TextureLoader("assets/shroom.png");
-            var texture2 = THREE.TextureLoader("assets/tree.png");
-            var texture3 = THREE.TextureLoader("assets/tree.png");
-            var texture4 = THREE.TextureLoader("assets/shroom.png");
+        var system = new THREE.PointCloud(geom1, material);
+        system.name = name;
+        system.sortParticles = true;
+        return system;
+      }
+      //put that 1 into another and call it 4 times
+      function createShroomPointCloudB(size, transparent, opacity, sizeAttenuation, color) {
 
-            scene.add(create1PointCloud("system1", texture1, 100, transparent, opacity, sizeAttenuation, color));
-            scene.add(create1PointCloud("system2", texture2, 120, transparent, opacity, sizeAttenuation, color));
-            scene.add(create1PointCloud("system3", texture3, 130, transparent, opacity, sizeAttenuation, color));
-            scene.add(create1PointCloud("system4", texture4, 100, transparent, opacity, sizeAttenuation, color));
-        }
+        var texture1 = new THREE.ImageUtils.loadTexture('assets/shroom.png');
+        var texture2 =new THREE.ImageUtils.loadTexture('assets/shroom.png');
+        var texture3 = new THREE.ImageUtils.loadTexture('assets/shroom.png');
+        var texture4 = new THREE.ImageUtils.loadTexture('assets/shroom.png');
+
+        scene.add(create1PointCloud("system1", texture1, 100, transparent, opacity, sizeAttenuation, color));
+        scene.add(create1PointCloud("system2", texture2, 120, transparent, opacity, sizeAttenuation, color));
+        scene.add(create1PointCloud("system3", texture3, 130, transparent, opacity, sizeAttenuation, color));
+
+        scene.add(create1PointCloud("system4", texture4, 100, transparent, opacity, sizeAttenuation, color));
+      }
+
+
+      var cubeGeometry = new THREE.CubeGeometry(85, 85, 85);
+
+      var cubeTexture = new THREE.ImageUtils.loadTexture('assets/shroom.png');
+      var cubeMaterial = new THREE.MeshBasicMaterial({
+        map: cubeTexture
+      });
+      var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+      cube.position.set(0, 0, 30000);
+      scene.add(cube);
 
       /////////////SHROOMS END/////////////////
 
@@ -628,13 +801,14 @@ $(document).ready(function() {
         for (var i = 0; i < 5; i++) {
           var depthMat = new THREE.MeshDepthMaterial();
           var planerepeated = new THREE.PlaneGeometry(280, 40);
-          var planeMaterial = new THREE.MeshLambertMaterial({
-            color: "rgb(0,255,0)"
-          });
-          var planeRep = new THREE.Mesh(planerepeated, materialPlatGreen);
-          planeRep.receiveShadow = true;
+          var planetexture = THREE.ImageUtils.loadTexture( "assets/plat.png" );
+          var planeMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, map: planetexture } );
 
-          var cubeGeometryB = new THREE.BoxGeometry(random(.5, 1.4), random(2, 9), 1);
+          planetexture.wrapS = planetexture.wrapT = THREE.RepeatWrapping;
+          planetexture.repeat.set( 100, 100);
+
+          var planeRep = new THREE.Mesh(planerepeated, planeMaterial);
+          planeRep.receiveShadow = true;
 
           var rnd = Math.random() * 0.75 + 0.25;
           var cubeMaterial = new THREE.MeshLambertMaterial();
@@ -710,19 +884,20 @@ $(document).ready(function() {
       matArray.push(new THREE.MeshBasicMaterial({
         color: 0xffffff
       }));
-      for (var k = 0; k < 140; k++) {
-        var randomZ = random(-700, 1000);
-        var randomX = random(-400, 100);
-        var randomY = random(-10, 10);
-        var faceMaterial = new THREE.MeshFaceMaterial(matArray);
-        var cubeColorfulGeom = new THREE.BoxGeometry(5, 3, 3);
-        var cubeColorful = new THREE.Mesh(cubeColorfulGeom, faceMaterial);
-        cubeColorful.position.z = randomZ + 28900 + (18 * k);
-        cubeColorful.position.x = randomX + (k * 10);
-        cubeColorful.position.y = randomY + 60;
-        scene.add(cubeColorful);
-        Allclouds.push(cubeColorful);
-      }
+      // for (var k = 0; k < 140; k++) {
+      //   var randomZ = random(-700, 1000);
+      //   var randomX = random(-400, 100);
+      //   var randomY = random(-10, 10);
+      //   var faceMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+      //   var cloudGeom = new THREE.BoxGeometry(5, 3, 3);
+      //   var cloud = new THREE.Mesh(cloudo, faceMaterial);
+      //   cloud.position.z = randomZ + 28900 + (18 * k);
+      //   cloud.position.x = randomX + (k * 10);
+      //   cloud.position.y = randomY + 60;
+      //   cloud.scale.set(10,10,10);
+      //   scene.add(cloud);
+      //   Allclouds.push(cloud);
+      // }
 
 
 
@@ -794,15 +969,15 @@ $(document).ready(function() {
       /////////////////animation ////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////
       function animate() { //looping function
-        // if (scene5 == true) {
-        //   if (frameCount > 180 && frameCount < 350) {
+        if (scene5 == true) {
+          if (Scn5_frmct > 180 && Scn5_frmct < 350) {
 
-        //     camZ = camZ - (CamSpeed * .3);
-        //   } else if (Scn5_frmct >= 350){
-        //     camZ = camZ - (CamSpeed * .8);
-        //   }
-        // }
-        stats.update();
+            camZ = camZ - (CamSpeed * .3);
+          } else if (Scn5_frmct >= 350) {
+            camZ = camZ - (CamSpeed * .8);
+          }
+        }
+        // stats.update();
         range1 = 0;
         range2 = 0;
         range3 = 0;
@@ -822,24 +997,30 @@ $(document).ready(function() {
 
         webGLRenderer.setClearColor(bgcolor, 1);
         bgcolor = "rgb(" + rmapped + "," + gmapped + "," + bmapped + ")";
-        
-           //point cloud///////////////////
-        
-            scene.children.forEach(function (child) {
-                if (child instanceof THREE.PointCloud) {//if this is a pointcloud object
-                    var vertices = child.geometry.vertices; 
-                    vertices.forEach(function (v) {
-                        v.y = v.y - (v.velocityY);
-                        v.x = v.x - (v.velocityX);
-                        v.z = v.z - (v.velocityZ);
+        if (trees.length == 100) {
+          for (var j = 0; j < 100; j++) {
+            trees[j].rotation.y = trees[j].rotation.y + .1;
+            trees[j].position.y = trees[j].position.y+ camY;
+          }
+        }
 
-                        if (v.y <= 0) v.y = 60;
-                        if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
-                        if (v.z <= -20 || v.z >= 20) v.velocityZ = v.velocityZ * -1;
-                    });
-                }
-            });//point cloud end
-      
+        //point cloud///////////////////
+
+        scene.children.forEach(function(child) {
+          if (child instanceof THREE.PointCloud) { //if this is a pointcloud object
+            var vertices = child.geometry.vertices;
+            vertices.forEach(function(v) {
+              v.y = v.y - (v.velocityY);
+              v.x = v.x - (v.velocityX);
+              v.z = v.z - (v.velocityZ);
+
+              if (v.y <= 0) v.y = 60;
+              if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
+              if (v.z <= -20 || v.z >= 20) v.velocityZ = v.velocityZ * -1;
+            });
+          }
+        }); //point cloud end
+
 
         rainbow.position.y = camY;
         rainbowR.position.y = camY;
@@ -848,8 +1029,8 @@ $(document).ready(function() {
         knot.position.y = camY;
         knot2.position.y = camY - 200;
         knot3.position.y = camY + 200;
-        moveforwardRate = sliderTemp.value();
-        camZ = camZ - moveforwardRate;
+        moveforwardRate = range1 + range2 + range3;
+        camZ = sliderTemp.value();
         spotLight3.position.set(0, 120, camZ);
         if (camZ > 28000) {
           // camY=camY+.5;
@@ -858,8 +1039,8 @@ $(document).ready(function() {
         camera.position.z = camZ;
         camera.position.y = camY;
 
-        cubeColorful.rotation.y = cubeColorful.rotation.y + .05;
-        cubeColorful.rotation.x = cubeColorful.rotation.x + .05;
+        // cloud.rotation.y = cloud.rotation.y + .05;
+        // cloud.rotation.x = cloud.rotation.x + .05;
 
         //------------stars--update----------------//
         // for(var c=0;c<numStars;c++){
@@ -919,3 +1100,7 @@ $(document).ready(function() {
 
   window.addEventListener('resize', onResize, false);
 });
+
+function randomIntFromInterval(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}

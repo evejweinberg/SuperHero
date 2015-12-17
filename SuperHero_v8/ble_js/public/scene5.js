@@ -600,19 +600,27 @@ $(document).ready(function() {
       ////road/////////////
       var road = new THREE.BoxGeometry(35, 2, 1290);
 
-      // function createMesh(geom, imageFile) {
-      //   var texture = THREE.ImageUtils.loadTexture("assets/papertxtpink1.png')
-      //     var mat = new THREE.MeshPhongMaterial(); mat.map = texture;
-      //     var mesh = new THREE.Mesh(geom, mat);
-      //     return mesh;
-      //   }
+         
+          
+          // var roadtexture = THREE.ImageUtils.loadTexture("assets/road.jpg");
+          // var planeMaterial = new THREE.MeshPhongMaterial({
+          //   color: 0xffffff,
+          //   map: planetexture
+          // });
+
+          // planetexture.wrapS = planetexture.wrapT = THREE.RepeatWrapping;
+          // planetexture.repeat.set(100, 100);
+
+          // var planeRep = new THREE.Mesh(planerepeated, planeMaterial);
 
 
       // var roadmaterial = new THREE.MeshPhongMaterial( { color: 0x000000, specular: 0x666666, emissive: 0xff0000, shininess: 10, shading: THREE.SmoothShading, opacity: 0.9, transparent: true } ) );
-      roadmaterial = THREE.ImageUtils.loadTexture("images/road.jpg");
+      var roadmaterial = new THREE.MeshBasicMaterial({
+        color: 0xff0000
+      });
       var roadFull = createMesh(road, roadmaterial);
       roadFull.position.set(0, -2, 29400);
-      scene.add(roadFull)
+      scene.add(roadFull);
 
       //////////POINT CLOUD SHROOMS ////////////////
       var SpriteAcontrols = new function() {
@@ -689,19 +697,37 @@ $(document).ready(function() {
         scene.add(create1PointCloud("system1", texture1, 100, transparent, opacity, sizeAttenuation, color));
         scene.add(create1PointCloud("system2", texture2, 120, transparent, opacity, sizeAttenuation, color));
         scene.add(create1PointCloud("system3", texture3, 130, transparent, opacity, sizeAttenuation, color));
+
         scene.add(create1PointCloud("system4", texture4, 100, transparent, opacity, sizeAttenuation, color));
       }
+
+
+      var cubeGeometry = new THREE.CubeGeometry(85, 85, 85);
+
+      var cubeTexture = new THREE.ImageUtils.loadTexture('assets/shroom.png');
+      var cubeMaterial = new THREE.MeshBasicMaterial({
+        map: cubeTexture
+      });
+      var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+      cube.position.set(0, 0, 30000);
+      scene.add(cube);
 
       /////////////SHROOMS END/////////////////
 
       for (var j = 0; j < 70; j++) {
         for (var i = 0; i < 5; i++) {
           var depthMat = new THREE.MeshDepthMaterial();
-          var planerepeated = new THREE.PlaneGeometry(280, 40);
-          var planeMaterial = new THREE.MeshLambertMaterial({
-            color: "rgb(0,255,0)"
+          var planerepeated = new THREE.PlaneGeometry(280, 280);
+          var planetexture = THREE.ImageUtils.loadTexture("assets/papertxtgreen.png");
+          var planeMaterial = new THREE.MeshPhongMaterial({
+            color: 0xffffff,
+            map: planetexture
           });
-          var planeRep = new THREE.Mesh(planerepeated, materialPlatGreen);
+
+          planetexture.wrapS = planetexture.wrapT = THREE.RepeatWrapping;
+          planetexture.repeat.set(100, 100);
+
+          var planeRep = new THREE.Mesh(planerepeated, planeMaterial);
           planeRep.receiveShadow = true;
 
           var cubeGeometryB = new THREE.BoxGeometry(random(.5, 1.4), random(2, 9), 1);

@@ -391,10 +391,10 @@ function setup() {
   back5Button = createButton('Play Again');
   scene6buttons = createDiv('');
   scene6buttons.class('class6').id('scene6buttonholder')
-  back1Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
-  back2Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
-  back3Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
-  back5Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+  // back1Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+  // back2Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+  // back3Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+  // back5Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
   retakePhotoButton = createButton('Retake Photo').class('class6').addClass('scene6buttons').id('playbutton');
   retakePhotoButton.class('class6').addClass('scene6buttons').parent(scene6buttons);
   retakePhotoButton.mousePressed(function() {
@@ -474,7 +474,7 @@ function setup() {
   // flyingOverhead.class('flyingoverhead').position(flythroughX, flythroughY).class('huerotate').size(1400,1250);
   flyingOverhead2.class('flyingoverhead').position(flythroughX, flythroughY).size(1400, 1250);
   $('.flyingoverhead').hide();
-  squeezeFistGif = createImg('assets/fist2.gif').class('class4').id('squeezeFistGif');
+  squeezeFistGif = createImg('assets/fist3.gif').class('class4').id('squeezeFistGif');
   squeezeFistGif.position(squeezeFistGifX, squeezeFistGifY);
 
   //scene5
@@ -783,8 +783,8 @@ function draw() {
     if (Scn4_textcounter > 1390) {
       $('#squeezeFistGif').show();
       squeezeFistGifY = squeezeFistGifY - 20;
-      if (squeezeFistGifY < 300) {
-        squeezeFistGifY = 300;
+      if (squeezeFistGifY < 100) {
+        squeezeFistGifY = 100;
       }
     }
 
@@ -902,7 +902,8 @@ function draw() {
     }
 
   } else if (scene6 == true) {
-    videoInput.position(windowWidth/2 - 200, (windowHeight/2) +650);
+    
+    videoInput.position(windowWidth/2 - 200, (windowHeight/2) +610);
     roveBothax = cos(millis() / 10) * 7;
     roveBothay = sin(millis() / 10) * 7;
     roveBothbx = sin(millis() / 10) * 7;
@@ -1265,7 +1266,9 @@ function countdownTry3() {
     } else if (randomCongrats == 3) {
       document.getElementById('gameoverText').innerHTML = 'SUPER STAR';
     }
-    document.getElementById('gameoverStat').innerHTML = 'You Flew  ' + floor((30000 - camZ)) + '  Miles';
+    // var milesFlown = String(floor((30000 - camZ)));
+    
+    document.getElementById('gameoverStat').innerHTML = 'You Flew  ' + addCommas(floor((30000 - camZ))) + '  Miles';
     readGameOver = true;
   }
 }
@@ -1344,7 +1347,7 @@ function AverageAcellerometerNums() {
       distanceofvaluesFlying = random(200, 620);
     } else if (scene5 == true) {
       console.log('5')
-      distanceofvaluesFlying = random(75, 355);
+      distanceofvaluesFlying = random(155, 755);
     }
   }
 
@@ -1360,8 +1363,8 @@ function getSpeed() {
   if (distanceofvaluesFlying >120) {
     range2hit = true;
     range2 = range2 + 0.2;
-    if (range2 > 1) {
-      range2 = 1;
+    if (range2 > 1.5) {
+      range2 = 1.5;
     }
   }
   if (distanceofvaluesFlying >160) {
@@ -1508,6 +1511,19 @@ function Scn6Jitter() {
   }
 
 
+}
+
+function addCommas(nStr)
+{
+	nStr += '';
+	x = nStr.split('.');
+	x1 = x[0];
+	x2 = x.length > 1 ? '.' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	}
+	return x1 + x2;
 }
 
 
