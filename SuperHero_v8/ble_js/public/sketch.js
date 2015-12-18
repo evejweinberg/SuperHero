@@ -1,6 +1,6 @@
 //all scenes
-var sensorConnected = true;
-var noGloves = false;
+var sensorConnected = false;
+var noGloves = true;
 var timeDiv, swoosh;
 var swooshplaying = false;
 var AllScenesMPH = 0;
@@ -290,6 +290,12 @@ function dearEarthVO() {
   }
 }
 
+function checkBattery(){
+ if  (batteryVoltage<= 2.4){
+   console.log('battery is low');
+ }
+}
+
 
 
 function preload() {
@@ -385,10 +391,10 @@ function setup() {
     scn6BGsprite.push(new Scn6Jitter());
   }
   rotateDiv = createDiv('');
-  back1Button = createButton('FlightSchool');
-  back2Button = createButton('Calibration');
-  back3Button = createButton('Hear The Mission');
-  back5Button = createButton('Play Again');
+  // back1Button = createButton('FlightSchool');
+  // back2Button = createButton('Calibration');
+  // back3Button = createButton('Hear The Mission');
+  // back5Button = createButton('Play Again');
   scene6buttons = createDiv('');
   scene6buttons.class('class6').id('scene6buttonholder')
   // back1Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
@@ -404,18 +410,18 @@ function setup() {
     takePhotoBurst = setInterval(photoBooth, 20);
 
   });
-  back1Button.mousePressed(function() {
-    changeScene(3)
-  });
-  back2Button.mousePressed(function() {
-    changeScene(7)
-  });
-  back3Button.mousePressed(function() {
-    changeScene(4)
-  });
-  back5Button.mousePressed(function() {
-    changeScene(5)
-  });
+  // back1Button.mousePressed(function() {
+  //   changeScene(3)
+  // });
+  // back2Button.mousePressed(function() {
+  //   changeScene(7)
+  // });
+  // back3Button.mousePressed(function() {
+  //   changeScene(4)
+  // });
+  // back5Button.mousePressed(function() {
+  //   changeScene(5)
+  // });
 
   rotateDiv.class('class6').addClass('newspaperDiv');
   videoInput = createCapture(VIDEO);
@@ -647,6 +653,7 @@ function draw() {
   bgmusic();
   clear();
   if (scene1 === true) {
+    checkBattery();
     if (inDataGloveL === 1) {
       // changeScene(1);
       $('#defaultCanvas0').show();
@@ -1063,7 +1070,9 @@ function draw() {
 function keyPressed() {
 
   if (scene3 === true) { //flightschool
-
+if (keyCode == 'J'){
+  console.log('J');
+}
     if (keyCode === 65 || keyCode === 97) { //A KEY // 'speed == 100mph'
       $("#flap1").addClass('FlyAway2');
       $("#flap2").show();
@@ -1347,7 +1356,7 @@ function AverageAcellerometerNums() {
       distanceofvaluesFlying = random(200, 620);
     } else if (scene5 == true) {
       console.log('5')
-      distanceofvaluesFlying = random(155, 755);
+      distanceofvaluesFlying = random(155, 795);
     }
   }
 
