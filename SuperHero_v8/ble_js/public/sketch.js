@@ -1,5 +1,5 @@
 //all scenes
-var sensorConnected = false;
+var sensorConnected = true;
 var noGloves = true;
 var timeDiv, swoosh;
 var swooshplaying = false;
@@ -247,7 +247,7 @@ function starfield1() {
 
 function NoGlovesScene1Done() {
   noGloves = true;
-  console.log('clicked')
+  // console.log('clicked')
   $('#loadingvideo').hide();
   $('#loadingOver').show();
   loadingOvervid.play();
@@ -291,6 +291,7 @@ function dearEarthVO() {
 }
 
 function checkBattery(){
+  // console.log('checking battery');
  if  (batteryVoltage<= 2.4){
    console.log('battery is low');
  }
@@ -430,11 +431,11 @@ function setup() {
   videoInput.hide();
   var newsRandom = floor(random(0,1.9));
   if (newsRandom == 0){
-    console.log('newspaper is 0')
+    // console.log('newspaper is 0')
   newspaperImage = createImg('assets/newspaper2.png');
   newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
   } else {
-       console.log('newspaper is 1')
+      // console.log('newspaper is 1')
    newspaperImage = createImg('assets/newspaper3.png');
   newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
   }
@@ -1347,15 +1348,16 @@ function AverageAcellerometerNums() {
   ////////if the sensor breaks!!!!////////
   if (sensorConnected == true) {
     distanceofvaluesFlying = round(abs(CallibratedRestingNum - newDataZ));
+    console.log(distanceofvaluesFlying);
   } else if (sensorConnected == false) {
     if (scene3 == true && scene3A == true) {
-      console.log('3A')
+      // console.log('3A')
       distanceofvaluesFlying = random(35, 170);
     } else if (scene3B == true && scene3 == true) {
-      console.log('3B')
+      // console.log('3B')
       distanceofvaluesFlying = random(200, 620);
     } else if (scene5 == true) {
-      console.log('5')
+      // console.log('5')
       distanceofvaluesFlying = random(155, 795);
     }
   }
@@ -1371,25 +1373,25 @@ function getSpeed() {
   }
   if (distanceofvaluesFlying >120) {
     range2hit = true;
-    range2 = range2 + 0.2;
-    if (range2 > 1.5) {
-      range2 = 1.5;
+    range2 = range2 + 0.3;
+    if (range2 > 3) {
+      range2 = 3;
     }
   }
   if (distanceofvaluesFlying >160) {
     range3hit = true;
  
     range3 = range3 + 0.5;
-    if (range3 > 2.5) {
-      range3 = 2.5;
+    if (range3 > 4) {
+      range3 = 4;
     }
 
   }
   if (distanceofvaluesFlying >250) {
-    range4 = range4 + 0.5;
+    range4 = range4 + 0.6;
     range4hit = true;
-    if (range4 > 3) {
-      range4 = 3;
+    if (range4 > 4) {
+      range4 = 4;
     }
   }
   if (distanceofvaluesFlying >500) {
@@ -1397,9 +1399,9 @@ function getSpeed() {
     if (range5 == true) {
  
     }
-    range5 = range5 + 0.5;
-    if (range5 > 6) {
-      range5 = 6;
+    range5 = range5 + 0.6;
+    if (range5 > 6.5) {
+      range5 = 6.5;
     }
   }
   if (distanceofvaluesFlying >750) {
@@ -1413,7 +1415,7 @@ range6hit = true;
 
   CamSpeed = range1 + range2 + range3 + range4 + range5 + range6;
   if (frameCount % 15 == 0) {
-    AllScenesMPH = round(map(CamSpeed, 0, 25, 0, 600));
+    AllScenesMPH = round(map(CamSpeed, 0, 24, 0, 600));
   }
   if (range2hit == false) {
     range2 = range2 - 0.06 * decreasemult;
@@ -1477,13 +1479,13 @@ function gameSongPlaying() {
     gameSongIsPlaying = true;
     songpicker = round(random(0, 2));
     if (songpicker == 0) {
-      console.log('songpicker0');
+      // console.log('songpicker0');
       gameSong1.play();
     } else if (songpicker == 1) {
-      console.log('songpicker1');
+      // console.log('songpicker1');
       gameSong2.play();
     } else if (songpicker == 2) {
-      console.log('songpicker2');
+      // console.log('songpicker2');
       gameSong3.play();
     }
   }
@@ -1521,6 +1523,8 @@ function Scn6Jitter() {
 
 
 }
+
+window.scrollTo(0,1);
 
 function addCommas(nStr)
 {
@@ -1561,7 +1565,7 @@ function serialEvent() {
     newDataZ = int(sensors[1]);
     inDataGloveL = int(sensors[0]);
     batteryVoltage = (sensors[2]);
-    console.log(inDataGloveL + '||' + newDataZ + '||' + batteryVoltage+ '||'+distanceofvaluesFlying);
+    // console.log(inDataGloveL + '||' + newDataZ + '||' + batteryVoltage+ '||'+distanceofvaluesFlying);
 
   }
 }
