@@ -1527,7 +1527,7 @@ function gameSongPlaying() {
   if (!gameSongIsPlaying) {
     gameSongIsPlaying = true;
     
-    songpicker = round(random(1, 7));
+    songpicker = floor(random(0, 7));
     console.log('songNum' +songpicker)
     if (songpicker == 1) {
       gameSong1.play();
@@ -1620,7 +1620,7 @@ function serialEvent() {
     newDataZ = int(sensors[1]);
     inDataGloveL = int(sensors[0]);
     batteryVoltage = (sensors[2]);
-    // console.log(inDataGloveL + '||' + newDataZ + '||' + batteryVoltage+ '||'+distanceofvaluesFlying);
+    console.log(inDataGloveL + '||' + newDataZ + '||' + batteryVoltage+ '||'+distanceofvaluesFlying);
 
   }
 }
