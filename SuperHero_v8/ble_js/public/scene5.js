@@ -877,13 +877,13 @@ $(document).ready(function() {
 
 
       function initStats() {
-        var stats = new Stats();
-        stats.setMode(0); // 0: fps, 1: ms
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.left = '0px';
-        stats.domElement.style.top = '0px';
-        document.getElementById("Stats-output").appendChild(stats.domElement);
-        return stats;
+        // var stats = new Stats();
+        // stats.setMode(0); // 0: fps, 1: ms
+        // stats.domElement.style.position = 'absolute';
+        // stats.domElement.style.left = '0px';
+        // stats.domElement.style.top = '0px';
+        // document.getElementById("Stats-output").appendChild(stats.domElement);
+        // return stats;
       }
 
       ////////////////////////////////////////////////////////////////////

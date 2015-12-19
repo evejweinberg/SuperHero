@@ -1,6 +1,7 @@
 //all scenes
 var sensorConnected = true;
 var noGloves = true;
+var speedMultiplier = 1.2;
 var timeDiv, swoosh;
 var swooshplaying = false;
 var AllScenesMPH = 0;
@@ -31,6 +32,7 @@ var fisty = 200;
 //scene2
 var Scn2_frames = [];
 var Scn2frmct = 0;
+var showbatterysign = true;
 
 //scene3
 var readyforschool = false;
@@ -99,7 +101,8 @@ var switchAstMove = false;
 var mountains = [];
 var texture;
 var trees = [];
-var gameSong1, gameSong2, gameSong3, songpicker;
+var gameSongs = [];
+var songpicker;
 var gameSongIsPlaying = false;
 var videoInput, oneSnap;
 var photoIndex = 0;
@@ -165,6 +168,8 @@ var numStars = 10;
 var cloud;
 
 //scene6var //photobooth
+var cheersSongIsPlaying = false;
+var cheers = [];
 var scn6BGsprite = []; //all jitter objects go in here
 var spriteLibrary = []; //png sequence
 var spriteAssets = [];
@@ -290,18 +295,25 @@ function dearEarthVO() {
   }
 }
 
-function checkBattery(){
-  // console.log('checking battery');
- if  (batteryVoltage<= 2.4){
-   console.log('battery is low');
- }
+function checkBattery() {
+  // console.log('checking battery')
+  if (scene1 == true) {
+    showbatterysign = true;
+  } else {
+    showbatterysign = false;
+  }
 }
+
 
 
 
 function preload() {
 
-  // img = loadImage('assets/newspaper.png');
+  cheers[0] = loadSound('audio/cheers1.wav');
+  cheers[1] = loadSound('audio/cheers2.wav');
+  cheers[2] = loadSound('audio/cheers3.wav');
+  cheers[3] = loadSound('audio/cheers4.wav');
+  cheers[4] = loadSound('audio/cheers5.wav');
   //scene6 sprites
   for (var i = 0; i < sprite1Total; i++) { //load all the image names
     if (i < 10) { //for 1 digit ones, add the zero
@@ -323,9 +335,20 @@ function preload() {
     Allclouds.push(loadImage(cloud)); //push them all into an array
   }
 
+  // gameSongs[0] = loadSound('audio/game01.mp3');
+  // gameSongs[1] = loadSound('audio/fuge1.m4a');
+  // gameSongs[2] = loadSound('audio/fuge2.m4a');
+  // gameSongs[3] = loadSound('audio/letItHappen.m4a');
+  // gameSongs[4] = loadSound('audio/DosesAndMimosas.wav');
+  // gameSong[5] = loadSound('audio/dontStopMeNow.wav');
+  // gameSong[6] = loadSound('audio/dontStopBelieving.wav');
   gameSong1 = loadSound('audio/game01.mp3');
   gameSong2 = loadSound('audio/fuge1.m4a');
   gameSong3 = loadSound('audio/fuge2.m4a');
+  gameSong4 = loadSound('audio/letItHappen.m4a');
+  gameSong5 = loadSound('audio/DosesAndMimosas.wav');
+  gameSong6 = loadSound('audio/dontStopMeNow.wav');
+  gameSong0 = loadSound('audio/dontStopBelieving.wav');
   cc = loadSound('assets/cc.wav');
   swoosh = loadSound('assets/swoosh2.wav');
   bg01 = loadSound('assets/bg01.mp3');
@@ -398,10 +421,10 @@ function setup() {
   // back5Button = createButton('Play Again');
   scene6buttons = createDiv('');
   scene6buttons.class('class6').id('scene6buttonholder')
-  // back1Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
-  // back2Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
-  // back3Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
-  // back5Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+    // back1Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+    // back2Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+    // back3Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
+    // back5Button.parent(scene6buttons).class('class6').addClass('scene6buttons').id('playbutton');
   retakePhotoButton = createButton('Retake Photo').class('class6').addClass('scene6buttons').id('playbutton');
   retakePhotoButton.class('class6').addClass('scene6buttons').parent(scene6buttons);
   retakePhotoButton.mousePressed(function() {
@@ -429,15 +452,15 @@ function setup() {
   videoInput.size(575, 340);
   videoInput.position(575, 330);
   videoInput.hide();
-  var newsRandom = floor(random(0,1.9));
-  if (newsRandom == 0){
+  var newsRandom = floor(random(0, 1.9));
+  if (newsRandom == 0) {
     // console.log('newspaper is 0')
-  newspaperImage = createImg('assets/newspaper2.png');
-  newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
+    newspaperImage = createImg('assets/newspaper2.png');
+    newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
   } else {
-      // console.log('newspaper is 1')
-   newspaperImage = createImg('assets/newspaper3.png');
-  newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
+    // console.log('newspaper is 1')
+    newspaperImage = createImg('assets/newspaper3.png');
+    newspaperImage.class('class6').parent(rotateDiv).id('scene6newspaper');
   }
 
 
@@ -522,6 +545,7 @@ function restartAllCounters() {
   var switchAstMove = false;
   var firstround = true;
   var gameSongIsPlaying = false;
+    var cheersSongIsPlaying = false;
   var gameoverclock = 0;
   var turbo = false;
   var readyforschool = false;
@@ -534,6 +558,8 @@ function restartAllCounters() {
 }
 
 function changeScene(num) { //these only get called once, based on a sensor or keypress
+$('#battery').hide();
+  showbatterysign = false;
   restartAllCounters();
   dearEarth.stop();
   $('.class1').hide();
@@ -655,6 +681,13 @@ function draw() {
   clear();
   if (scene1 === true) {
     checkBattery();
+    if (showbatterysign == true && batteryVoltage<=2.5) {
+      // if (scene6 == true){
+      $('#battery').show();
+      $("#battery").append( "<b>" + batteryVoltage + "</b>");
+// }
+
+    }
     if (inDataGloveL === 1) {
       // changeScene(1);
       $('#defaultCanvas0').show();
@@ -910,8 +943,8 @@ function draw() {
     }
 
   } else if (scene6 == true) {
-    
-    videoInput.position(windowWidth/2 - 200, (windowHeight/2) +610);
+
+    videoInput.position(windowWidth / 2 - 200, (windowHeight / 2) + 610);
     roveBothax = cos(millis() / 10) * 7;
     roveBothay = sin(millis() / 10) * 7;
     roveBothbx = sin(millis() / 10) * 7;
@@ -1071,9 +1104,9 @@ function draw() {
 function keyPressed() {
 
   if (scene3 === true) { //flightschool
-if (keyCode == 'J'){
-  console.log('J');
-}
+    if (keyCode == 'J') {
+      // console.log('J');
+    }
     if (keyCode === 65 || keyCode === 97) { //A KEY // 'speed == 100mph'
       $("#flap1").addClass('FlyAway2');
       $("#flap2").show();
@@ -1262,6 +1295,7 @@ function countdownTry3() {
     document.getElementById('timerStopWatch').innerHTML = '00:' + clockB;
     // clearInterval(countdownIdB);
   } else {
+    playCheers();
     //Stop clock
     clearInterval(countdownIdB);
     $('.gamveoverDiv').show();
@@ -1277,7 +1311,7 @@ function countdownTry3() {
       document.getElementById('gameoverText').innerHTML = 'SUPER STAR';
     }
     // var milesFlown = String(floor((30000 - camZ)));
-    
+
     document.getElementById('gameoverStat').innerHTML = 'You Flew  ' + addCommas(floor((30000 - camZ))) + '  Miles';
     readGameOver = true;
   }
@@ -1347,8 +1381,12 @@ function AverageAcellerometerNums() {
   // MovingAverage = sum / NumstoCallibrateDuringFlight.length;
   ////////if the sensor breaks!!!!////////
   if (sensorConnected == true) {
-    distanceofvaluesFlying = round(abs(CallibratedRestingNum - newDataZ));
-    console.log(distanceofvaluesFlying);
+    if (scene3 == true && scene3A == true || scene5 == true) {
+    distanceofvaluesFlying = speedMultiplier*round(abs(CallibratedRestingNum - newDataZ));
+    } else if (scene3B == true && scene3 == true) {
+      distanceofvaluesFlying = round(abs(CallibratedRestingNum - newDataZ));
+    }
+    // console.log(distanceofvaluesFlying);
   } else if (sensorConnected == false) {
     if (scene3 == true && scene3A == true) {
       // console.log('3A')
@@ -1367,45 +1405,45 @@ function AverageAcellerometerNums() {
 
 function getSpeed() {
   if (distanceofvaluesFlying < 100) {
-   
+
     range1 = 0;
     range1hit = true;
   }
-  if (distanceofvaluesFlying >120) {
+  if (distanceofvaluesFlying > 120) {
     range2hit = true;
     range2 = range2 + 0.3;
     if (range2 > 3) {
       range2 = 3;
     }
   }
-  if (distanceofvaluesFlying >160) {
+  if (distanceofvaluesFlying > 160) {
     range3hit = true;
- 
+
     range3 = range3 + 0.5;
     if (range3 > 4) {
       range3 = 4;
     }
 
   }
-  if (distanceofvaluesFlying >250) {
+  if (distanceofvaluesFlying > 250) {
     range4 = range4 + 0.6;
     range4hit = true;
     if (range4 > 4) {
       range4 = 4;
     }
   }
-  if (distanceofvaluesFlying >500) {
+  if (distanceofvaluesFlying > 500) {
     range5hit = true;
     if (range5 == true) {
- 
+
     }
     range5 = range5 + 0.6;
     if (range5 > 6.5) {
       range5 = 6.5;
     }
   }
-  if (distanceofvaluesFlying >750) {
-range6hit = true;
+  if (distanceofvaluesFlying > 750) {
+    range6hit = true;
     range6 = range6 + 0.5;
     if (range6 > 10) {
       range6 = 10;
@@ -1474,19 +1512,37 @@ function photoBooth() {
   }
 }
 
+function playCheers(){
+  if(!cheersSongIsPlaying){
+    cheersSongIsPlaying = true;
+    var cheersPicker = floor(random(cheers.length));//round(random(1,5));
+  console.log(cheersPicker)
+  //if (frameCount % 60 == 0){
+  cheers[cheersPicker].play();
+  }
+}
+
+
 function gameSongPlaying() {
   if (!gameSongIsPlaying) {
     gameSongIsPlaying = true;
-    songpicker = round(random(0, 2));
-    if (songpicker == 0) {
-      // console.log('songpicker0');
+    
+    songpicker = round(random(1, 7));
+    console.log('songNum' +songpicker)
+    if (songpicker == 1) {
       gameSong1.play();
-    } else if (songpicker == 1) {
-      // console.log('songpicker1');
-      gameSong2.play();
     } else if (songpicker == 2) {
-      // console.log('songpicker2');
+      gameSong2.play();
+    } else if (songpicker == 3) {
       gameSong3.play();
+    }else if (songpicker == 4) {
+      gameSong4.play();
+    }else if (songpicker == 5) {
+      gameSong5.play();
+    }else if (songpicker == 6) {
+      gameSong6.play();
+    }else if (songpicker == 0) {
+      gameSong0.play();
     }
   }
 }
@@ -1524,19 +1580,18 @@ function Scn6Jitter() {
 
 }
 
-window.scrollTo(0,1);
+window.scrollTo(0, 1);
 
-function addCommas(nStr)
-{
-	nStr += '';
-	x = nStr.split('.');
-	x1 = x[0];
-	x2 = x.length > 1 ? '.' + x[1] : '';
-	var rgx = /(\d+)(\d{3})/;
-	while (rgx.test(x1)) {
-		x1 = x1.replace(rgx, '$1' + ',' + '$2');
-	}
-	return x1 + x2;
+function addCommas(nStr) {
+  nStr += '';
+  x = nStr.split('.');
+  x1 = x[0];
+  x2 = x.length > 1 ? '.' + x[1] : '';
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(x1)) {
+    x1 = x1.replace(rgx, '$1' + ',' + '$2');
+  }
+  return x1 + x2;
 }
 
 

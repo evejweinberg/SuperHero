@@ -22,7 +22,7 @@ $(document).ready(function() {
       //------------------------------------------------//
       var knot;
       var Allknots = [];
-      var stats = initStats();
+      // var stats = initStats();
       r = 100;
       g = 200;
       b = 250;
