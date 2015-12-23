@@ -2,6 +2,7 @@
 var sensorConnected = true;
 var noGloves = true;
 var speedMultiplier = 1.2;
+var speedRnd1Multiplier = .9;
 var timeDiv, swoosh;
 var swooshplaying = false;
 var AllScenesMPH = 0;
@@ -343,12 +344,15 @@ function preload() {
   // gameSong[5] = loadSound('audio/dontStopMeNow.wav');
   // gameSong[6] = loadSound('audio/dontStopBelieving.wav');
   gameSong1 = loadSound('audio/game01.mp3');
-  gameSong2 = loadSound('audio/fuge1.m4a');
-  gameSong3 = loadSound('audio/fuge2.m4a');
+  gameSong2 = loadSound('audio/fuge2.m4a');
+  gameSong3 = loadSound('audio/dontStopBelieving.wav');
   gameSong4 = loadSound('audio/letItHappen.m4a');
   gameSong5 = loadSound('audio/DosesAndMimosas.wav');
   gameSong6 = loadSound('audio/dontStopMeNow.wav');
-  gameSong0 = loadSound('audio/dontStopBelieving.wav');
+  gameSong7 = loadSound('audio/dontStopBelieving.wav');
+  gameSong8 = loadSound('audio/classicxSm.wav');
+  gameSong9 = loadSound('audio/groupLoveSm.wav');
+  gameSong0 = loadSound('audio/BeyonceGoSm.wav');
   cc = loadSound('assets/cc.wav');
   swoosh = loadSound('assets/swoosh2.wav');
   bg01 = loadSound('assets/bg01.mp3');
@@ -504,8 +508,8 @@ function setup() {
   // flyingOverhead.class('flyingoverhead').position(flythroughX, flythroughY).class('huerotate').size(1400,1250);
   flyingOverhead2.class('flyingoverhead').position(flythroughX, flythroughY).size(1400, 1250);
   $('.flyingoverhead').hide();
-  squeezeFistGif = createImg('assets/fist3.gif').class('class4').id('squeezeFistGif');
-  squeezeFistGif.position(squeezeFistGifX, squeezeFistGifY);
+  squeezeFistGif = createImg('assets/fist4.gif').class('class4').id('squeezeFistGif');
+  squeezeFistGif.position(squeezeFistGifX, squeezeFistGifY).size(500,936);
 
   //scene5
   keepgoing01 = loadImage('assets/keepgoing01.png');
@@ -821,7 +825,7 @@ function draw() {
     }
 
     squeezeFistGif.position(squeezeFistGifX, squeezeFistGifY);
-    if (Scn4_textcounter > 1390) {
+    if (Scn4_textcounter > 1490) {
       $('#squeezeFistGif').show();
       squeezeFistGifY = squeezeFistGifY - 20;
       if (squeezeFistGifY < 100) {
@@ -894,7 +898,7 @@ function draw() {
 
     }
     if (AllScenesMPH > 520) { //hitting turbo
-      for (var l = 0; l < 12; l++) {
+      for (var l = 0; l < 2; l++) {
         torus = createMesh(new THREE.TorusGeometry(37, 4, 10, 6, Math.PI * 2));
         torus.position.z = (camZ - 500) + (l * 30);
         torus.position.x = 0;
@@ -1381,10 +1385,10 @@ function AverageAcellerometerNums() {
   // MovingAverage = sum / NumstoCallibrateDuringFlight.length;
   ////////if the sensor breaks!!!!////////
   if (sensorConnected == true) {
-    if (scene3 == true && scene3A == true || scene5 == true) {
+    if (scene3 == true && scene3B == true || scene5 == true) {
     distanceofvaluesFlying = speedMultiplier*round(abs(CallibratedRestingNum - newDataZ));
-    } else if (scene3B == true && scene3 == true) {
-      distanceofvaluesFlying = round(abs(CallibratedRestingNum - newDataZ));
+    } else if (scene3A == true && scene3 == true) {
+      distanceofvaluesFlying = speedRnd1Multiplier* round(abs(CallibratedRestingNum - newDataZ));
     }
     // console.log(distanceofvaluesFlying);
   } else if (sensorConnected == false) {
@@ -1438,8 +1442,8 @@ function getSpeed() {
 
     }
     range5 = range5 + 0.6;
-    if (range5 > 6.5) {
-      range5 = 6.5;
+    if (range5 > 6.1) {
+      range5 = 6.1;
     }
   }
   if (distanceofvaluesFlying > 750) {
@@ -1527,7 +1531,7 @@ function gameSongPlaying() {
   if (!gameSongIsPlaying) {
     gameSongIsPlaying = true;
     
-    songpicker = floor(random(0, 7));
+    songpicker = floor(random(0, 10));
     console.log('songNum' +songpicker)
     if (songpicker == 1) {
       gameSong1.play();
@@ -1543,6 +1547,12 @@ function gameSongPlaying() {
       gameSong6.play();
     }else if (songpicker == 0) {
       gameSong0.play();
+    }else if (songpicker == 7) {
+      gameSong7.play();
+    }else if (songpicker == 8) {
+      gameSong8.play();
+    }else if (songpicker == 9) {
+      gameSong9.play();
     }
   }
 }
@@ -1620,7 +1630,7 @@ function serialEvent() {
     newDataZ = int(sensors[1]);
     inDataGloveL = int(sensors[0]);
     batteryVoltage = (sensors[2]);
-    console.log(inDataGloveL + '||' + newDataZ + '||' + batteryVoltage+ '||'+distanceofvaluesFlying);
+    // console.log(inDataGloveL + '||' + newDataZ + '||' + batteryVoltage+ '||'+distanceofvaluesFlying);
 
   }
 }

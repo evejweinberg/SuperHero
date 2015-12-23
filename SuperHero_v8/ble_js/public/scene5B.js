@@ -914,9 +914,9 @@ if (i<=10 ){
         if (scene5 == true) {
           if (Scn5_frmct > 180 && Scn5_frmct < 350) {
 
-            camZ = camZ - (CamSpeed * .3);
+            camZ = camZ - (CamSpeed * .5);
           } else if (Scn5_frmct >= 350) {
-            camZ = camZ - (CamSpeed * .8);
+            camZ = camZ - (CamSpeed * .7);
           }
         }
         // stats.update();
