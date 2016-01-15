@@ -1,1 +1,0 @@
-tell application "System Events"	key code 112end tell
