@@ -27,19 +27,19 @@
 }
 .pressbg {
   position: absolute;
-  background-image: url('assets/papertxtorange.png');
+  background-image: url('../assets/papertxtorange.png');
   /*padding: 40em;*/
   background-repeat: repeat;
 }
 .pressbg2 {
   position: absolute;
-  background-image: url('assets/papertxtpink1.png');
+  background-image: url('../assets/papertxtpink1.png');
   /*padding: 40em;*/
   background-repeat: repeat;
 }
 .pressbg3 {
   position: absolute;
-  background-image: url('assets/papertxtorange.png');
+  background-image: url('../assets/papertxtorange.png');
   /*padding: 40em;*/
   background-repeat: repeat;
 }

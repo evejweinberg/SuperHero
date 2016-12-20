@@ -42,7 +42,7 @@
 }
 
 #fist {
-  background-image: url('assets/fist.png');
+  background-image: url('../assets/fist.png');
    /*animation: nudge 5s infinite;*/
   
 }

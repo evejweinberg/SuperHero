@@ -10,7 +10,7 @@
 }
 
 #container {
-  /*background-image: url('assets/spacebg.png');*/
+  /*background-image: url('../assets/spacebg.png');*/
   /*background-repeat: repeat;*/
   z-index: 20px;
   position: absolute;

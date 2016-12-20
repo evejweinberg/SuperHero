@@ -15,14 +15,14 @@
   font-size: 40px;
   overflow-wrap: 1 normal;
   padding: 10px 10px 20px 50px;
-  background-image: url('assets/papertxtwhite.png');
+  background-image: url('../assets/papertxtwhite.png');
   background-repeat: repeat;
   
 }
 
 
 .spacebg{
-  background-image: url('assets/spacebg4.jpg');
+  background-image: url('../assets/spacebg4.jpg');
   background-repeat: repeat;
 }
 
