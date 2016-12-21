@@ -1,6 +1,8 @@
 
 function setup() {
 
+  $('#battery').show();
+
   //create p5 canvas
   canvas = createCanvas(windowWidth, windowHeight);
   centerH = (windowWidth / 2);
@@ -11,21 +13,26 @@ function setup() {
   readyforschool = createImg('assets/readyforschool.png');
   readyforschool.class('class7').id('readyforschool');
   gd = new getCalibrationSensorValChange();
+  //pause loading video
   loadingOvervid = document.getElementById("loadingOver");
   loadingOvervid.pause();
+  // loadingOvervid.remove();
   spacebg = loadImage('assets/spaceEdges3.png');
 
 
   colors = [
-      color(57, 42, 48), //brown
-      color(246, 209, 68), //yellow
-      color(236, 115, 105), //pink
-      color(123, 200, 166), //green
-      color(244, 179, 100), //orange
-      color(165, 218, 194), //light green
-      color(231, 82, 68), //drkpink
-      color(0, 166, 155) //blue
-    ]
+        color(57, 42, 48), //brown
+        color(246, 209, 68), //yellow
+        color(236, 115, 105), //pink
+        color(123, 200, 166), //green
+        color(244, 179, 100), //orange
+        color(165, 218, 194), //light green
+        color(231, 82, 68), //drkpink
+        color(0, 166, 155) //blue
+      ]
+
+
+
     //scene6
   for (var i = 0; i < 200; i++) {
     scn6BGsprite.push(new Scn6Jitter());
@@ -35,7 +42,9 @@ function setup() {
   scene6buttons.class('class6').id('scene6buttonholder')
   retakePhotoButton = createButton('Retake Photo').class('class6').addClass('scene6buttons').id('playbutton');
   retakePhotoButton.class('class6').addClass('scene6buttons').parent(scene6buttons);
+
   retakePhotoButton.mousePressed(function() {
+    //reset this array if they want to retake photo
     photoBurst = [];
     photoIndex = 0;
     loopPhotos = 0;
@@ -49,6 +58,8 @@ function setup() {
   videoInput.size(575, 340);
   videoInput.position(575, 330);
   videoInput.hide();
+
+  //p5js way of doing random
   var newsRandom = floor(random(0, 1.9));
   if (newsRandom == 0) {
     // console.log('newspaper is 0')
@@ -130,9 +141,6 @@ function draw() {
 
 
   if (scene1 === true) {
-      // $('#battery').show();
-      // $('#battery').html('in console type "moveOnDebug = 1"');
-
 
     if (moveOnDebug == 1) {
       console.log('moveOnDebug 1 was called')

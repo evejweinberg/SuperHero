@@ -26,7 +26,7 @@ var count = 30;
 var counter;
 var cd_3, cd_2, cd_1, cd_fly, game, inst, saveme, bg01, asteroid, scene3header, scene2header, flapTemp, dearEarth, scene5countdown, cappink, capblue;
 var instscaledown = 300;
-var colors;
+var colors =[];
 var fist, fistinst;
 var fistx = -100;
 var fisty = 200;
@@ -110,6 +110,7 @@ var videoInput, oneSnap;
 var photoIndex = 0;
 var takePhotoBurst, loopPhotos = 0;
 var photoBurst = [];
+
 var decreasemult = 2.6;
 var camspeedmax = 25;
 var camY = 0;
@@ -232,7 +233,6 @@ var transitionTicker = 0;
 //PRE LOAD HAPPENS DURING LOADING SCREEN
 
 function preload() {
-  console.log('preload')
 
   //load sounds for ending
   cheers[0] = loadSound('audio/cheers1.wav');
